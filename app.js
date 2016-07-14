@@ -47,6 +47,7 @@ process.chdir(__dirname);
     sails.request = require('request');
     sails.moment = require('moment');
     sails._ = require('lodash');
+    sails.md5 = require('MD5');
     // Try to get `rc` dependency
     var rc;
     try {

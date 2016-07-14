@@ -11,8 +11,8 @@ var schema = new Schema({
     board: String,
     location: String,
     address: String,
-    email: Schema.Types.Mixed,
-    contact: Schema.Types.Mixed,
+    email: String,
+    contact:String,
     logo: String,
     status: Boolean,
     principal: String,
@@ -97,7 +97,7 @@ var models = {
                 } else if (_.isEmpty(data2)) {
                     callSave(1);
                 } else {
-                    callSave(data2.sfaid);
+                    callSave(data2.sfaid + 1);
                 }
             });
         }

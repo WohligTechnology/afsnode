@@ -16,8 +16,8 @@ var schema = new Schema({
     gender: String,
     dob: Date,
     ageGroup: String,
-    email: Schema.Types.Mixed,
-    contact: Schema.Types.Mixed,
+    email: String,
+    contact: String,
     location: String,
     address: String,
     sports: {
@@ -90,7 +90,7 @@ var models = {
                 } else if (_.isEmpty(data2)) {
                     callSave(1);
                 } else {
-                    callSave(data2.sfaid);
+                    callSave(data2.sfaid + 1);
                 }
             });
         }
