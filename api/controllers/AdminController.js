@@ -6,7 +6,7 @@
  */
 module.exports = {
     saveData: function(req, res) {
-        if (req.body) {
+        if (req.body) { 
             Admin.saveData(req.body, function(err, respo) {
                 if (err) {
                     res.json({
