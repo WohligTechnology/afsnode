@@ -9,8 +9,12 @@ var schema = new Schema({
     sfaid: Number,
     name: String,
     school: {
-        type: Schema.Types.ObjectId,
-        ref: "School",
+        type: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'School'
+            }
+        }],
         index: true
     },
     gender: String,
@@ -20,9 +24,12 @@ var schema = new Schema({
     contact: String,
     location: String,
     address: String,
-    sports: {
+    sport: {
         type: [{
-            _id: Schema.Types.ObjectId
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Sport'
+            }
         }],
         index: true
     },
@@ -30,7 +37,6 @@ var schema = new Schema({
         type: [{
             name: String
         }],
-        index: true
     },
     parentName: String,
     profilePic: String,

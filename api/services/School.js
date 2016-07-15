@@ -12,16 +12,19 @@ var schema = new Schema({
     location: String,
     address: String,
     email: String,
-    contact:String,
+    contact: String,
     logo: String,
     status: Boolean,
     principal: String,
-    sports: {
+    sport: [{
         type: [{
-            _id: Schema.Types.ObjectId
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: 'Sport'
+            }
         }],
         index: true
-    },
+    }],
     supported: Schema.Types.Mixed,
     blog: Schema.Types.Mixed,
     medals: Schema.Types.Mixed,
@@ -31,7 +34,8 @@ var schema = new Schema({
     sfaRecords: Schema.Types.Mixed,
     team: {
         type: Schema.Types.ObjectId,
-        ref: "Team"
+        ref: "Team",
+        index: true
     },
     contingentLeader: String,
     contingent: {
@@ -54,7 +58,8 @@ var schema = new Schema({
     },
     schoolDept: {
         type: Schema.Types.ObjectId,
-        ref: "SchoolDepartment"
+        ref: "SchoolDepartment",
+        index: true
     },
     timestamp: Date
 });
@@ -101,7 +106,6 @@ var models = {
                 }
             });
         }
-
     },
     getAll: function(data, callback) {
         School.find({}, {}, {}, function(err, deleted) {
