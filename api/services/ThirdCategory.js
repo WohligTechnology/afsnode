@@ -6,33 +6,15 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-    name: String,
-    type: String,
-    gender: String,
-    minPlayers: {
-        boys: Number,
-        girls: Number
-    },
-    maxPlayers: {
-        boys: Number,
-        girls: Number
-    },
-    agegroup: {
-        type: [{
-            _id: {
-                type: Schema.Types.ObjectId,
-                ref: 'Agegroup'
-            },
-            weight: String
-        }],
-        index: true
-    },
-    drawformat: String
+    name: String
 });
-module.exports = sails.mongoose.model('Sport', schema);
+module.exports = sails.mongoose.model('ThirdCategory', schema);
 var models = {
     saveData: function(data, callback) {
-        var sport = this(data);
+        if (data.password && data.password != "") {
+            data.password = sails.md5(data.password);
+        }
+        var firstcategory = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -44,7 +26,7 @@ var models = {
                 }
             });
         } else {
-            sport.save(function(err, data2) {
+            firstcategory.save(function(err, data2) {
                 if (err) {
                     callback(err, null);
                 } else {
@@ -52,18 +34,19 @@ var models = {
                 }
             });
         }
+
     },
     getAll: function(data, callback) {
-        Sport.find(function(err, found) {
+        ThirdCategory.find({}, {}, {}, function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, found);
+                callback(null, deleted);
             }
         });
     },
     deleteData: function(data, callback) {
-        Sport.findOneAndRemove({
+        ThirdCategory.findOneAndRemove({
             _id: data._id
         }, function(err, deleted) {
             if (err) {
@@ -74,13 +57,13 @@ var models = {
         });
     },
     getOne: function(data, callback) {
-        Sport.findOne({
+        ThirdCategory.findOne({
             _id: data._id
-        }, function(err, found) {
+        }, function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, found);
+                callback(null, deleted);
             }
         });
     }

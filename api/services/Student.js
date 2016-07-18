@@ -26,17 +26,24 @@ var schema = new Schema({
     address: String,
     sport: {
         type: [{
-            _id: {
+            sportsid: {
                 type: Schema.Types.ObjectId,
                 ref: 'Sport'
-            }
+            },
+            category1: {
+                type: Schema.Types.ObjectId,
+                ref: 'FirstCategory'
+            },
+            category2: {
+                type: Schema.Types.ObjectId,
+                ref: 'SecondCategory'
+            },
+            category3: {
+                type: Schema.Types.ObjectId,
+                ref: 'ThirdCategory'
+            },
         }],
         index: true
-    },
-    sportsCategory: {
-        type: [{
-            name: String
-        }],
     },
     parentName: String,
     profilePic: String,
@@ -100,7 +107,6 @@ var models = {
                 }
             });
         }
-
     },
     getAll: function(data, callback) {
         Student.find({}, {}, {}, function(err, deleted) {
