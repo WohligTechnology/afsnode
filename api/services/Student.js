@@ -9,17 +9,12 @@ var schema = new Schema({
     sfaid: Number,
     name: String,
     school: {
-        type: [{
-            _id: {
-                type: Schema.Types.ObjectId,
-                ref: 'School'
-            }
-        }],
+        type: Schema.Types.ObjectId,
+        ref: 'School',
         index: true
     },
     gender: String,
     dob: Date,
-    ageGroup: String,
     email: String,
     contact: String,
     location: String,
@@ -30,17 +25,21 @@ var schema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: 'Sport'
             },
-            category1: {
+            firstcategory: {
                 type: Schema.Types.ObjectId,
                 ref: 'FirstCategory'
             },
-            category2: {
+            secondcategory: {
                 type: Schema.Types.ObjectId,
                 ref: 'SecondCategory'
             },
-            category3: {
+            thirdcategory: {
                 type: Schema.Types.ObjectId,
                 ref: 'ThirdCategory'
+            },
+            agegroup: {
+                type: Schema.Types.ObjectId,
+                ref: 'Agegroup'
             },
         }],
         index: true
@@ -80,33 +79,32 @@ var models = {
             });
         } else {
             student.timestamp = new Date();
-
-            function callSave(num) {
-                student.sfaid = num;
-                student.save(function(err, data2) {
-                    if (err) {
-                        callback(err, null);
-                    } else {
-                        callback(null, data2);
-                    }
-                });
-            }
-            Student.findOne({}, {
-                _id: 0,
-                sfaid: 1
-            }).sort({
-                sfaid: -1
-            }).limit(1).lean().exec(function(err, data2) {
+            student.save(function(err, data2) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
-                } else if (_.isEmpty(data2)) {
-                    callSave(1);
                 } else {
-                    callSave(data2.sfaid + 1);
+                    callback(null, data2);
                 }
             });
         }
+    },
+    getLastId: function(data, callback) {
+        Student.findOne({}, {
+            _id: 0,
+            sfaid: 1
+        }).sort({
+            sfaid: -1
+        }).limit(1).lean().exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (_.isEmpty(data2)) {
+                callback(null, 1);
+            } else {
+                callback(null, data2.sfaid + 1);
+            }
+        });
     },
     getAll: function(data, callback) {
         Student.find({}, {}, {}, function(err, deleted) {
@@ -140,7 +138,7 @@ var models = {
     getOne: function(data, callback) {
         Student.findOne({
             _id: data._id
-        }, function(err, deleted) {
+        }).populate("school", "_id name").lean().exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {

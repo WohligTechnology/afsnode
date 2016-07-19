@@ -49,6 +49,57 @@ module.exports = {
             });
         }
     },
+    getSchool: function(req, res) {
+        if (req.body) {
+            School.getSchool(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
+    getSchoolSport: function(req, res) {
+        if (req.body) {
+            if (req.body._id && req.body._id != "") {
+                School.getSchoolSport(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Id"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     delete: function(req, res) {
         if (req.body) {
             if (req.body._id && req.body._id != "") {
@@ -175,4 +226,26 @@ module.exports = {
             });
         }
     },
+    getLastId: function(req, res) {
+        if (req.body) {
+            School.getLastId(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    }
 };

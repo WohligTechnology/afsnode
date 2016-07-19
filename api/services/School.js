@@ -16,15 +16,13 @@ var schema = new Schema({
     logo: String,
     status: Boolean,
     principal: String,
-    sport: [{
+    sports: {
         type: [{
-            _id: {
-                type: Schema.Types.ObjectId,
-                ref: 'Sport'
-            }
-        }],
-        index: true
-    }],
+            _id: Schema.Types.ObjectId,
+            name: String,
+            sporttype: String
+        }]
+    },
     supported: Schema.Types.Mixed,
     blog: Schema.Types.Mixed,
     medals: Schema.Types.Mixed,
@@ -79,36 +77,47 @@ var models = {
             });
         } else {
             school.timestamp = new Date();
-
-            function callSave(num) {
-                school.sfaid = num;
-                school.save(function(err, data2) {
-                    if (err) {
-                        callback(err, null);
-                    } else {
-                        callback(null, data2);
-                    }
-                });
-            }
-            School.findOne({}, {
-                _id: 0,
-                sfaid: 1
-            }).sort({
-                sfaid: -1
-            }).limit(1).lean().exec(function(err, data2) {
+            school.save(function(err, data2) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
-                } else if (_.isEmpty(data2)) {
-                    callSave(1);
                 } else {
-                    callSave(data2.sfaid + 1);
+                    callback(null, data2);
                 }
             });
         }
     },
+    getLastId: function(data, callback) {
+        School.findOne({}, {
+            _id: 0,
+            sfaid: 1
+        }).sort({
+            sfaid: -1
+        }).limit(1).lean().exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (_.isEmpty(data2)) {
+                callback(null, 1);
+            } else {
+                callback(null, data2.sfaid + 1);
+            }
+        });
+    },
     getAll: function(data, callback) {
         School.find({}, {}, {}, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
+    getSchool: function(data, callback) {
+        School.find({}, {
+            _id: 1,
+            name: 1
+        }, function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
@@ -144,6 +153,22 @@ var models = {
                 callback(err, null);
             } else {
                 callback(null, deleted);
+            }
+        });
+    },
+    getSchoolSport: function(data, callback) {
+        School.findOne({
+            _id: data._id
+        }, {
+            _id: 0,
+            sports: 1
+        }, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else if (deleted && deleted.sports && deleted.sports.length > 0) {
+                callback(null, deleted.sports);
+            } else {
+                callback([], null);
             }
         });
     },

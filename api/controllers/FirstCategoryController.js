@@ -6,7 +6,7 @@
  */
 module.exports = {
     saveData: function(req, res) {
-        if (req.body) { 
+        if (req.body) {
             FirstCategory.saveData(req.body, function(err, respo) {
                 if (err) {
                     res.json({
@@ -104,6 +104,35 @@ module.exports = {
             res.json({
                 value: false,
                 data: "Invalid call"
+            });
+        }
+    },
+    findForDrop: function(req, res) {
+        if (req.body) {
+            if (req.body.firstcategory && Array.isArray(req.body.firstcategory)) {
+                FirstCategory.findForDrop(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Please provide parameters"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Please provide parameters"
             });
         }
     }

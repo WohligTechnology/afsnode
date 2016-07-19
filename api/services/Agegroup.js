@@ -23,11 +23,22 @@ var models = {
                 }
             });
         } else {
-            agegroup.save(function(err, data2) {
+            Agegroup.find({
+                "name": data.name
+            }).exec(function(err, data2) {
                 if (err) {
+                    console.log(err);
                     callback(err, null);
-                } else {
+                } else if (data2 && data2[0]) {
                     callback(null, data2);
+                } else {
+                    agegroup.save(function(err, data3) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data3);
+                        }
+                    });
                 }
             });
         }
@@ -60,6 +71,47 @@ var models = {
                 callback(err, null);
             } else {
                 callback(null, found);
+            }
+        });
+    },
+    findForDrop: function(data, callback) {
+        var returns = [];
+        var exit = 0;
+        var exitup = 1;
+        var check = new RegExp(data.search, "i");
+
+        function callback2(exit, exitup, data) {
+            if (exit == exitup) {
+                callback(null, data);
+            }
+        }
+        Agegroup.find({
+            name: {
+                '$regex': check
+            }
+        }).limit(10).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            }
+            if (found && found.length > 0) {
+                exit++;
+                if (data.agegroup.length != 0) {
+                    var nedata;
+                    nedata = _.remove(found, function(n) {
+                        var flag = false;
+                        _.each(data.agegroup, function(n1) {
+                            if (n1.name == n.name) {
+                                flag = true;
+                            }
+                        })
+                        return flag;
+                    });
+                }
+                returns = returns.concat(found);
+                callback2(exit, exitup, returns);
+            } else {
+                callback([], null);
             }
         });
     }

@@ -6,23 +6,11 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-    name: String,
-    sport: {
-        type: [{
-            _id: {
-                type: Schema.Types.ObjectId,
-                ref: 'Sport'
-            },
-        }],
-        index: true
-    }
+    name: String
 });
 module.exports = sails.mongoose.model('FirstCategory', schema);
 var models = {
     saveData: function(data, callback) {
-        if (data.password && data.password != "") {
-            data.password = sails.md5(data.password);
-        }
         var firstcategory = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -35,15 +23,25 @@ var models = {
                 }
             });
         } else {
-            firstcategory.save(function(err, data2) {
+            FirstCategory.find({
+                "name": data.name
+            }).exec(function(err, data2) {
                 if (err) {
+                    console.log(err);
                     callback(err, null);
-                } else {
+                } else if (data2 && data2[0]) {
                     callback(null, data2);
+                } else {
+                    firstcategory.save(function(err, data3) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data3);
+                        }
+                    });
                 }
             });
         }
-
     },
     getAll: function(data, callback) {
         FirstCategory.find({}, {}, {}, function(err, deleted) {
@@ -73,6 +71,47 @@ var models = {
                 callback(err, null);
             } else {
                 callback(null, deleted);
+            }
+        });
+    },
+    findForDrop: function(data, callback) {
+        var returns = [];
+        var exit = 0;
+        var exitup = 1;
+        var check = new RegExp(data.search, "i");
+
+        function callback2(exit, exitup, data) {
+            if (exit == exitup) {
+                callback(null, data);
+            }
+        }
+        FirstCategory.find({
+            name: {
+                '$regex': check
+            }
+        }).limit(10).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            }
+            if (found && found.length > 0) {
+                exit++;
+                if (data.firstcategory.length != 0) {
+                    var nedata;
+                    nedata = _.remove(found, function(n) {
+                        var flag = false;
+                        _.each(data.firstcategory, function(n1) {
+                            if (n1.name == n.name) {
+                                flag = true;
+                            }
+                        })
+                        return flag;
+                    });
+                }
+                returns = returns.concat(found);
+                callback2(exit, exitup, returns);
+            } else {
+                callback([], null);
             }
         });
     }
