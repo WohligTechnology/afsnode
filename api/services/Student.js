@@ -8,42 +8,21 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
     sfaid: Number,
     name: String,
+    firstname: String,
+    middlename: String,
+    lastname: String,
     school: {
         type: Schema.Types.ObjectId,
         ref: 'School',
         index: true
     },
+    deleteStatus: Boolean,
     gender: String,
     dob: Date,
     email: String,
     contact: String,
     location: String,
     address: String,
-    sport: {
-        type: [{
-            sportsid: {
-                type: Schema.Types.ObjectId,
-                ref: 'Sport'
-            },
-            firstcategory: {
-                type: Schema.Types.ObjectId,
-                ref: 'FirstCategory'
-            },
-            secondcategory: {
-                type: Schema.Types.ObjectId,
-                ref: 'SecondCategory'
-            },
-            thirdcategory: {
-                type: Schema.Types.ObjectId,
-                ref: 'ThirdCategory'
-            },
-            agegroup: {
-                type: Schema.Types.ObjectId,
-                ref: 'Agegroup'
-            },
-        }],
-        index: true
-    },
     parentName: String,
     profilePic: String,
     blog: Schema.Types.Mixed,
@@ -66,6 +45,11 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Student', schema);
 var models = {
     saveData: function(data, callback) {
+        if (data.middlename) {
+            data.name = data.lastname + " " + data.firstname + " " + data.middlename;
+        } else {
+            data.name = data.lastname + " " + data.firstname + " ";
+        }
         var student = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -79,6 +63,7 @@ var models = {
             });
         } else {
             student.timestamp = new Date();
+            student.deleteStatus = false;
             student.save(function(err, data2) {
                 if (err) {
                     console.log(err);
@@ -115,9 +100,34 @@ var models = {
             }
         });
     },
+    getStud: function(data, callback) {
+        Student.find({}, {
+            _id: 1,
+            name: 1
+        }, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
     deleteData: function(data, callback) {
-        Student.findOneAndRemove({
+        Student.findOneAndRemove({}, function(err, deleted) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, deleted)
+            }
+        });
+    },
+    hide: function(data, callback) {
+        Student.findOneAndUpdate({
             _id: data._id
+        }, {
+            $set: {
+                deleteStatus: data.status
+            }
         }, function(err, deleted) {
             if (err) {
                 callback(err, null)

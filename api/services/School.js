@@ -15,6 +15,7 @@ var schema = new Schema({
     contact: String,
     logo: String,
     status: Boolean,
+    deleteStatus: Boolean,
     principal: String,
     sports: {
         type: [{
@@ -35,7 +36,13 @@ var schema = new Schema({
         ref: "Team",
         index: true
     },
-    contingentLeader: String,
+    contingentLeader: [{
+        year: Number,
+        student: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
+    }],
     contingent: {
         type: {
             male: Number,
@@ -77,6 +84,7 @@ var models = {
             });
         } else {
             school.timestamp = new Date();
+            school.deleteStatus = false;
             school.save(function(err, data2) {
                 if (err) {
                     console.log(err);
@@ -126,8 +134,21 @@ var models = {
         });
     },
     deleteData: function(data, callback) {
-        School.findOneAndRemove({
+        School.findOneAndRemove({}, function(err, deleted) {
+            if (err) {
+                callback(err, null)
+            } else {
+                callback(null, deleted)
+            }
+        });
+    },
+    hide: function(data, callback) {
+        School.findOneAndUpdate({
             _id: data._id
+        }, {
+            $set: {
+                deleteStatus: data.status
+            }
         }, function(err, deleted) {
             if (err) {
                 callback(err, null)
@@ -148,7 +169,7 @@ var models = {
     getOne: function(data, callback) {
         School.findOne({
             _id: data._id
-        }, function(err, deleted) {
+        }).exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
