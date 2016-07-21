@@ -41,6 +41,8 @@ var schema = new Schema({
         }],
         index: true
     },
+    dateOfForm: String,
+    timeOfForm: String
 });
 module.exports = sails.mongoose.model('Student', schema);
 var models = {

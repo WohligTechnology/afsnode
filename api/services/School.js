@@ -66,7 +66,10 @@ var schema = new Schema({
         ref: "SchoolDepartment",
         index: true
     },
-    timestamp: Date
+    timestamp: Date,
+    representative: String,
+    numberOfSports: String,
+    paymentType: String
 });
 module.exports = sails.mongoose.model('School', schema);
 var models = {
