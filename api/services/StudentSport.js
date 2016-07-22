@@ -13,6 +13,11 @@ var schema = new Schema({
         ref: "SportsList",
         index: true
     },
+    student: {
+        type: Schema.Types.ObjectId,
+        ref: "Student",
+        index: true
+    },
     firstcatgeory: {
         type: Schema.Types.ObjectId,
         ref: "FirstCategory",

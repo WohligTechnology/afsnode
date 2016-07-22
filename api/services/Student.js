@@ -66,12 +66,20 @@ var models = {
         } else {
             student.timestamp = new Date();
             student.deleteStatus = false;
-            student.save(function(err, data2) {
+            Student.getLastId({}, function(err, data3) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
                 } else {
-                    callback(null, data2);
+                    student.sfaid = data3;
+                    student.save(function(err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback(null, data2);
+                        }
+                    });
                 }
             });
         }
@@ -115,7 +123,9 @@ var models = {
         });
     },
     deleteData: function(data, callback) {
-        Student.findOneAndRemove({}, function(err, deleted) {
+        Student.findOneAndRemove({
+            _id: data._id
+        }, function(err, deleted) {
             if (err) {
                 callback(err, null)
             } else {

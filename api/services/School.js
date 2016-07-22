@@ -18,11 +18,14 @@ var schema = new Schema({
     deleteStatus: Boolean,
     principal: String,
     sports: {
-        type: [{
-            _id: Schema.Types.ObjectId,
-            name: String,
-            sporttype: String
-        }]
+        type: {
+            year: String,
+            sports: [{
+                _id: Schema.Types.ObjectId,
+                name: String,
+                sporttype: String
+            }]
+        }
     },
     supported: Schema.Types.Mixed,
     blog: Schema.Types.Mixed,
@@ -61,10 +64,12 @@ var schema = new Schema({
         }],
         index: true
     },
-    schoolDept: {
-        type: Schema.Types.ObjectId,
-        ref: "SchoolDepartment",
-        index: true
+    department: {
+        year: String,
+        name: String,
+        designation: String,
+        contact: String,
+        email: String
     },
     timestamp: Date,
     representative: String,
@@ -88,12 +93,20 @@ var models = {
         } else {
             school.timestamp = new Date();
             school.deleteStatus = false;
-            school.save(function(err, data2) {
+            School.getLastId({}, function(err, data3) {
                 if (err) {
                     console.log(err);
                     callback(err, null);
                 } else {
-                    callback(null, data2);
+                    school.sfaid = data3;
+                    school.save(function(err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else {
+                            callback(null, data2);
+                        }
+                    });
                 }
             });
         }
@@ -137,7 +150,9 @@ var models = {
         });
     },
     deleteData: function(data, callback) {
-        School.findOneAndRemove({}, function(err, deleted) {
+        School.findOneAndRemove({
+            _id: data._id
+        }, function(err, deleted) {
             if (err) {
                 callback(err, null)
             } else {
