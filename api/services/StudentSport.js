@@ -6,43 +6,47 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-    year: Number,
-    gender: String,
+    year: String,
     sportslist: {
-        type: Schema.Types.ObjectId,
-        ref: "SportsList",
-        index: true
-    },
-    student: {
-        type: Schema.Types.ObjectId,
-        ref: "Student",
-        index: true
-    },
-    firstcatgeory: {
-        type: Schema.Types.ObjectId,
-        ref: "FirstCategory",
-        index: true
-    },
-    secondcategory: {
-        type: Schema.Types.ObjectId,
-        ref: "SecondCategory",
-        index: true
-    },
-    thirdcategory: {
-        type: Schema.Types.ObjectId,
-        ref: "ThirdCategory",
-        index: true
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String,
+            sporttype: String
+        }
     },
     agegroup: {
-        type: Schema.Types.ObjectId,
-        ref: "Agegroup",
-        index: true
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
+    },
+    firstcategory: {
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
+    },
+    secondcategory: {
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
+    },
+    thirdcategory: {
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
     },
     medals: Schema.Types.Mixed,
     school: {
-        type: Schema.Types.ObjectId,
-        ref: "School",
-        index: true
+        type: {
+            _id: Schema.Types.ObjectId,
+            name: String
+        }
+    },
+    student: {
+        type: Schema.Types.ObjectId
     }
 });
 module.exports = sails.mongoose.model('StudentSport', schema);
@@ -92,6 +96,17 @@ var models = {
     getOne: function(data, callback) {
         StudentSport.findOne({
             _id: data._id
+        }, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
+    getSports: function(data, callback) {
+        StudentSport.find({
+            student: data.student
         }, function(err, deleted) {
             if (err) {
                 callback(err, null);

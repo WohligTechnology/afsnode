@@ -17,16 +17,12 @@ var schema = new Schema({
     status: Boolean,
     deleteStatus: Boolean,
     principal: String,
-    sports: {
-        type: {
-            year: String,
-            sports: [{
-                _id: Schema.Types.ObjectId,
-                name: String,
-                sporttype: String
-            }]
-        }
-    },
+    sports: [{
+        _id: Schema.Types.ObjectId,
+        name: String,
+        sporttype: String,
+        year: String
+    }],
     supported: Schema.Types.Mixed,
     blog: Schema.Types.Mixed,
     medals: Schema.Types.Mixed,
@@ -196,16 +192,28 @@ var models = {
         });
     },
     getSchoolSport: function(data, callback) {
-        School.findOne({
-            _id: data._id
+        School.aggregate([{
+            $match: {
+                _id: sails.ObjectID(data._id)
+            }
         }, {
-            _id: 0,
-            sports: 1
-        }, function(err, deleted) {
+            $unwind: "$sports"
+        }, {
+            $match: {
+                "sports.year": data.year
+            }
+        }, {
+            $group: {
+                _id: null,
+                sports: {
+                    $addToSet: "$sports"
+                }
+            }
+        }]).exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
-            } else if (deleted && deleted.sports && deleted.sports.length > 0) {
-                callback(null, deleted.sports);
+            } else if (deleted && deleted.length > 0 && deleted[0].sports && deleted[0].sports.length > 0) {
+                callback(null, deleted[0].sports);
             } else {
                 callback([], null);
             }
