@@ -113,7 +113,8 @@ var models = {
     getStud: function(data, callback) {
         Student.find({}, {
             _id: 1,
-            name: 1
+            name: 1,
+            sfaid: 1
         }, function(err, deleted) {
             if (err) {
                 callback(err, null);

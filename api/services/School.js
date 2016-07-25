@@ -60,13 +60,13 @@ var schema = new Schema({
         }],
         index: true
     },
-    department: {
+    department: [{
         year: String,
         name: String,
         designation: String,
         contact: String,
         email: String
-    },
+    }],
     timestamp: Date,
     representative: String,
     numberOfSports: String,
@@ -136,7 +136,8 @@ var models = {
     getSchool: function(data, callback) {
         School.find({}, {
             _id: 1,
-            name: 1
+            name: 1,
+            sfaid:1
         }, function(err, deleted) {
             if (err) {
                 callback(err, null);
