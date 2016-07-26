@@ -42,7 +42,11 @@ var schema = new Schema({
         index: true
     },
     dateOfForm: Date,
-    timeOfForm: Date
+    hours: String,
+    minutes: String,
+    timer: String,
+    via: String,
+    payment: String
 });
 module.exports = sails.mongoose.model('Student', schema);
 var models = {
