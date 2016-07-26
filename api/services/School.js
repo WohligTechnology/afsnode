@@ -125,7 +125,9 @@ var models = {
         });
     },
     getAll: function(data, callback) {
-        School.find({}, {}, {}, function(err, deleted) {
+        School.find({}, {}, {}).sort({
+            sfaid: -1
+        }).exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
@@ -137,7 +139,7 @@ var models = {
         School.find({}, {
             _id: 1,
             name: 1,
-            sfaid:1
+            sfaid: 1
         }, function(err, deleted) {
             if (err) {
                 callback(err, null);

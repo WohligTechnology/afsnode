@@ -73,7 +73,9 @@ var models = {
         }
     },
     getAll: function(data, callback) {
-        Sport.find().lean().exec(function(err, found) {
+        Sport.find().sort({
+            _id: -1
+        }).lean().exec(function(err, found) {
             if (err) {
                 callback(err, null);
             } else {

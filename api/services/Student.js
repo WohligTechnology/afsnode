@@ -106,7 +106,9 @@ var models = {
         });
     },
     getAll: function(data, callback) {
-        Student.find({}, {}, {}, function(err, deleted) {
+        Student.find({}, {}, {}).sort({
+            sfaid: -1
+        }).exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {

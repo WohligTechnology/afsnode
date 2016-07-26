@@ -34,7 +34,9 @@ var models = {
         }
     },
     getAll: function(data, callback) {
-        SportsList.find({}, {}, {}, function(err, deleted) {
+        SportsList.find({}, {}, {}).sort({
+            _id: -1
+        }).exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
