@@ -44,11 +44,14 @@ process.chdir(__dirname);
             console.log("Database Connected to SFA");
         }
     });
-    sails.request = require('request');
-    sails.moment = require('moment');
-    sails._ = require('lodash');
-    sails.md5 = require('MD5');
-    sails.ObjectID = require('mongodb').ObjectId;
+    sails.request = require("request");
+    sails.moment = require("moment");
+    sails._ = require("lodash");
+    sails.md5 = require("MD5");
+    sails.ObjectID = require("mongodb").ObjectId;
+    sails.json2xls = require("json2xls");
+    sails.mime = require("mime");
+    sails.fs = require("fs");
     // Try to get `rc` dependency
     var rc;
     try {

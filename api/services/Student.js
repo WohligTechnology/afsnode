@@ -241,5 +241,27 @@ var models = {
                 }
             });
     },
+    findStud: function(data, callback) {
+        var matchObj = {
+            school: data.school,
+            lastname: data.lastname,
+            firstname: data.firstname,
+            middlename: data.middlename
+        };
+        if (!data.middlename || data.middlename === "") {
+            delete matchObj.middlename;
+        }
+        console.log(matchObj);
+        Student.findOne(matchObj).populate("school", "_id name").lean().exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (_.isEmpty(data2)) {
+                callback({ message: "Not found" }, null);
+            } else {
+                callback(null, data2);
+            }
+        });
+    },
 };
 module.exports = _.assign(module.exports, models);

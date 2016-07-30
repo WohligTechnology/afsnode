@@ -247,5 +247,34 @@ module.exports = {
                 data: "Invalid call"
             });
         }
+    },
+    findStud: function(req, res) {
+        if (req.body) {
+            if (req.body.school && req.body.lastname && req.body.firstname) {
+                Student.findStud(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
     }
 };

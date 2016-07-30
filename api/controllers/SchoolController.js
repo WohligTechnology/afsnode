@@ -276,5 +276,49 @@ module.exports = {
                 data: "Invalid call"
             });
         }
-    }
+    },
+    excelDownload: function(req, res) {
+        var arr = [];
+        var i = 0;
+        School.find().exec(function(err, found) {
+            // res.json({ data: found });
+            function callMe(num) {
+                var abc = found[num];
+                arr.push({
+                    "Id": abc.sfaid,
+                    "School Name": abc.name,
+                    "Board": abc.board,
+                    "Verified": abc.status,
+                    "Address": abc.address,
+                    "Location": abc.location,
+                    "Email Id": abc.email,
+                    "Contact": abc.contact,
+                    "SFA Representative": abc.representative,
+                    "No. of Sports": abc.numberOfSports,
+                    "Type": abc.paymentType,
+                    "Principal": abc.principal
+                });
+                num++;
+                if (num == found.length) {
+                    var xls = sails.json2xls(arr);
+                    var path = "./School Data.xlsx";
+                    sails.fs.writeFileSync(path, xls, 'binary');
+                    var excel = sails.fs.readFileSync(path);
+                    var mimetype = sails.mime.lookup(path);
+                    res.set('Content-Type', "application/octet-stream");
+                    res.set('Content-Disposition', "attachment;filename=" + path);
+                    res.send(excel);
+                    // res.json({ data: arr });
+                    setTimeout(function() {
+                        sails.fs.unlink(path, function(err) {
+                            console.log(err);
+                        });
+                    }, 10000);
+                } else {
+                    callMe(num);
+                }
+            }
+            callMe(0);
+        });
+    },
 };
