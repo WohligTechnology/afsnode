@@ -184,13 +184,101 @@ var models = {
         });
     },
     getOne: function(data, callback) {
+        // var newreturns = {};
+        // async.parallel([
+        // function(callback) {
         School.findOne({
             _id: data._id
-        }).exec(function(err, deleted) {
+        }).lean().exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
-                callback(null, deleted);
+                newreturns = deleted;
+                callback(null, newreturns);
+            }
+        });
+        //     },
+        //     function(callback) {
+        //         StudentSport.find({
+        //             "school._id": data._id
+        //         }).populate("student").exec(function(err, data3) {
+        //             if (err) {
+        //                 callback(err, null);
+        //             } else {
+        //                 newreturns.student = data3;
+        //                 callback(null, newreturns);
+        //             }
+        //         });
+        //     }
+        // ], function(err, found) {
+        //     if (err) {
+        //         callback(err, null);
+        //     } else {
+        //         callback(null, newreturns);
+        //     }
+        // });
+    },
+    filterStud: function(data, callback) {
+        var matchObj = {};
+        matchObj = {
+            "school._id": sails.ObjectID(data._id),
+            year: data.year,
+            "student.gender": data.gender,
+            "agegroup.name": data.agegroup
+        };
+        if (!data.gender || data.gender == "All") {
+            delete matchObj["student.gender"];
+        }
+        if (!data.agegroup || data.agegroup == "All") {
+            delete matchObj["agegroup.name"];
+        }
+        console.log(matchObj);
+        StudentSport.aggregate([{
+            $lookup: {
+                from: "students",
+                localField: "student",
+                foreignField: "_id",
+                as: "student"
+            }
+        }, {
+            $unwind: "$student"
+        }, {
+            $match: matchObj
+        }, {
+            $group: {
+                _id: null,
+                student: {
+                    $addToSet: "$student"
+                },
+                schoolid: {
+                    $addToSet: "$school._id"
+                }
+            }
+        }, {
+            $unwind: "$schoolid"
+        }, {
+            $lookup: {
+                from: "schools",
+                localField: "schoolid",
+                foreignField: "_id",
+                as: "school"
+            }
+        }, {
+            $unwind: "$school"
+        }, {
+            $project: {
+                _id: 0,
+                student: 1,
+                school: 1
+            }
+        }]).exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (data2 && data2.length > 0) {
+                callback(null, data2[0]);
+            } else {
+                callback({}, null);
             }
         });
     },
@@ -288,5 +376,105 @@ var models = {
                 }
             });
     },
+    getFirstList: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        async.parallel([
+            function(callback) {
+                School.find().sort({
+                    totalPoints: -1
+                }).limit(20).exec(function(err, deleted) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        newreturns.data = deleted;
+                        callback(null, deleted);
+                    }
+                });
+            },
+            function(callback) {
+                School.count().exec(function(err, deleted) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        newreturns.count = deleted;
+                        callback(null, newreturns);
+                    }
+                });
+            }
+        ], function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    },
+    searchSchool: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        var check = new RegExp(data.search, "i");
+        data.pagenumber = parseInt(data.pagenumber);
+        data.pagesize = parseInt(data.pagesize);
+        async.parallel([
+            function(callback) {
+                School.count({
+                    $or: [{
+                        name: {
+                            '$regex': check
+                        }
+                    }, {
+                        safid: {
+                            '$regex': check
+                        }
+                    }]
+                }).exec(function(err, number) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else if (number && number != "") {
+                        newreturns.total = number;
+                        newreturns.totalpages = Math.ceil(number / data.pagesize);
+                        callback(null, newreturns);
+                    } else {
+                        callback(null, newreturns);
+                    }
+                });
+            },
+            function(callback) {
+                School.find({
+                    $or: [{
+                        name: {
+                            '$regex': check
+                        }
+                    }, {
+                        safid: {
+                            '$regex': check
+                        }
+                    }]
+                }).sort({ name: 1 }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).exec(function(err, data2) {
+                    if (err) {
+                        console.log(err);
+                        callback(err, null);
+                    } else if (data2 && data2.length > 0) {
+                        newreturns.data = data2;
+                        callback(null, newreturns);
+                    } else {
+                        callback(null, newreturns);
+                    }
+                });
+            }
+        ], function(err, data4) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (data4) {
+                callback(null, newreturns);
+            } else {
+                callback(null, newreturns);
+            }
+        });
+    }
 };
 module.exports = _.assign(module.exports, models);

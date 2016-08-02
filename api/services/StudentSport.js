@@ -9,39 +9,51 @@ var schema = new Schema({
     year: String,
     sportslist: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String,
             sporttype: String
         }
     },
     agegroup: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String
         }
     },
     firstcategory: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String
         }
     },
     secondcategory: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String
         }
     },
     thirdcategory: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String
         }
     },
     medals: Schema.Types.Mixed,
     school: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
+            },
             name: String
         }
     },

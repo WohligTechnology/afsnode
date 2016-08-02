@@ -248,6 +248,57 @@ module.exports = {
             });
         }
     },
+    countStudent: function(req, res) {
+        if (req.body) {
+            Student.countStudent(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
+    searchStudent: function(req, res) {
+        if (req.body) {
+            if (req.body.pagesize && req.body.pagenumber) {
+                Student.searchStudent(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     findStud: function(req, res) {
         if (req.body) {
             if (req.body.school && req.body.lastname && req.body.firstname) {
