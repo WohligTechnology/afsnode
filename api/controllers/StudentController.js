@@ -211,7 +211,7 @@ module.exports = {
     },
     getLimited: function(req, res) {
         if (req.body) {
-            if (req.body.pagesize && req.body.pagenumber) {
+            if (req.body.pagenumber) {
                 Student.findLimited(req.body, res.callback);
             } else {
                 res.json({

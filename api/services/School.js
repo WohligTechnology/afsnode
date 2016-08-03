@@ -415,66 +415,64 @@ var models = {
         var newreturns = {};
         newreturns.data = [];
         var check = new RegExp(data.search, "i");
+        var checkid = parseInt(data.search);
+        var orObj = {
+            $or: [{
+                name: {
+                    '$regex': check
+                }
+            }, {
+                sfaid: {
+                    '$in': [checkid]
+                }
+            }]
+        };
+        console.log(checkid);
+        if (checkid == NaN) {
+            console.log('test');
+            delete orObj["$or"][0];
+        }
+        console.log(orObj);
         data.pagenumber = parseInt(data.pagenumber);
         data.pagesize = parseInt(data.pagesize);
-        async.parallel([
-            function(callback) {
-                School.count({
-                    $or: [{
-                        name: {
-                            '$regex': check
-                        }
-                    }, {
-                        safid: {
-                            '$regex': check
-                        }
-                    }]
-                }).exec(function(err, number) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else if (number && number != "") {
-                        newreturns.total = number;
-                        newreturns.totalpages = Math.ceil(number / data.pagesize);
-                        callback(null, newreturns);
-                    } else {
-                        callback(null, newreturns);
-                    }
-                });
-            },
-            function(callback) {
-                School.find({
-                    $or: [{
-                        name: {
-                            '$regex': check
-                        }
-                    }, {
-                        safid: {
-                            '$regex': check
-                        }
-                    }]
-                }).sort({ name: 1 }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).exec(function(err, data2) {
-                    if (err) {
-                        console.log(err);
-                        callback(err, null);
-                    } else if (data2 && data2.length > 0) {
-                        newreturns.data = data2;
-                        callback(null, newreturns);
-                    } else {
-                        callback(null, newreturns);
-                    }
-                });
-            }
-        ], function(err, data4) {
-            if (err) {
-                console.log(err);
-                callback(err, null);
-            } else if (data4) {
-                callback(null, newreturns);
-            } else {
-                callback(null, newreturns);
-            }
-        });
+        // async.parallel([
+        //     function(callback) {
+        //         School.count(orObj).exec(function(err, number) {
+        //             if (err) {
+        //                 console.log(err);
+        //                 callback(err, null);
+        //             } else if (number && number != "") {
+        //                 newreturns.total = number;
+        //                 newreturns.totalpages = Math.ceil(number / data.pagesize);
+        //                 callback(null, newreturns);
+        //             } else {
+        //                 callback(null, newreturns);
+        //             }
+        //         });
+        //     },
+        //     function(callback) {
+        //         School.find(orObj).sort({ name: 1 }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).exec(function(err, data2) {
+        //             if (err) {
+        //                 console.log(err);
+        //                 callback(err, null);
+        //             } else if (data2 && data2.length > 0) {
+        //                 newreturns.data = data2;
+        //                 callback(null, newreturns);
+        //             } else {
+        //                 callback(null, newreturns);
+        //             }
+        //         });
+        //     }
+        // ], function(err, data4) {
+        //     if (err) {
+        //         console.log(err);
+        //         callback(err, null);
+        //     } else if (data4) {
+        //         callback(null, newreturns);
+        //     } else {
+        //         callback(null, newreturns);
+        //     }
+        // });
     }
 };
 module.exports = _.assign(module.exports, models);
