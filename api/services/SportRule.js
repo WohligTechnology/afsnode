@@ -6,7 +6,10 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-    name: String,
+    sportid: {
+        type: Schema.Types.ObjectId,
+        ref: "SportsList"
+    },
     banner: String,
     year: String,
     fromDate: Date,
@@ -18,7 +21,6 @@ var schema = new Schema({
     eligibilityContent: String,
     eligibilityTable: Schema.Types.Mixed,
     scheduleLeader: String,
-    scheduleDraw: Schema.Types.Mixed,
     yearBeforeContent: String,
     winnerTable: Schema.Types.Mixed,
     teamTable: Schema.Types.Mixed,
@@ -28,10 +30,18 @@ var schema = new Schema({
     videos: [{
         name: String
     }],
-    featured: [{
-        sfaid: Number
-    }],
+    featured: {
+        type: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: "Student"
+            },
+            name: String,
+            sfaid: Number
+        }]
+    },
     about: String,
+    trainingname: String,
     training: String,
     trainingLogo: String,
     trainingLink: String,
@@ -65,7 +75,7 @@ var models = {
         }
     },
     getAll: function(data, callback) {
-        SportRule.find({}, {}, {}, function(err, deleted) {
+        SportRule.find().populate("sportid").exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
@@ -87,7 +97,7 @@ var models = {
     getOne: function(data, callback) {
         SportRule.findOne({
             _id: data._id
-        }, function(err, deleted) {
+        }).populate("sportid").exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {

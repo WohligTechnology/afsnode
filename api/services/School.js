@@ -325,22 +325,32 @@ var models = {
     findLimited: function(data, callback) {
         var newreturns = {};
         newreturns.data = [];
-        var check = new RegExp(data.search, "i");
         data.pagenumber = parseInt(data.pagenumber);
-        data.pagesize = parseInt(data.pagesize);
+        var checkObj = {};
+        if (data.sfaid) {
+            data.sfaid = parseInt(data.sfaid);
+            checkObj = {
+                sfaid: data.sfaid
+            };
+        } else if (data.name) {
+            var check = new RegExp(data.name, "i");
+            checkObj = {
+                name: {
+                    '$regex': check
+                }
+            };
+        } else {
+            checkObj = {};
+        }
         async.parallel([
                 function(callback) {
-                    School.count({
-                        name: {
-                            '$regex': check
-                        }
-                    }).exec(function(err, number) {
+                    School.count(checkObj).exec(function(err, number) {
                         if (err) {
                             console.log(err);
                             callback(err, null);
                         } else if (number && number != "") {
                             newreturns.total = number;
-                            newreturns.totalpages = Math.ceil(number / data.pagesize);
+                            newreturns.totalpages = Math.ceil(number / 20);
                             callback(null, newreturns);
                         } else {
                             callback(null, newreturns);
@@ -348,11 +358,9 @@ var models = {
                     });
                 },
                 function(callback) {
-                    School.find({
-                        name: {
-                            '$regex': check
-                        }
-                    }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).exec(function(err, data2) {
+                    School.find(checkObj).sort({
+                        sfaid: -1
+                    }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
                         if (err) {
                             console.log(err);
                             callback(err, null);
