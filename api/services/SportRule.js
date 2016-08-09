@@ -20,16 +20,13 @@ var schema = new Schema({
     ageGroupTable: Schema.Types.Mixed,
     eligibilityContent: String,
     eligibilityTable: Schema.Types.Mixed,
-    scheduleLeader: String,
     yearBeforeContent: String,
     winnerTable: Schema.Types.Mixed,
     teamTable: Schema.Types.Mixed,
-    images: [{
-        name: String
-    }],
-    videos: [{
-        name: String
-    }],
+    // images:  [String],
+    // videos: [{
+    //     name: String
+    // }],
     featured: {
         type: [{
             _id: {
@@ -40,19 +37,22 @@ var schema = new Schema({
             sfaid: Number
         }]
     },
+    featuredTeam: {
+        type: [{
+            _id: {
+                type: Schema.Types.ObjectId,
+                ref: "Team"
+            },
+            name: String,
+            sfaid: Number
+        }]
+    },
     about: String,
-    trainingname: String,
-    training: String,
-    trainingLogo: String,
-    trainingLink: String,
     form: String
 });
 module.exports = sails.mongoose.model('SportRule', schema);
 var models = {
     saveData: function(data, callback) {
-        if (data.password && data.password != "") {
-            data.password = sails.md5(data.password);
-        }
         var sportrule = this(data);
         if (data._id) {
             this.findOneAndUpdate({
