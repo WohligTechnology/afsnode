@@ -255,6 +255,23 @@ module.exports = {
             });
         }
     },
+    schoolSearch: function(req, res) {
+        if (req.body) {
+            if (req.body.pagenumber) {
+                School.schoolSearch(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     getLastId: function(req, res) {
         if (req.body) {
             School.getLastId(req.body, function(err, respo) {

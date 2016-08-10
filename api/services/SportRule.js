@@ -12,8 +12,11 @@ var schema = new Schema({
     },
     banner: String,
     year: String,
+    lastDate: Date,
+    venue: String,
     fromDate: Date,
     toDate: Date,
+    federationLogo: String,
     dateContent: String,
     rules: String,
     ageGroupContent: String,
@@ -43,8 +46,7 @@ var schema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: "Team"
             },
-            name: String,
-            sfaid: Number
+            name: String
         }]
     },
     about: String,

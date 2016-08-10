@@ -23,7 +23,8 @@ var schema = new Schema({
         sporttype: String,
         year: String
     }],
-    supported: Schema.Types.Mixed,
+    supporterName: String,
+    supporterLogo: String,
     blog: Schema.Types.Mixed,
     medals: Schema.Types.Mixed,
     totalPoints: Number,
@@ -349,6 +350,68 @@ var models = {
                             console.log(err);
                             callback(err, null);
                         } else if (number && number != "") {
+                            newreturns.total = number;
+                            newreturns.totalpages = Math.ceil(number / 20);
+                            callback(null, newreturns);
+                        } else {
+                            callback(null, newreturns);
+                        }
+                    });
+                },
+                function(callback) {
+                    School.find(checkObj).sort({
+                        sfaid: -1
+                    }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else if (data2 && data2.length > 0) {
+                            newreturns.data = data2;
+                            callback(null, newreturns);
+                        } else {
+                            callback(null, newreturns);
+                        }
+                    });
+                }
+            ],
+            function(err, data4) {
+                if (err) {
+                    console.log(err);
+                    callback(err, null);
+                } else if (data4) {
+                    callback(null, newreturns);
+                } else {
+                    callback(null, newreturns);
+                }
+            });
+    },
+    schoolSearch: function(data, callback) {
+        var newreturns = {};
+        newreturns.data = [];
+        data.pagenumber = parseInt(data.pagenumber);
+        var checkObj = {};
+        if (data.sfaid) {
+            data.sfaid = parseInt(data.sfaid);
+            checkObj = {
+                sfaid: data.sfaid
+            };
+        } else if (data.name) {
+            var check = new RegExp(data.name, "i");
+            checkObj = {
+                name: {
+                    '$regex': check
+                }
+            };
+        } else {
+            checkObj = {};
+        }
+        async.parallel([
+                function(callback) {
+                    School.count(checkObj).exec(function(err, number) {
+                        if (err) {
+                            console.log(err);
+                            callback(err, null);
+                        } else if (number && number !== "") {
                             newreturns.total = number;
                             newreturns.totalpages = Math.ceil(number / 20);
                             callback(null, newreturns);
