@@ -1,7 +1,7 @@
 /**
  * Booking.js
  *
- * @description :: TODO: You might write a short summary of how this model works and what it represents here.
+ * @description :: TODO: You might write a short summary of how this model works and what it represents here which I know you don't fucking want to.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;

@@ -6,11 +6,45 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-    name: String,
-    accesslevel: String,
-    email: String,
-    password: String,
-    status: Boolean
+  school: {
+      type: {
+          _id: {
+              type: Schema.Types.ObjectId
+          },
+          name: String
+      }
+  },
+  sport : {
+    type : {
+      _id : {
+        type: Schema.Types.ObjectId
+      },
+      name : String
+    }
+  },
+  category : {
+    type : String,
+    default :  ""
+  },
+  ageGroupContent: String,
+  ageGroupTable: Schema.Types.Mixed,
+  gender: String,
+  coach : {
+      type: {
+          _id: {
+              type: Schema.Types.ObjectId
+          },
+          name: String
+      }
+  },
+  players:[ {
+      type: {
+          _id: {
+              type: Schema.Types.ObjectId
+          },
+          name: String
+      }
+  }]
 });
 module.exports = sails.mongoose.model('Team', schema);
 var models = {
@@ -51,9 +85,9 @@ var models = {
             _id: data._id
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },

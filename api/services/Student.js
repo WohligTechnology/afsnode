@@ -134,9 +134,9 @@ var models = {
             _id: data._id
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
@@ -372,7 +372,7 @@ var models = {
             }
             if (found && found.length > 0) {
                 exit++;
-                if (data.student.length != 0) {
+                if (data.student.length !== 0) {
                     var nedata;
                     nedata = _.remove(found, function(n) {
                         var flag = false;
@@ -380,7 +380,7 @@ var models = {
                             if (n1.name == n.name) {
                                 flag = true;
                             }
-                        })
+                        });
                         return flag;
                     });
                 }
