@@ -99,6 +99,17 @@ var models = {
             }
         });
     },
+    getSportforTeam: function(data, callback) {
+        Sport.findOne({
+            name: data._id
+        }).lean().exec(function(err, found) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, found);
+            }
+        });
+    },
     getSports: function(data, callback) {
         var matchobj = {
             "sportslist._id": data.sportslist,

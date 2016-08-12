@@ -48,7 +48,7 @@ process.chdir(__dirname);
     sails.moment = require("moment");
     sails._ = require("lodash");
     sails.md5 = require("MD5");
-    sails.ObjectID = require("mongodb").ObjectId;
+    sails.ObjectID = require("sails-mongo/node_modules/mongodb").ObjectId;
     sails.json2xls = require("json2xls");
     sails.mime = require("mime");
     sails.fs = require("fs");
