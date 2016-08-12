@@ -38,12 +38,8 @@ var schema = new Schema({
       }
   },
   players:[ {
-      type: {
-          _id: {
-              type: Schema.Types.ObjectId
-          },
-          name: String
-      }
+      type:Schema.Types.ObjectId,
+      ref: 'Student'
   }]
 });
 module.exports = sails.mongoose.model('Team', schema);

@@ -7,14 +7,8 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
     gender: String,
-    minPlayers: {
-        boys: Number,
-        girls: Number
-    },
-    maxPlayers: {
-        boys: Number,
-        girls: Number
-    },
+    minPlayers: Number,
+    maxPlayers:Number,
     sportslist: {
         type: {
             _id: Schema.Types.ObjectId,
