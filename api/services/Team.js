@@ -6,46 +6,62 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-  school: {
-      type: {
-          _id: {
-              type: Schema.Types.ObjectId
-          },
-          name: String
-      }
-  },
-  sport : {
-    type : {
-      _id : {
-        type: Schema.Types.ObjectId
-      },
-      name : String
-    }
-  },
-  category : {
-    type : String,
-    default :  ""
-  },
-  ageGroupContent: String,
-  ageGroupTable: Schema.Types.Mixed,
-  gender: String,
-  coach : {
-      type: {
-          _id: {
-              type: Schema.Types.ObjectId
-          },
-          name: String
-      }
-  },
-  players:[ {
-      type:Schema.Types.ObjectId,
-      ref: 'Student'
-  }]
+    school: {
+        type: Schema.Types.ObjectId,
+        ref: "School",
+        index: true
+    },
+    name: String,
+    sport: {
+        type: Schema.Types.ObjectId,
+        ref: "SportsList",
+        index: true
+    },
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: "FirstCategory",
+        index: true
+    },
+    agegroup: {
+        type: Schema.Types.ObjectId,
+        ref: "Agegroup",
+        index: true
+    },
+    captain: {
+        type: Schema.Types.ObjectId,
+        ref: "Student",
+        index: true
+    },
+    gender: String,
+    coach: String,
+    players: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Student',
+        index: true
+    }]
 });
 module.exports = sails.mongoose.model('Team', schema);
 var models = {
     saveData: function(data, callback) {
         var team = this(data);
+        var matchObj = {};
+        if (data.category && data.category == "") {
+            delete data.category;
+            matchObj = {
+                school: data.school,
+                sport: data.sport,
+                agegroup: data.agegroup,
+                gender: data.gender
+            };
+        } else {
+            matchObj = {
+                school: data.school,
+                sport: data.sport,
+                agegroup: data.agegroup,
+                gender: data.gender,
+                category: data.category
+            };
+        }
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -57,15 +73,34 @@ var models = {
                 }
             });
         } else {
-            team.save(function(err, data2) {
+            Team.update(matchObj, {
+                $set: {
+                    name: data.name + " 'A'"
+                }
+            }).exec(function(err, updated) {
                 if (err) {
+                    console.log(err);
                     callback(err, null);
+                } else if (updated.nModified > 0) {
+                    team.name = data.name + " 'B'";
+                    team.save(function(err, data2) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data2);
+                        }
+                    });
                 } else {
-                    callback(null, data2);
+                    team.save(function(err, data2) {
+                        if (err) {
+                            callback(err, null);
+                        } else {
+                            callback(null, data2);
+                        }
+                    });
                 }
             });
         }
-
     },
     getAll: function(data, callback) {
         Team.find({}, {}, {}, function(err, deleted) {
