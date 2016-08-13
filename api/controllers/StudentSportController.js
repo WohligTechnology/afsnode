@@ -216,6 +216,10 @@ module.exports = {
                 var abc = found[num];
                 var sport = [];
                 var excel = {};
+                _.each(abc.sportslist, function(x) {
+                    x = x.name + ", ";
+                    sport += x;
+                });
                 excel = {
                     "Student Id": abc.student[0].sfaid,
                     "Student Name": abc.student[0].name,
@@ -224,10 +228,6 @@ module.exports = {
                     "Gender": abc.student[0].gender,
                     "Sports": sport
                 };
-                _.each(abc.sportslist, function(x) {
-                    x = x.name + ", ";
-                    sport.push(x)
-                });
                 if (abc.agegroup && abc.agegroup.length > 0) {
                     excel["Age group"] = abc.agegroup[0].name
                 }
