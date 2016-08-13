@@ -172,78 +172,86 @@ module.exports = {
                 callMe(0);
             }
         });
-    }
+    },
+    excelDownload: function(req, res) {
+        var arr = [];
+        StudentSport.aggregate([{
+            $lookup: {
+                from: "students",
+                localField: "student",
+                foreignField: "_id",
+                as: "student"
+            }
+        }, {
+            $lookup: {
+                from: "schools",
+                localField: "school._id",
+                foreignField: "_id",
+                as: "school"
+            }
+        }, {
+            $unwind: "$student"
+        }, {
+            $unwind: "$school"
+        }, {
+            $group: {
+                _id: "$student._id",
+                student: {
+                    $addToSet: "$student"
+                },
+                sportslist: {
+                    $addToSet: "$sportslist"
+                },
+                school: {
+                    $addToSet: "$school"
+                },
+                agegroup: {
+                    $addToSet: "$agegroup"
+                }
+            }
+        }]).exec(function(err, found) {
+            // res.json({ data: found });
 
-    // excelDownload: function(req, res) {
-    //     var arr = [];
-    //     var i = 0;
-    //     StudentSport.aggregate([{
-    //         $lookup: {
-    //             from: "students",
-    //             localField: "student",
-    //             foreignField: "_id",
-    //             as: "students"
-    //         }
-    //     }, {
-    //         $unwind: "$students"
-    //     }, {
-    //         $group: {
-    //             _id: "$students._id",
-    //             students: {
-    //                 $addToSet: "$students"
-    //             },
-    //             sportslist: {
-    //                 $push: "$sportslist"
-    //             },
-    //             agegroup: {
-    //                 $push: "$agegroup"
-    //             },
-    //             school: {
-    //                 $push: "$school"
-    //             },
-    //             year: {
-    //                 $addToSet: "$year"
-    //             }
-    //         }
-    //     }]).exec(function(err, found) {
-    //         res.json({ data: found });
-    //         // function callMe(num) {
-    //         //     var abc = found[num];
-    //         //     arr.push({
-    //         //         "Id": abc.sfaid,
-    //         //         "School Name": abc.name,
-    //         //         "Board": abc.board,
-    //         //         "Verified": abc.status,
-    //         //         "Address": abc.address,
-    //         //         "Location": abc.location,
-    //         //         "Email Id": abc.email,
-    //         //         "Contact": abc.contact,
-    //         //         "SFA Representative": abc.representative,
-    //         //         "No. of Sports": abc.numberOfSports,
-    //         //         "Type": abc.paymentType,
-    //         //         "Principal": abc.principal
-    //         //     });
-    //         //     num++;
-    //         //     if (num == found.length) {
-    //         //         var xls = sails.json2xls(arr);
-    //         //         var path = "./School Data.xlsx";
-    //         //         sails.fs.writeFileSync(path, xls, 'binary');
-    //         //         var excel = sails.fs.readFileSync(path);
-    //         //         var mimetype = sails.mime.lookup(path);
-    //         //         res.set('Content-Type', "application/octet-stream");
-    //         //         res.set('Content-Disposition', "attachment;filename=" + path);
-    //         //         res.send(excel);
-    //         //         // res.json({ data: arr });
-    //         //         setTimeout(function() {
-    //         //             sails.fs.unlink(path, function(err) {
-    //         //                 console.log(err);
-    //         //             });
-    //         //         }, 10000);
-    //         //     } else {
-    //         //         callMe(num);
-    //         //     }
-    //         // }
-    //         // callMe(0);
-    //     });
-    // },
+            function callMe(num) {
+                var abc = found[num];
+                var sport = [];
+                var excel = {};
+                excel = {
+                    "Student Id": abc.student[0].sfaid,
+                    "Student Name": abc.student[0].name,
+                    "School Id": abc.school[0].sfaid,
+                    "School Name": abc.school[0].name,
+                    "Gender": abc.student[0].gender,
+                    "Sports": sport
+                };
+                _.each(abc.sportslist, function(x) {
+                    x = x.name + ", ";
+                    sport.push(x)
+                });
+                if (abc.agegroup && abc.agegroup.length > 0) {
+                    excel["Age group"] = abc.agegroup[0].name
+                }
+                arr.push(excel);
+                num++;
+                if (num == found.length) {
+                    var xls = sails.json2xls(arr);
+                    var path = "./Student Data.xlsx";
+                    sails.fs.writeFileSync(path, xls, 'binary');
+                    var excel = sails.fs.readFileSync(path);
+                    var mimetype = sails.mime.lookup(path);
+                    res.set('Content-Type', "application/octet-stream");
+                    res.set('Content-Disposition', "attachment;filename=" + path);
+                    res.send(excel);
+                    setTimeout(function() {
+                        sails.fs.unlink(path, function(err) {
+                            console.log(err);
+                        });
+                    }, 10000);
+                } else {
+                    callMe(num);
+                }
+            }
+            callMe(0);
+        });
+    },
 };
