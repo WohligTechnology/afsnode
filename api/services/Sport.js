@@ -82,9 +82,9 @@ var models = {
             _id: data._id
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
@@ -148,6 +148,33 @@ var models = {
                 callback([], null);
             }
         });
+    },
+    getMinMaxForTeam :function (data,callback) {
+      var matchobj = {};
+      if(data.category){
+        matchobj = {
+          "sportslist._id":data.sport,
+          "firstcategory._id":data.category,
+          "agegroup._id":data.agegroup,
+          "gender":data.gender
+
+        };
+      }else{
+        matchobj = {
+          "sportslist._id":data.sport,
+          "agegroup._id":data.agegroup,
+          "gender":data.gender
+        };
+      }
+      Sport.find(matchobj).exec(function (err,data2) {
+        if(err){
+          callback(err,null);
+        }else if(data2){
+          callback(null,data2);
+        }else{
+          callback(null,null);
+        }
+      });
     }
 };
 module.exports = _.assign(module.exports, models);

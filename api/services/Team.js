@@ -45,7 +45,7 @@ var models = {
     saveData: function(data, callback) {
         var team = this(data);
         var matchObj = {};
-        if (data.category && data.category == "") {
+        if (data.category && data.category === "") {
             delete data.category;
             matchObj = {
                 school: data.school,
@@ -110,6 +110,59 @@ var models = {
                 callback(null, deleted);
             }
         });
+    },
+    findLimited : function (data,callback) {
+      var newreturns = {};
+      newreturns.data = [];
+      data.pagenumber = parseInt(data.pagenumber);
+      var checkObj = {};
+
+          var check = new RegExp(data.name, "i");
+          checkObj = {
+              name: {
+                  '$regex': check
+              }
+          };
+
+      async.parallel([
+              function(callback) {
+                  Team.count(checkObj).exec(function(err, number) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else if (number && number != "") {
+                          newreturns.total = number;
+                          newreturns.totalpages = Math.ceil(number / 20);
+                          callback(null, newreturns);
+                      } else {
+                          callback(null, newreturns);
+                      }
+                  });
+              },
+              function(callback) {
+                  Team.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('players',"_id name ").populate("school","name").populate('sport',"name").populate("agegroup","name").populate("category","name").exec(function(err, data2) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else if (data2 && data2.length > 0) {
+                          newreturns.data = data2;
+                          callback(null, newreturns);
+                      } else {
+                          callback(null, newreturns);
+                      }
+                  });
+              }
+          ],
+          function(err, data4) {
+              if (err) {
+                  console.log(err);
+                  callback(err, null);
+              } else if (data4) {
+                  callback(null, newreturns);
+              } else {
+                  callback(null, newreturns);
+              }
+          });
     },
     deleteData: function(data, callback) {
         Team.findOneAndRemove({

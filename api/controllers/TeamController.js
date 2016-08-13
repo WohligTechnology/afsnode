@@ -6,7 +6,7 @@
  */
 module.exports = {
     saveData: function(req, res) {
-        if (req.body) { 
+        if (req.body) {
             Team.saveData(req.body, function(err, respo) {
                 if (err) {
                     res.json({
@@ -24,6 +24,23 @@ module.exports = {
             res.json({
                 value: false,
                 data: "Invalid call"
+            });
+        }
+    },
+    getLimited: function(req, res) {
+        if (req.body) {
+            if (req.body.pagenumber) {
+                Team.findLimited(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
             });
         }
     },
@@ -51,7 +68,7 @@ module.exports = {
     },
     deleteData: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 Team.deleteData(req.body, function(err, respo) {
                     if (err) {
                         res.json({
