@@ -73,7 +73,7 @@ module.exports = {
     },
     deleteData: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 StudentSport.deleteData(req.body, function(err, respo) {
                     if (err) {
                         res.json({
@@ -253,7 +253,7 @@ module.exports = {
                     "Sports": sport
                 };
                 if (abc.agegroup && abc.agegroup.length > 0) {
-                    excel["Age Group"] = abc.agegroup[0].name
+                    excel["Age Group"] = abc.agegroup[0].name;
                 } else {
                     excel["Age Group"] = null;
                 }
@@ -340,7 +340,7 @@ module.exports = {
                     "Sports": sport
                 };
                 if (abc.agegroup && abc.agegroup.length > 0) {
-                    excel["Age Group"] = abc.agegroup[0]
+                    excel["Age Group"] = abc.agegroup[0];
                 } else {
                     excel["Age Group"] = null;
                 }

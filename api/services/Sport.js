@@ -231,7 +231,41 @@ var models = {
             }
             if (found && found.length > 0) {
                 exit++;
-                
+
+                returns = returns.concat(found);
+                callback2(exit, exitup, returns);
+            } else {
+                callback([], null);
+            }
+        });
+    },
+    findForDropCaptainTeam: function(data, callback) {
+        var returns = [];
+        var exit = 0;
+        var exitup = 1;
+        var check = new RegExp(data.search, "i");
+
+        function callback2(exit, exitup, data) {
+            if (exit == exitup) {
+                callback(null, data);
+            }
+        }
+        Student.find({
+            name: {
+                '$regex': check
+            }
+        }, {
+            name: 1,
+            _id: 1,
+            sfaid: 1
+        }).limit(10).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            }
+            if (found && found.length > 0) {
+                exit++;
+
                 returns = returns.concat(found);
                 callback2(exit, exitup, returns);
             } else {
