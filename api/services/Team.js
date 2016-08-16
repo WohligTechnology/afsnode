@@ -62,6 +62,7 @@ var models = {
                 category: data.category
             };
         }
+        console.log(matchObj);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id

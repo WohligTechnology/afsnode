@@ -110,6 +110,35 @@ var models = {
             }
         });
     },
+    filterCategory: function(data, callback) {
+        var matchObj = {
+            "sportslist._id": data.sportList
+        };
+        console.log(matchObj);
+        Sport.aggregate([{
+            $match: matchObj
+        }, {
+            $group: {
+                _id: null,
+                firstcategory: {
+                    $addToSet: {
+                      _id:'$firstcategory._id',
+                    name:'$firstcategory.name'
+                    }
+                }
+            }
+        }]).exec(function(err, data2) {
+          console.log(data2);
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (data2 && data2.length > 0) {
+                callback(null, data2);
+            } else {
+                callback({}, null);
+            }
+        });
+    },
     getSports: function(data, callback) {
         var matchobj = {
             "sportslist._id": data.sportslist,
@@ -175,6 +204,40 @@ var models = {
           callback(null,null);
         }
       });
+    },
+    findForDropSingle: function(data, callback) {
+        var returns = [];
+        var exit = 0;
+        var exitup = 1;
+        var check = new RegExp(data.search, "i");
+
+        function callback2(exit, exitup, data) {
+            if (exit == exitup) {
+                callback(null, data);
+            }
+        }
+        Student.find({
+            name: {
+                '$regex': check
+            }
+        }, {
+            name: 1,
+            _id: 1,
+            sfaid: 1
+        }).limit(10).exec(function(err, found) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            }
+            if (found && found.length > 0) {
+                exit++;
+                
+                returns = returns.concat(found);
+                callback2(exit, exitup, returns);
+            } else {
+                callback([], null);
+            }
+        });
     }
 };
 module.exports = _.assign(module.exports, models);
