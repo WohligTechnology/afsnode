@@ -209,17 +209,41 @@ module.exports = {
                     $addToSet: "$agegroup"
                 }
             }
+        }, {
+            $project: {
+                _id: 1,
+                student: 1,
+                school: 1,
+                sportslist: {
+                    $cond: [{
+                            $eq: ["$sportslist", []]
+                        },
+                        {}, "$sportslist"
+                    ]
+                },
+                agegroup: {
+                    $cond: [{
+                            $eq: ["$agegroup", []]
+                        },
+                        {}, "$agegroup"
+                    ]
+                }
+            }
         }]).exec(function(err, found) {
             // res.json({ data: found });
 
             function callMe(num) {
                 var abc = found[num];
-                var sport = [];
+                var sport = "";
                 var excel = {};
-                _.each(abc.sportslist, function(x) {
-                    x = x.name + ", ";
-                    sport += x;
-                });
+                if (abc.sportslist && abc.sportslist.length > 0) {
+                    _.each(abc.sportslist, function(x) {
+                        x = x.name + ", ";
+                        sport += x;
+                    });
+                } else {
+                    sport = null;
+                }
                 excel = {
                     "Student Id": abc.student[0].sfaid,
                     "Student Name": abc.student[0].name,
@@ -229,7 +253,9 @@ module.exports = {
                     "Sports": sport
                 };
                 if (abc.agegroup && abc.agegroup.length > 0) {
-                    excel["Age group"] = abc.agegroup[0].name
+                    excel["Age Group"] = abc.agegroup[0].name
+                } else {
+                    excel["Age Group"] = null;
                 }
                 arr.push(excel);
                 num++;
@@ -254,4 +280,91 @@ module.exports = {
             callMe(0);
         });
     },
+    excelDownload2: function(req, res) {
+        Student.aggregate([{
+            $lookup: {
+                from: "studentsports",
+                localField: "_id",
+                foreignField: "student",
+                as: "sports"
+            }
+        }, {
+            $unwind: "$sports"
+        }, {
+            $group: {
+                _id: "$_id",
+                studentName: {
+                    $addToSet: "$name"
+                },
+                studentId: {
+                    $addToSet: "$sfaid"
+                },
+                gender: {
+                    $addToSet: "$gender"
+                },
+                sports: {
+                    $addToSet: "$sports.sportslist.name"
+                },
+                agegroup: {
+                    $addToSet: "$sports.agegroup.name"
+                },
+                schoolName: {
+                    $addToSet: "$sports.school.name"
+                },
+                schoolId: {
+                    $addToSet: "$sports.school.sfaid"
+                }
+            }
+        }]).exec(function(err, found) {
+            // res.json(found);
+            var arr = [];
+
+            function callMe(num) {
+                var abc = found[num];
+                var sport = "";
+                var excel = {};
+                if (abc.sports && abc.sports.length > 0) {
+                    _.each(abc.sports, function(x) {
+                        x = x + ", ";
+                        sport += x;
+                    });
+                } else {
+                    sport = null;
+                }
+                excel = {
+                    "Student Id": abc.studentId[0],
+                    "Student Name": abc.studentName[0],
+                    "School Id": abc.schoolId[0],
+                    "School Name": abc.schoolName[0],
+                    "Gender": abc.gender[0],
+                    "Sports": sport
+                };
+                if (abc.agegroup && abc.agegroup.length > 0) {
+                    excel["Age Group"] = abc.agegroup[0]
+                } else {
+                    excel["Age Group"] = null;
+                }
+                arr.push(excel);
+                num++;
+                if (num == found.length) {
+                    var xls = sails.json2xls(arr);
+                    var path = "./Student Data.xlsx";
+                    sails.fs.writeFileSync(path, xls, 'binary');
+                    var excel = sails.fs.readFileSync(path);
+                    var mimetype = sails.mime.lookup(path);
+                    res.set('Content-Type', "application/octet-stream");
+                    res.set('Content-Disposition', "attachment;filename=" + path);
+                    res.send(excel);
+                    setTimeout(function() {
+                        sails.fs.unlink(path, function(err) {
+                            console.log(err);
+                        });
+                    }, 10000);
+                } else {
+                    callMe(num);
+                }
+            }
+            callMe(0);
+        });
+    }
 };
