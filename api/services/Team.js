@@ -6,6 +6,7 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
+  year:String,
     school: {
         type: Schema.Types.ObjectId,
         ref: "School",
@@ -185,7 +186,7 @@ var models = {
             } else {
                 callback(null, deleted);
             }
-        });
+        }).populate('players',"_id name sfaid").populate('captain',"_id name sfaid").populate("school","name sfaid").populate('sport',"name").populate("agegroup","name").populate("category","name");
     }
 };
 module.exports = _.assign(module.exports, models);
