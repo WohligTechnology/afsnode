@@ -29,6 +29,7 @@
     "moment": "^2.14.1",
     "mongodb": "2.1.7",
     "mongoose": "^4.5.4",
+    "mongoose-populate-virtuals": "^1.0.3",
     "rc": "1.0.1",
     "request": "^2.73.0",
     "sails": "~0.12.3",

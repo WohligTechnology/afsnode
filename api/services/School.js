@@ -73,6 +73,13 @@ var schema = new Schema({
     numberOfSports: String,
     paymentType: String
 });
+// schema.virtual('sportlistHere', {
+//   ref: 'Sport',
+//   foreignKey: '_id',
+//   localKey: 'sports.$_id',
+//   localField : 'sports.$_id',
+//   foreignField: '_id'
+// });
 module.exports = sails.mongoose.model('School', schema);
 var models = {
     saveData: function(data, callback) {
@@ -128,7 +135,7 @@ var models = {
     getAll: function(data, callback) {
         School.find({}, {}, {}).sort({
             sfaid: -1
-        }).exec(function(err, deleted) {
+        }).populate('sportlistHere').exec(function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {

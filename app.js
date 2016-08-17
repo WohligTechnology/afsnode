@@ -36,7 +36,7 @@ process.chdir(__dirname);
         console.error('but if it doesn\'t, the app will run with the global sails instead!');
         return;
     }
-    sails.mongoose = require('mongoose');
+    sails.mongoose = require('mongoose-populate-virtuals')(require('mongoose'));
     sails.mongoose.connect('mongodb://localhost:27017/sfa', function(err, data) {
         if (err) {
             console.log(err);
