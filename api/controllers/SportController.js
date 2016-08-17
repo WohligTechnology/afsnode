@@ -201,34 +201,5 @@ module.exports = {
                 data: "Invalid call"
             });
         }
-    },
-    findForDropSingle: function(req, res) {
-        if (req.body) {
-            // if (req.body.student && Array.isArray(req.body.student)) {
-                Sport.findForDropSingle(req.body, function(err, respo) {
-                    if (err) {
-                        res.json({
-                            value: false,
-                            data: err
-                        });
-                    } else {
-                        res.json({
-                            value: true,
-                            data: respo
-                        });
-                    }
-                });
-            // } else {
-            //     res.json({
-            //         value: false,
-            //         data: "Please provide parameters"
-            //     });
-            // }
-        } else {
-            res.json({
-                value: false,
-                data: "Please provide parameters"
-            });
-        }
     }
 };
