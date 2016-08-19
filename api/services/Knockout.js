@@ -86,7 +86,7 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
     saveData: function(data, callback) {
-      var school = this(data);
+      var knockout = this(data);
       if (data._id) {
           this.findOneAndUpdate({
               _id: data._id
@@ -98,22 +98,11 @@ var models = {
               }
           });
       } else {
-          knockout.timestamp = new Date();
-          knockout.deleteStatus = false;
-          Knockout.getLastId({}, function(err, data3) {
+          knockout.save(function(err, data2) {
               if (err) {
-                  console.log(err);
                   callback(err, null);
               } else {
-                  school.sfaid = data3;
-                  school.save(function(err, data2) {
-                      if (err) {
-                          console.log(err);
-                          callback(err, null);
-                      } else {
-                          callback(null, data2);
-                      }
-                  });
+                  callback(null, data2);
               }
           });
       }
