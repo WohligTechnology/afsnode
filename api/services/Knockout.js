@@ -7,102 +7,116 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year:String,
-    school: {
-        type: Schema.Types.ObjectId,
-        ref: "School",
-        index: true
-    },
-    name: String,
     sport: {
         type: Schema.Types.ObjectId,
         ref: "SportsList",
         index: true
     },
-    category: {
-        type: Schema.Types.ObjectId,
-        ref: "FirstCategory",
-        index: true
-    },
+    gender: String,
     agegroup: {
         type: Schema.Types.ObjectId,
         ref: "Agegroup",
         index: true
     },
-    captain: {
-        type: Schema.Types.ObjectId,
-        ref: "Student",
-        index: true
+    drawformat: {
+      type:String,
+      default: ""
     },
-    gender: String,
-    coach: String,
-    players: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Student',
-        index: true
-    }]
+    event: {
+      type:String,
+      default: ""
+    },
+    participantType : {
+      type: String,
+      default:"student"
+    },
+    date : {
+      type:Date,
+      default: Date.now
+    },
+    round:{
+      type:Number,
+      default:0
+    },
+    startTime: {
+      type: Date,
+      default:Date.now
+    },
+    endTime : {
+      type:Date,
+      default:Date.now
+    },
+    totalTime: {
+      type:Date,
+      default:Date.now
+    },
+    player1:{
+      type:Schema.Types.ObjectId,
+      ref: 'Student'
+    },
+    player2:{
+      type:Schema.Types.ObjectId,
+      ref: 'Student'
+    },
+    result1:{
+      type:Schema.Types.ObjectId,
+      ref: 'Student'
+    },
+    result2:{
+      type:Schema.Types.ObjectId,
+      ref: 'Student'
+    },
+    team1: {
+      type:Schema.Types.ObjectId,
+      ref: 'Team'
+    },
+    team2: {
+      type:Schema.Types.ObjectId,
+      ref: 'Team'
+    },
+    score:{
+      type:String,
+      default:""
+    },
+    video:{
+      type:String,
+      default:""
+    }
 });
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
     saveData: function(data, callback) {
-        var knockout = this(data);
-        var matchObj = {};
-        if (data.category && data.category === "") {
-            delete data.category;
-            matchObj = {
-                school: data.school,
-                sport: data.sport,
-                agegroup: data.agegroup,
-                gender: data.gender
-            };
-        } else {
-            matchObj = {
-                school: data.school,
-                sport: data.sport,
-                agegroup: data.agegroup,
-                gender: data.gender,
-                category: data.category
-            };
-        }
-        console.log(matchObj);
-        if (data._id) {
-            this.findOneAndUpdate({
-                _id: data._id
-            }, data, function(err, data2) {
-                if (err) {
-                    callback(err, null);
-                } else {
-                    callback(null, data2);
-                }
-            });
-        } else {
-            Knockout.update(matchObj, {
-                $set: {
-                    name: data.name + " 'A'"
-                }
-            }).exec(function(err, updated) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else if (updated.nModified > 0) {
-                    knockout.name = data.name + " 'B'";
-                    knockout.save(function(err, data2) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, data2);
-                        }
-                    });
-                } else {
-                    knockout.save(function(err, data2) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, data2);
-                        }
-                    });
-                }
-            });
-        }
+      var school = this(data);
+      if (data._id) {
+          this.findOneAndUpdate({
+              _id: data._id
+          }, data, function(err, data2) {
+              if (err) {
+                  callback(err, null);
+              } else {
+                  callback(null, data2);
+              }
+          });
+      } else {
+          knockout.timestamp = new Date();
+          knockout.deleteStatus = false;
+          Knockout.getLastId({}, function(err, data3) {
+              if (err) {
+                  console.log(err);
+                  callback(err, null);
+              } else {
+                  school.sfaid = data3;
+                  school.save(function(err, data2) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else {
+                          callback(null, data2);
+                      }
+                  });
+              }
+          });
+      }
     },
     getAll: function(data, callback) {
         Knockout.find({}, {}, {}, function(err, deleted) {
