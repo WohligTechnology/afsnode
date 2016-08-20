@@ -7,6 +7,14 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year:String,
+  roundno:{
+    type:Number,
+    default:0
+  },
+  order:{
+    type:Number,
+    default:0
+  },
     sport: {
         type: Schema.Types.ObjectId,
         ref: "SportsList",
@@ -34,10 +42,6 @@ var schema = new Schema({
       type:Date,
       default: Date.now
     },
-    round:{
-      type:Number,
-      default:0
-    },
     startTime: {
       type: Date,
       default:Date.now
@@ -58,13 +62,13 @@ var schema = new Schema({
       type:Schema.Types.ObjectId,
       ref: 'Student'
     },
-    result1:{
+    resultplayer:{
       type:Schema.Types.ObjectId,
       ref: 'Student'
     },
-    result2:{
+    resultteam:{
       type:Schema.Types.ObjectId,
-      ref: 'Student'
+      ref: 'Team'
     },
     team1: {
       type:Schema.Types.ObjectId,
@@ -81,6 +85,14 @@ var schema = new Schema({
     video:{
       type:String,
       default:""
+    },
+    parent1:{
+      type:Schema.Types.ObjectId,
+      ref:'Knockout'
+    },
+    parent2:{
+      type:Schema.Types.ObjectId,
+      ref: 'Knockout'
     }
 });
 module.exports = sails.mongoose.model('Knockout', schema);
@@ -90,11 +102,46 @@ var models = {
       if (data._id) {
           this.findOneAndUpdate({
               _id: data._id
-          }, data, function(err, data2) {
+          }, data,{
+            new:true
+          }, function(err, data2) {
               if (err) {
+                console.log("err");
                   callback(err, null);
               } else {
-                  callback(null, data2);
+                console.log("data.result",data2.result);
+                if(data2 === null){
+                    callback(null, data2);
+                }else if(data2.resultteam || data.resultplayer){
+                    callback(null,"result");
+                    /*
+                    var nextRound = {
+
+                  };
+                  if(data2.order % 2 ===  0){
+                  nextRound[data2.participantType + '1']= data2['result'+data2.participantType];
+                  nextRound.parent1=data2._id;
+                }else{
+                nextRound[data2.participantType + '2']= data2['result'+data2.participantType];
+                nextRound.parent2=data2._id;
+              }
+              data2.order = parseInt(data2.order/2);
+              his.findOneAndUpdate({
+                  _id: data._id
+              }, data,{
+              upsert:true
+            }, function(err, data2) {
+                  if (err) {
+                    console.log("err");
+                      callback(err, null);
+                  } else {
+
+                  }
+              });
+                    */
+                }else{
+                  callback(null,data2);
+                }
               }
           });
       } else {
@@ -114,7 +161,7 @@ var models = {
             } else {
                 callback(null, deleted);
             }
-        });
+        }).populate("Student");
     },
     findLimited : function (data,callback) {
       var newreturns = {};
