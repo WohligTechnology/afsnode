@@ -32,7 +32,7 @@ var schema = new Schema({
   },
   event: {
     type: String,
-    default: ""
+    default: "Knockout"
   },
   participantType: {
     type: String,
@@ -132,9 +132,13 @@ var models = {
             nextRound.roundno = nextRound.roundno + 1;
             console.log(nextRound);
             Knockout.findOneAndUpdate({
-              // sport:nextRound.sport,
-              roundno:nextRound.roundno,
-              order:nextRound.order
+              sport: nextRound.sport,
+              gender: nextRound.gender,
+              agegroup: nextRound.agegroup,
+              event: nextRound.event,
+              participantType: nextRound.participantType,
+              roundno: nextRound.roundno,
+              order: nextRound.order
             }, nextRound, {
               upsert: true,
               new:true
