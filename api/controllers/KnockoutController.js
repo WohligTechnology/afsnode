@@ -5,28 +5,50 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 module.exports = {
-    saveData: function(req, res) {
-        if (req.body) {
-            Knockout.saveData(req.body, function(err, respo) {
-                if (err) {
-                    res.json({
-                        value: false,
-                        data: err
-                    });
-                } else {
-                    res.json({
-                        value: true,
-                        data: respo
-                    });
-                }
-            });
-        } else {
-            res.json({
-                value: false,
-                data: "Invalid call"
-            });
-        }
-    },
+  saveData: function(req, res) {
+      if (req.body) {
+          Knockout.saveData(req.body, function(err, respo) {
+              if (err) {
+                  res.json({
+                      value: false,
+                      data: err
+                  });
+              } else {
+                  res.json({
+                      value: true,
+                      data: respo
+                  });
+              }
+          });
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+  },
+  getLastOrder: function(req, res) {
+      if (req.body) {
+          Knockout.getLastOrder(req.body, function(err, respo) {
+              if (err) {
+                  res.json({
+                      value: false,
+                      data: err
+                  });
+              } else {
+                  res.json({
+                      value: true,
+                      data: respo
+                  });
+              }
+          });
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+  },
     getLimited: function(req, res) {
         if (req.body) {
             if (req.body.pagenumber) {

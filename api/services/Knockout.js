@@ -113,12 +113,13 @@ var models = {
           if (data2 === null) {
             callback(null, data2);
           } else if (data2.resultteam || data.resultplayer) {
-            console.log(data2);
             var nextRound =  data2.toObject();
             delete nextRound._id;
             delete nextRound.__v;
             delete nextRound.player1;
             delete nextRound.player2;
+            delete nextRound.parent1;
+            delete nextRound.parent2;
             delete nextRound.resultplayer;
             if (data2.order % 2 === 0) {
               nextRound[data2.participantType + '1'] = data2['result' + data2.participantType];
@@ -151,6 +152,14 @@ var models = {
         }
       });
     } else {
+      // if(!knockout.order){
+      //   console.log("not has order");
+      //   Knockout.getLastOrder(knockout.toObject(),function (response) {
+      //     if(data.value){
+      //
+      //     }
+      //   });
+      // }
       knockout.save(function(err, data2) {
         if (err) {
           callback(err, null);
@@ -221,6 +230,30 @@ var models = {
           callback(null, newreturns);
         }
       });
+  },
+  getLastOrder: function (data,callback) {
+    Knockout.find({
+      sport:data.sport,
+      gender:data.gender,
+      agegroup:data.agegroup,
+      event:data.event,
+      participantType:data.participantType,
+      roundno:data.roundno
+    }, {
+        _id: 0,
+        order: 1
+    }).sort({
+        order: -1
+    }).limit(1).lean().exec(function(err, data2) {
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else if (_.isEmpty(data2)) {
+            callback(null, 1);
+        } else {
+            callback(null, data2[0].order );
+        }
+    });
   },
   deleteData: function(data, callback) {
     Knockout.findOneAndRemove({
