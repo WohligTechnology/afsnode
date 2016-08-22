@@ -62,11 +62,19 @@ var schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
-  resultplayer: {
+  resultplayer1: {
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
-  resultteam: {
+  resultteam1: {
+    type: Schema.Types.ObjectId,
+    ref: 'Team'
+  },
+  resultplayer2: {
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  },
+  resultteam2: {
     type: Schema.Types.ObjectId,
     ref: 'Team'
   },
@@ -112,8 +120,8 @@ var models = {
           console.log("data.result", data2.result);
           if (data2 === null) {
             callback(null, data2);
-          } else if (data2.resultteam || data.resultplayer) {
-            var nextRound =  data2.toObject();
+          } else if (data2.resultteam1 || data2.resultteam2 || data.resultplayer1 || data.resultplayer2) {
+            var nextRound = data2.toObject();
             delete nextRound._id;
             delete nextRound.__v;
             delete nextRound.player1;
@@ -121,11 +129,19 @@ var models = {
             delete nextRound.parent1;
             delete nextRound.parent2;
             delete nextRound.resultplayer;
+            var result = {};
+            if (data2['result' + data2.participantType + '1'] == "Won" && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
+              result['result' + data2.participantType] = data2[data2.participantType + '1'];
+            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && data2['result' + data2.participantType + '2'] == "Won") {
+              result['result' + data2.participantType] = data2[data2.participantType + '2'];
+            } else {
+              // both no show
+            }
             if (data2.order % 2 === 0) {
-              nextRound[data2.participantType + '1'] = data2['result' + data2.participantType];
+              nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
               nextRound.parent1 = data2._id;
             } else {
-              nextRound[data2.participantType + '2'] = data2['result' + data2.participantType];
+              nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
               nextRound.parent2 = data2._id;
             }
             nextRound.order = parseInt(data2.order / 2);
@@ -141,7 +157,7 @@ var models = {
               order: nextRound.order
             }, nextRound, {
               upsert: true,
-              new:true
+              new: true
             }, function(err, data3) {
               if (err) {
                 console.log("err");
@@ -235,28 +251,28 @@ var models = {
         }
       });
   },
-  getLastOrder: function (data,callback) {
+  getLastOrder: function(data, callback) {
     Knockout.find({
-      sport:data.sport,
-      gender:data.gender,
-      agegroup:data.agegroup,
-      event:data.event,
-      participantType:data.participantType,
-      roundno:data.roundno
+      sport: data.sport,
+      gender: data.gender,
+      agegroup: data.agegroup,
+      event: data.event,
+      participantType: data.participantType,
+      roundno: data.roundno
     }, {
-        _id: 0,
-        order: 1
+      _id: 0,
+      order: 1
     }).sort({
-        order: -1
+      order: -1
     }).limit(1).lean().exec(function(err, data2) {
-        if (err) {
-            console.log(err);
-            callback(err, null);
-        } else if (_.isEmpty(data2)) {
-            callback(null, 1);
-        } else {
-            callback(null, data2[0].order );
-        }
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 1);
+      } else {
+        callback(null, data2[0].order);
+      }
     });
   },
   deleteData: function(data, callback) {
@@ -279,7 +295,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('parent1').populate('parent2').populate('player1',"name").populate('player2',"name").populate('resultplayer',"name");
+    }).populate('parent1').populate('parent2').populate('player1', "name").populate('player2', "name").populate('resultplayer', "name");
   }
 };
 module.exports = _.assign(module.exports, models);
