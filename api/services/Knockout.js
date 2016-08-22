@@ -63,21 +63,17 @@ var schema = new Schema({
     ref: 'Student'
   },
   resultplayer1: {
-    type: Schema.Types.ObjectId,
-    ref: 'Student'
-  },
+    type: String,
+      },
   resultteam1: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team'
-  },
+    type: String,
+      },
   resultplayer2: {
-    type: Schema.Types.ObjectId,
-    ref: 'Student'
-  },
+    type: String,
+      },
   resultteam2: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team'
-  },
+    type: String,
+      },
   team1: {
     type: Schema.Types.ObjectId,
     ref: 'Team'
@@ -128,7 +124,10 @@ var models = {
             delete nextRound.player2;
             delete nextRound.parent1;
             delete nextRound.parent2;
-            delete nextRound.resultplayer;
+            delete nextRound.resultplayer1;
+            delete nextRound.resultplayer2;
+            delete nextRound.resultteam1;
+            delete nextRound.resultteam2;
             var result = {};
             if (data2['result' + data2.participantType + '1'] == "Won" && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
@@ -146,7 +145,6 @@ var models = {
             }
             nextRound.order = parseInt(data2.order / 2);
             nextRound.roundno = nextRound.roundno + 1;
-            console.log(nextRound);
             Knockout.findOneAndUpdate({
               sport: nextRound.sport,
               gender: nextRound.gender,
