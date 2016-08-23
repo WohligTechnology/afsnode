@@ -161,7 +161,9 @@ var models = {
                   });
               },
               function(callback) {
-                  Team.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('players',"_id name ").populate("school","name").populate('sport',"name").populate("agegroup","name").populate("category","name").exec(function(err, data2) {
+                  Team.find(checkObj).sort({
+                    sfaid:-1
+                  }).skip(20 * (data.pagenumber - 1)).limit(20).populate('players',"_id name ").populate("school","name").populate('sport',"name").populate("agegroup","name").populate("category","name").exec(function(err, data2) {
                       if (err) {
                           console.log(err);
                           callback(err, null);

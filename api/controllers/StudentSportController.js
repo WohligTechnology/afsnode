@@ -268,6 +268,7 @@ module.exports = {
                     res.set('Content-Type', "application/octet-stream");
                     res.set('Content-Disposition', "attachment;filename=" + path);
                     res.send(excel);
+                    console.log(excel);
                     setTimeout(function() {
                         sails.fs.unlink(path, function(err) {
                             console.log(err);
@@ -315,8 +316,15 @@ module.exports = {
                     $addToSet: "$sports.school.sfaid"
                 }
             }
+        },{
+          $unwind:"$studentId"
+        },{
+          $sort : {
+            studentId: 1
+          }
         }]).exec(function(err, found) {
             var arr = [];
+            console.log(found);
             function callMe(num) {
                 var abc = found[num];
                 var sport = "";
@@ -330,7 +338,7 @@ module.exports = {
                     sport = null;
                 }
                 excel = {
-                    "Student Id": abc.studentId[0],
+                    "Student Id": abc.studentId,
                     "Student Name": abc.studentName[0],
                     "School Id": abc.schoolId[0],
                     "School Name": abc.schoolName[0],

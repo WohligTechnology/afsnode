@@ -160,7 +160,7 @@ module.exports = {
     },
     editStudent: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 Student.editStudent(req.body, function(err, respo) {
                     if (err) {
                         res.json({
@@ -388,7 +388,6 @@ module.exports = {
     },
     findForDropSingle: function(req, res) {
         if (req.body) {
-            // if (req.body.student && Array.isArray(req.body.student)) {
                 Student.findForDropSingle(req.body, function(err, respo) {
                     if (err) {
                         res.json({
@@ -402,12 +401,6 @@ module.exports = {
                         });
                     }
                 });
-            // } else {
-            //     res.json({
-            //         value: false,
-            //         data: "Please provide parameters"
-            //     });
-            // }
         } else {
             res.json({
                 value: false,
