@@ -135,6 +135,7 @@ var models = {
               result['result' + data2.participantType] = data2[data2.participantType + '2'];
             } else {
               // both no show
+              // $scope.
             }
             if (data2.order % 2 === 0) {
               nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
@@ -145,6 +146,7 @@ var models = {
             }
             nextRound.order = parseInt(data2.order / 2);
             nextRound.roundno = nextRound.roundno + 1;
+            console.log(nextRound);
             Knockout.findOneAndUpdate({
               sport: nextRound.sport,
               gender: nextRound.gender,
@@ -267,7 +269,8 @@ var models = {
         console.log(err);
         callback(err, null);
       } else if (_.isEmpty(data2)) {
-        callback(null, 1);
+        console.log("isEmpty");
+        callback("No such knockout", null);
       } else {
         callback(null, data2[0].order);
       }

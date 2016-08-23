@@ -31,6 +31,7 @@ module.exports = {
       if (req.body) {
           Knockout.getLastOrder(req.body, function(err, respo) {
               if (err) {
+                console.log("in err");
                   res.json({
                       value: false,
                       data: err
