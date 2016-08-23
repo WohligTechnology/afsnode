@@ -316,9 +316,7 @@ module.exports = {
                 }
             }
         }]).exec(function(err, found) {
-            // res.json(found);
             var arr = [];
-
             function callMe(num) {
                 var abc = found[num];
                 var sport = "";

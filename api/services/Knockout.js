@@ -43,16 +43,16 @@ var schema = new Schema({
     default: Date.now
   },
   startTime: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: ""
   },
   endTime: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: ""
   },
   totalTime: {
-    type: Date,
-    default: Date.now
+    type: String,
+    default: ""
   },
   player1: {
     type: Schema.Types.ObjectId,

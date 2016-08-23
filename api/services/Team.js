@@ -6,6 +6,7 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
+  sfaid: Number,
   year:String,
     school: {
         type: Schema.Types.ObjectId,
@@ -85,21 +86,39 @@ var models = {
                     callback(err, null);
                 } else if (updated.nModified > 0) {
                     team.name = data.name + " 'B'";
-                    team.save(function(err, data2) {
+                    Team.getLastId({}, function(err, data3) {
                         if (err) {
+                            console.log(err);
                             callback(err, null);
                         } else {
-                            callback(null, data2);
+                            team.sfaid = data3;
+                            team.save(function(err, data2) {
+                                if (err) {
+                                    console.log(err);
+                                    callback(err, null);
+                                } else {
+                                    callback(null, data2);
+                                }
+                            });
                         }
                     });
                 } else {
-                    team.save(function(err, data2) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, data2);
-                        }
-                    });
+                  Team.getLastId({}, function(err, data3) {
+                      if (err) {
+                          console.log(err);
+                          callback(err, null);
+                      } else {
+                          team.sfaid = data3;
+                          team.save(function(err, data2) {
+                              if (err) {
+                                  console.log(err);
+                                  callback(err, null);
+                              } else {
+                                  callback(null, data2);
+                              }
+                          });
+                      }
+                  });
                 }
             });
         }
@@ -174,6 +193,23 @@ var models = {
                 callback(err, null);
             } else {
                 callback(null, deleted);
+            }
+        });
+    },
+    getLastId: function(data, callback) {
+        Team.findOne({}, {
+            _id: 0,
+            sfaid: 1
+        }).sort({
+            sfaid: -1
+        }).limit(1).lean().exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (_.isEmpty(data2)) {
+                callback(null, 1);
+            } else {
+                callback(null, data2.sfaid + 1);
             }
         });
     },
