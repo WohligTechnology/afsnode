@@ -102,7 +102,7 @@ module.exports = {
     },
     getOne: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 StudentSport.getOne(req.body, function(err, respo) {
                     if (err) {
                         res.json({
@@ -324,7 +324,6 @@ module.exports = {
           }
         }]).exec(function(err, found) {
             var arr = [];
-            console.log(found);
             function callMe(num) {
                 var abc = found[num];
                 var sport = "";
