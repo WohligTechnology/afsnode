@@ -58,7 +58,8 @@ var schema = new Schema({
         }
     },
     student: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'Student'
     }
 });
 module.exports = sails.mongoose.model('StudentSport', schema);
@@ -116,6 +117,55 @@ var models = {
             }
         });
     },
+    getStudentsbySport :function (data,callback) {
+      // StudentSport.find({
+      //     'sportslist._id': data.sport
+      // },{
+      //   _id:0,
+      //   student:1
+      // }, function(err, deleted) {
+      //     if (err) {
+      //         callback(err, null);
+      //     } else {
+      //         callback(null, deleted);
+      //     }
+      // }).populate("student");
+
+      StudentSport.aggregate([{
+          $match: {
+             'sportslist._id': data.sport,
+             'year':data.year
+          }
+      }, {
+          $project: {
+            _id:0,
+            student:1
+          }
+      }]).exec(function(err, data2) {
+        console.log(data2);
+          if (err) {
+              console.log(err);
+              callback(err, null);
+          } else if (data2 && data2.length > 0) {
+            StudentSport.populate(data2,{
+              path:"student"
+            },function (err,data) {
+              if(err){
+                callback(err, null);
+              }else{
+                data = _.map(data,function (key) {
+                  return key.student;
+                });
+                callback(null, data);
+
+              }
+            });
+          } else {
+              callback({}, null);
+          }
+      });
+    },
+
     getSports: function(data, callback) {
         StudentSport.find({
             student: data.student

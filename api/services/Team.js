@@ -123,6 +123,9 @@ var models = {
             });
         }
     },
+    getTeamsbySport:function (data,callback) {
+    // 
+    },
     getAll: function(data, callback) {
         Team.find({}, {}, {}, function(err, deleted) {
             if (err) {
