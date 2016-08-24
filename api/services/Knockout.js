@@ -129,13 +129,13 @@ var models = {
             delete nextRound.resultteam1;
             delete nextRound.resultteam2;
             var result = {};
-            if (data2['result' + data2.participantType + '1'] == "Won" && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
+            if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
-            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && data2['result' + data2.participantType + '2'] == "Won") {
+            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" && data2['result' + data2.participantType + '2'] == "Bye")) {
               result['result' + data2.participantType] = data2[data2.participantType + '2'];
             } else {
               // both no show
-              // $scope.
+              // .
             }
             if (data2.order % 2 === 0) {
               nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
