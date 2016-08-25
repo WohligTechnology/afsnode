@@ -288,7 +288,7 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOneKnockoutTree: function(data, callback) {
     Knockout.findOne({
       _id: data._id
     }, function(err, response) {
@@ -342,6 +342,17 @@ var models = {
         // callback(null, response);
       }
     }).populate('player1', "name").populate('player2', "name").populate('resultplayer', "name");
+  },
+  getOne: function(data, callback) {
+    Knockout.findOne({
+      _id: data._id
+    }, function(err, response) {
+      if (err) {
+        callback(err, null);
+      } else {
+            callback(null, response);
+      }
+    }).populate('player1').populate('player2').populate('sport').populate('agegroup').populate('team1').populate('team2');
   }
 };
 module.exports = _.assign(module.exports, models);

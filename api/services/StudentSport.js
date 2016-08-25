@@ -148,7 +148,10 @@ var models = {
         }
       };
     }
-
+    if(data.gender){
+      studentconstraints.$match['student.gender'] = data.gender;
+    }
+    console.log(studentconstraints);
     StudentSport.aggregate([{
       $match: {
         'sportslist._id': data.sport,
