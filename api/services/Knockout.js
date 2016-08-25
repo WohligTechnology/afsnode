@@ -207,7 +207,7 @@ var models = {
 
     var check = new RegExp(data.name, "i");
     checkObj = {
-      name: {
+      year: {
         '$regex': check
       }
     };
@@ -228,7 +228,7 @@ var models = {
           });
         },
         function(callback) {
-          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('players', "_id name ").populate("school", "name").populate('sport', "name").populate("agegroup", "name").populate("category", "name").exec(function(err, data2) {
+          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2',"name").populate('sport', "name").populate("agegroup", "name").exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
