@@ -131,7 +131,8 @@ var models = {
             var result = {};
             if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
-            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" && data2['result' + data2.participantType + '2'] == "Bye")) {
+            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" || data2['result' + data2.participantType + '2'] == "Bye")) {
+              console.log("Loss");
               result['result' + data2.participantType] = data2[data2.participantType + '2'];
             } else {
               // both no show
@@ -290,13 +291,57 @@ var models = {
   getOne: function(data, callback) {
     Knockout.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function(err, response) {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        var populatequery =[{
+          path:'parent1',
+          populate : [{
+            path:'parent2',
+            populate : [{
+              path:'parent2'
+            },{
+              path :'parent1'
+            }]
+          },{
+            path :'parent1',
+            populate : [{
+              path:'parent2'
+            },{
+              path :'parent1'
+            }]
+          }]
+        },{
+          path: 'parent2',
+          populate : [{
+            path:'parent2',
+            populate : [{
+              path:'parent2'
+            },{
+              path :'parent1'
+            }]
+          },{
+            path :'parent1',
+            populate : [{
+              path:'parent2'
+            },{
+              path :'parent1'
+            }]
+          }]
+        }];
+        Knockout.populate(response,populatequery,function (err,data2) {
+          if(err){
+            callback(err, null);
+          }else{
+
+            callback(null, data2);
+
+          }
+        });
+        // callback(null, response);
       }
-    }).populate('parent1').populate('parent2').populate('player1', "name").populate('player2', "name").populate('resultplayer', "name");
+    }).populate('player1', "name").populate('player2', "name").populate('resultplayer', "name");
   }
 };
 module.exports = _.assign(module.exports, models);
