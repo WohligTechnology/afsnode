@@ -118,6 +118,7 @@ var models = {
     });
   },
   getStudentsbySport: function(data, callback) {
+    //For Knockout
     // StudentSport.find({
     //     'sportslist._id': data.sport
     // },{
@@ -130,11 +131,24 @@ var models = {
     //         callback(null, deleted);
     //     }
     // }).populate("student");
-    if(!data.search){
-      data.search = "";
-    }{
+    var studentconstraints = {};
+    if(data.sfaid){
+      studentconstraints ={
+        $match :{
+          'student.sfaid':data.sfaid
+        }
+      };
+    }else{
       data.search = new RegExp(data.search, "i");
+      studentconstraints = {
+        $match :{
+          'student.name':{
+            '$regex':data.search
+          }
+        }
+      };
     }
+
     StudentSport.aggregate([{
       $match: {
         'sportslist._id': data.sport,
@@ -149,13 +163,7 @@ var models = {
       }
     },{
       $unwind:'$student'
-    },{
-      $match :{
-        'student.name':{
-          '$regex':data.search
-        }
-      }
-    }, {
+    },studentconstraints, {
       $project: {
         _id: 0,
         student: 1
