@@ -7,6 +7,7 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
+  matchid:Number,
   roundno: {
     type: Number,
     default: 0
@@ -17,13 +18,7 @@ var schema = new Schema({
   },
   sport: {
     type: Schema.Types.ObjectId,
-    ref: "SportsList",
-    index: true
-  },
-  gender: String,
-  agegroup: {
-    type: Schema.Types.ObjectId,
-    ref: "Agegroup",
+    ref: "Sport",
     index: true
   },
   drawformat: {
