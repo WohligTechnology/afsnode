@@ -50,6 +50,29 @@ module.exports = {
           });
       }
   },
+  getLastKnockout: function(req, res) {
+      if (req.body) {
+          Knockout.getLastKnockout(req.body, function(err, respo) {
+              if (err) {
+                console.log("in err");
+                  res.json({
+                      value: false,
+                      data: err
+                  });
+              } else {
+                  res.json({
+                      value: true,
+                      data: respo
+                  });
+              }
+          });
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+  },
     getLimited: function(req, res) {
         if (req.body) {
             if (req.body.pagenumber) {

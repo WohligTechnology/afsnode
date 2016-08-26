@@ -99,26 +99,40 @@ var models = {
   saveData: function(data, callback) {
     function updateAndCallback(nextRound) {
       console.log(nextRound);
-      Knockout.findOneAndUpdate({
-        sport: nextRound.sport,
-        gender: nextRound.gender,
-        agegroup: nextRound.agegroup,
-        event: nextRound.event,
-        participantType: nextRound.participantType,
-        roundno: nextRound.roundno,
-        order: nextRound.order
-      }, nextRound, {
-        upsert: true,
-        new: true
-      }, function(err, data3) {
-        if (err) {
-          console.log("err");
-          callback(err, null);
-        } else {
-          callback(null, data3);
+      delete nextRound.matchid;
+      var upsertData = {};
+      Knockout.getLastKnockout({},function (err,response) {
+        if(err){
+          callback(err,null);
+        }else{
+          upsertData.matchid = response.data;
+          Knockout.findOneAndUpdate({
+            year:nextRound.year,
+            sport: nextRound.sport,
+            event: nextRound.event,
+            participantType: nextRound.participantType,
+            roundno: nextRound.roundno,
+            order: nextRound.order
+          },{
+            $set:nextRound,
+            $setOnInsert:{
+              matchid : upsertData.matchid
+            }
+          }, {
+            upsert: true,
+            new: true
+          }, function(err, data3) {
+            if (err) {
+              console.log("err");
+              callback(err, null);
+            } else {
+              callback(null, data3);
+            }
+          });
         }
       });
     }
+    delete data.matchid;
     var knockout = this(data);
     if (data._id) {
       this.findOneAndUpdate({
@@ -155,16 +169,7 @@ var models = {
             } else {
               nomatch = true;
             }
-            // if (data2.order % 2 === 0) {
-            //   nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
-            //   nextRound.parent1 = data2._id;
-            // } else {
-            //   nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
-            //   nextRound.parent2 = data2._id;
-            // }
-            // nextRound.order = parseInt(data2.order / 2);
-            // nextRound.roundno = nextRound.roundno + 1;
-            // console.log(nextRound);
+
             if(nomatch){
               if(data2.participantType == 'player'){
                 Student.find({
@@ -216,13 +221,20 @@ var models = {
       //     }
       //   });
       // }
-      knockout.save(function(err, data2) {
-        if (err) {
-          callback(err, null);
-        } else {
-          callback(null, data2);
+      Knockout.getLastKnockout({},function (err,data) {
+        if(err){
+          callback(null,err);
+        }else{
+          knockout.save(function(err, data2) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, data2);
+            }
+          });
         }
       });
+
     }
   },
   getAll: function(data, callback) {
@@ -289,9 +301,8 @@ var models = {
   },
   getLastOrder: function(data, callback) {
     Knockout.find({
+      year:data.year,
       sport: data.sport,
-      gender: data.gender,
-      agegroup: data.agegroup,
       event: data.event,
       participantType: data.participantType,
       roundno: data.roundno
@@ -305,10 +316,26 @@ var models = {
         console.log(err);
         callback(err, null);
       } else if (_.isEmpty(data2)) {
-        console.log("isEmpty");
         callback("No such knockout", null);
       } else {
         callback(null, data2[0].order);
+      }
+    });
+  },
+  getLastKnockout: function(data, callback) {
+    Knockout.find({}, {
+      _id: 0,
+      matchid: 1
+    }).sort({
+      matchid: -1
+    }).limit(1).lean().exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 0);
+      } else {
+        callback(null, data2[0].matchid);
       }
     });
   },
@@ -387,7 +414,7 @@ var models = {
       } else {
             callback(null, response);
       }
-    }).populate('player1').populate('player2').populate('sport').populate('agegroup').populate('team1').populate('team2');
+    }).populate('player1').populate('player2').populate('sport').populate('team1').populate('team2');
   }
 };
 module.exports = _.assign(module.exports, models);

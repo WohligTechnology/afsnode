@@ -7,6 +7,7 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
     gender: String,
+    year: String,
     minPlayers: Number,
     maxPlayers:Number,
     sportslist: {
