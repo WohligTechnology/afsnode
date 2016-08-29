@@ -21,10 +21,6 @@ var schema = new Schema({
     ref: "Sport",
     index: true
   },
-  drawformat: {
-    type: String,
-    default: ""
-  },
   event: {
     type: String,
     default: "Knockout"
@@ -105,7 +101,7 @@ var models = {
         if(err){
           callback(err,null);
         }else{
-          upsertData.matchid = response.data;
+          upsertData.matchid = response+1;
           Knockout.findOneAndUpdate({
             year:nextRound.year,
             sport: nextRound.sport,
@@ -213,18 +209,11 @@ var models = {
         }
       });
     } else {
-      // if(!knockout.order){
-      //   console.log("not has order");
-      //   Knockout.getLastOrder(knockout.toObject(),function (response) {
-      //     if(data.value){
-      //
-      //     }
-      //   });
-      // }
-      Knockout.getLastKnockout({},function (err,data) {
+      Knockout.getLastKnockout({},function (err,response) {
         if(err){
           callback(null,err);
         }else{
+          knockout.matchid = parseInt(response)+1;
           knockout.save(function(err, data2) {
             if (err) {
               callback(err, null);
@@ -335,6 +324,7 @@ var models = {
       } else if (_.isEmpty(data2)) {
         callback(null, 0);
       } else {
+        console.log(data2);
         callback(null, data2[0].matchid);
       }
     });

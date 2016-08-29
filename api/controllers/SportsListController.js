@@ -49,6 +49,28 @@ module.exports = {
             });
         }
     },
+    groupSportListByType: function(req, res) {
+        if (req.body) {
+            SportsList.groupSportListByType(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     deleteData: function(req, res) {
         if (req.body) {
             if (req.body._id && req.body._id != "") {
@@ -80,7 +102,7 @@ module.exports = {
     },
     getOne: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 SportsList.getOne(req.body, function(err, respo) {
                     if (err) {
                         res.json({

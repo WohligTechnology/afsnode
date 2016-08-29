@@ -66,6 +66,42 @@ var models = {
                 callback(null, deleted);
             }
         });
+    },
+    groupSportListByType: function (data,callback) {
+      SportsList.aggregate([{
+        $group:{
+          _id:null,
+          sporttype : {
+            sport :{
+              $addToSet:"$sporttype"
+            },
+            sports:{
+              $push : "$name"
+            }
+          }
+        }
+      }]).exec(function (err,response) {
+        if(err){
+          callback(err,null);
+        }else if(response){
+          callback(null,response);
+
+        }else{
+          callback(null,null);
+
+        }
+      });
+      // SportsList.group({
+      //   key:{
+      //     sporttype :1
+      //   }
+      // }).exec(function (err,data) {
+      //   if(err){
+      //     callback(err,null);
+      //   }else{
+      //     callback(null,data);
+      //   }
+      // });
     }
 };
 module.exports = _.assign(module.exports, models);

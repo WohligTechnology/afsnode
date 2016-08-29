@@ -161,9 +161,9 @@ var models = {
             _id: data._id
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
@@ -176,18 +176,18 @@ var models = {
             }
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
     deleteAll: function(data, callback) {
         School.remove({}, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
