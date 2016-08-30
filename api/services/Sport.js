@@ -179,6 +179,21 @@ var models = {
             }
         });
     },
+    knockoutSports: function(data, callback) {
+        Sport.find({
+            "sportslist._id": data.sportlist,
+            drawFormat:"Knockout"
+        }).exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (data2 && data2.length > 0) {
+                callback(null, data2);
+            } else {
+                callback([], null);
+            }
+        });
+    },
     getMinMaxForTeam :function (data,callback) {
       var matchobj = {};
       if(data.category){
