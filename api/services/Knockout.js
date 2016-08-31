@@ -241,11 +241,9 @@ var models = {
     data.pagenumber = parseInt(data.pagenumber);
     var checkObj = {};
 
-    var check = new RegExp(data.name, "i");
+    var check = new RegExp(data.sport, "i");
     checkObj = {
-      year: {
-        '$regex': check
-      }
+      'sport': data.sport
     };
 
     async.parallel([
