@@ -208,8 +208,9 @@ var models = {
                     nextRound.roundno = nextRound.roundno + 1;
                     updateAndCallback(nextRound);
                   }
-              }
-            }else{
+              });
+            }
+          }else{
               if (data2.order % 2 === 0) {
                 nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
                 nextRound.parent1 = data2._id;
