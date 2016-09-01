@@ -6,6 +6,7 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
+  year:String,
     sfaid: Number,
     name: String,
     board: String,

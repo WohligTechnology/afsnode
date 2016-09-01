@@ -93,6 +93,25 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
+    function updateParticipantsAndCallback(details) {
+      StudentSport.findOneAndUpdate({
+        sport:details.sport,
+        knockout:details.knockout,
+        student:details.student,
+        school:details.school
+      },{
+        $set:details
+      },{
+        upsert:true,
+        new :true
+      },function (err,response) {
+        if(err){
+
+        }else{
+
+        }
+      });
+    }
     function updateAndCallback(nextRound) {
       console.log(nextRound);
       delete nextRound.matchid;
@@ -122,6 +141,11 @@ var models = {
               console.log("err");
               callback(err, null);
             } else {
+              // if(nextRound.participantType == "player"){
+              //   Knockout.
+              // }else{
+              //
+              // }
               callback(null, data3);
             }
           });

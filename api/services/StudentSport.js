@@ -10,7 +10,8 @@ var schema = new Schema({
   sportslist: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'SportsList'
       },
       name: String,
       sporttype: String
@@ -19,7 +20,8 @@ var schema = new Schema({
   agegroup: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'Agegroup'
       },
       name: String
     }
@@ -27,7 +29,8 @@ var schema = new Schema({
   firstcategory: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'FirstCategory'
       },
       name: String
     }
@@ -35,7 +38,8 @@ var schema = new Schema({
   secondcategory: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'SecondCategory'
       },
       name: String
     }
@@ -43,7 +47,8 @@ var schema = new Schema({
   thirdcategory: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:'ThirdCategory'
       },
       name: String
     }
@@ -52,7 +57,8 @@ var schema = new Schema({
   school: {
     type: {
       _id: {
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        ref:''
       },
       name: String
     }
@@ -60,7 +66,20 @@ var schema = new Schema({
   student: {
     type: Schema.Types.ObjectId,
     ref: 'Student'
+  },
+  sportconfig:{
+    type:Schema.Types.ObjectId,
+    ref:'Sport'
+  },
+  knockout : {
+    type:Schema.Types.ObjectId,
+    ref:'Knockout'
   }
+  // ,
+  // league: {
+  //   type:Schema.Types.ObjectId,
+  //   ref: 'League'
+  // }
 });
 module.exports = sails.mongoose.model('StudentSport', schema);
 var models = {
