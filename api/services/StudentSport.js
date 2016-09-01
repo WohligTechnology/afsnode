@@ -136,6 +136,34 @@ var models = {
       }
     });
   },
+  getFirstCategoryFromSport : function (data,callback) {
+    StudentSport.aggregate([{
+      $match:{
+        'sportslist._id':data.sport
+      }
+    },{
+      $limit:10
+    },{
+      $group:{
+        _id:null,
+        category:{
+          $addToSet : "$firstcategory"
+        }
+      }
+    },{
+      $project:{
+        category:1
+      }
+    }
+  ]).exec(function (err,response) {
+      if(err){
+        callback(err,null);
+      }
+      else {
+        callback(null,response);
+      }
+    });
+  },
   getStudentsbySport: function(data, callback) {
     //For Knockout
     // StudentSport.find({

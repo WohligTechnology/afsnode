@@ -71,6 +71,28 @@ module.exports = {
             });
         }
     },
+    getFirstCategoryFromSport: function(req, res) {
+        if (req.body) {
+            StudentSport.getFirstCategoryFromSport(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     getStudentsbySport: function(req, res) {
         if (req.body) {
             StudentSport.getStudentsbySport(req.body, function(err, respo) {
