@@ -149,7 +149,9 @@ var models = {
             delete nextRound._id;
             delete nextRound.__v;
             delete nextRound.player1;
+            delete nextRound.team1;
             delete nextRound.player2;
+            delete nextRound.team2;
             delete nextRound.parent1;
             delete nextRound.parent2;
             delete nextRound.resultplayer1;
