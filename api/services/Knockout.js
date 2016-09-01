@@ -189,7 +189,25 @@ var models = {
                   }
                 });
               }else{
-
+                Team.find({
+                  name: "No Match "
+                }).exec(function (err,response) {
+                  if(err){
+                    callback(err,null);
+                  }else{
+                    console.log(response);
+                    result['result' + data2.participantType] = response[0]._id;
+                    if (data2.order % 2 === 0) {
+                      nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
+                      nextRound.parent1 = data2._id;
+                    } else {
+                      nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
+                      nextRound.parent2 = data2._id;
+                    }
+                    nextRound.order = parseInt(data2.order / 2);
+                    nextRound.roundno = nextRound.roundno + 1;
+                    updateAndCallback(nextRound);
+                  }
               }
             }else{
               if (data2.order % 2 === 0) {
