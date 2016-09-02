@@ -142,8 +142,6 @@ var models = {
         'sportslist._id':data.sport
       }
     },{
-      $limit:10
-    },{
       $group:{
         _id:null,
         category:{
