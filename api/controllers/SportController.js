@@ -195,6 +195,23 @@ module.exports = {
             });
         }
     },
+    getLimited: function(req, res) {
+        if (req.body) {
+            if (req.body.pagenumber) {
+                Sport.findLimited(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     getMinMaxForTeam: function(req, res) {
         if (req.body) {
             Sport.getMinMaxForTeam(req.body, function(err, respo) {
