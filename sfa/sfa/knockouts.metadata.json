@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"sfa.knockouts"},{"v":1,"key":{"sport":1},"name":"sport_1","ns":"sfa.knockouts","background":true},{"v":1,"key":{"agegroup":1},"name":"agegroup_1","ns":"sfa.knockouts","background":true}]}
