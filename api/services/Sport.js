@@ -130,7 +130,7 @@ var models = {
           },
           function(callback) {
             Sport.find(checkObj).sort({
-              sfaid: -1
+              _id: -1
             }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
               if (err) {
                 console.log(err);
