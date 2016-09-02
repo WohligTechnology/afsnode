@@ -137,7 +137,7 @@ var models = {
     });
   },
   getFirstCategoryFromSport : function (data,callback) {
-    StudentSport.aggregate([{
+    Sport.aggregate([{
       $match:{
         'sportslist._id':data.sport
       }
