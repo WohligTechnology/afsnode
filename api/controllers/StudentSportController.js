@@ -419,13 +419,19 @@ module.exports = {
   excelDownloadStudent: function(req, res) {
     StudentSport.aggregate([{
       $match: {
-        year: "2016"
+        year: "2015"
       }
-    }, {
+    },
+    {
       $group: {
         _id: "$student",
         sports: {
-          $addToSet:  "$sportslist._id"
+          $addToSet: {
+            "name": "$sportslist.name",
+            "agegroup": "$agegroup.name",
+            "firstcategory": "$firstcategory.name",
+            "secondcategory": "$secondcategory.name"
+          }
         }
       }
     }]).exec(function(err, response) {
@@ -433,7 +439,7 @@ module.exports = {
         path: "_id",
         populate: {
           path: "school",
-          select:"sfaid name"
+          select: "sfaid name"
         }
       }], function(err, resp) {
         if (err) {
@@ -442,18 +448,74 @@ module.exports = {
             data: err
           });
         } else {
-          SportsList.populate(resp, {
-            path: "sports"
-          }, function(err,populated) {
-            if(err){
-                res.json({
-                  value:false,
-                  data:err
-                });
-            }else{
-              res.json({
-                  value: true,
-                  data: populated
+          var excelData = [];
+          excelData = _.map(resp, function(key) {
+            var row = {};
+            if(key._id !== null || key._id !== ""){
+              row = {
+                "Year": "2016",
+                "_id":key._id._id,
+                  "ID": key._id.sfaid,
+                "Students Name": key._id.name,
+                "School ": key._id.school.name,
+                "School ID ": key._id.school.sfaid,
+                "Gender": key._id.gender,
+                "D.O.B.": new Date(key._id.dob).getDate()+ '/' + (new Date(key._id.dob).getMonth() + 1)  + '/' + ( key._id.dob).getFullYear(),
+                "Payment": key._id.payment,
+                "Address": key._id.address,
+                "Location ": key._id.location,
+                "Email": key._id.email,
+                "Contact": key._id.contact,
+                "date of form": key._id.dateOfForm.getDate()  + '/' + (key._id.dateOfForm.getMonth() + 1)+ '/' +  key._id.dateOfForm.getFullYear(),
+                "time of form":key._id.hours+":"+key._id.minutes+" "+key._id.timer
+              };
+            }
+            row['Sports 2016'] = "";
+            row.Category = "";
+            row['Sub-Category'] = "";
+            row['Age Group'] = "";
+            _.each(key.sports, function(sport) {
+              if (sport.name) {
+                row['Sports 2016'] += sport.name+", ";
+              } else {
+                row['Sports 2016'] += "N.A."+", ";
+              }
+              if (sport.firstcategory) {
+                row.Category += sport.firstcategory+", ";
+              } else {
+                row.Category += "N.A."+", ";
+              }
+              if (sport.secondcategory) {
+                row['Sub-Category'] += sport.secondcategory+", ";
+              } else {
+                row['Sub-Category'] += "N.A."+", ";
+              }
+              if (sport.agegroup) {
+                row['Age Group'] += sport.agegroup+", ";
+              } else {
+                row['Age Group'] += "N.A."+", ";
+              }
+
+            });
+            return row;
+          });
+          var xls = sails.json2xls(excelData);
+          var folder = "./.tmp/";
+          var path = "Student 2016"+  ".xlsx";
+          var finalPath = folder + path;
+          sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
+            if (err) {
+              res.callback(err, null);
+            } else {
+              sails.fs.readFile(finalPath, function(err, excel) {
+                if (err) {
+                  res.callback(err, null);
+                } else {
+                  res.set('Content-Type', "application/octet-stream");
+                  res.set('Content-Disposition', "attachment;filename=" + path);
+                  res.send(excel);
+                  sails.fs.unlink(finalPath);
+                }
               });
             }
           });

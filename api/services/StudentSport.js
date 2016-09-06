@@ -58,7 +58,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:''
+        ref:'School'
       },
       name: String
     }
