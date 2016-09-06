@@ -212,7 +212,7 @@ module.exports = {
                             }
                         }
                     });
-                }
+                };
                 callMe(0);
             }
         });
@@ -415,5 +415,75 @@ module.exports = {
             }
             callMe(0);
         });
+    },
+    excelDownloadStudent: function (req,res) {
+      StudentSport.aggregate([{
+        $match:{
+          year:"2016"
+        }
+      },{
+        $group:{
+            _id:"$student",
+            sports : {
+              $addToSet:"$sportslist._id"
+            }
+        }
+      }
+    ]).exec(function (err,response) {
+      Student.populate(response,[{
+        path:"_id",
+        populate:{
+          path:"school"
+        }
+      },{
+        path:"sports"
+      }],function (err,resp) {
+        if (err) {
+            res.json({
+                value: false,
+                data: err
+            });
+        } else {
+            res.json({
+                value: true,
+                data: resp
+            });
+        }
+      });
+
+
+      });
+    },
+    excelDownloadStudentFind: function (req,res) {
+      StudentSport
+      .find({
+        year:req.body.year
+      },{},{},function (err,response) {
+        if (err) {
+            res.json({
+                value: false,
+                data: err
+            });
+        } else {
+            res.json({
+                value: true,
+                data: response
+            });
+        }
+      });
+      // .group({
+      //   key:{
+      //     student:1
+      //   },
+      //   cond:{
+      //
+      //   },
+      //   reduce:function (curr,result) {
+      //     result.sports.push(curr.sportslist._id);
+      //   },
+      //   initial:{
+      //     sports : null
+      //   }
+      // });
     }
 };
