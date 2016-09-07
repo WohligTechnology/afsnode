@@ -507,7 +507,7 @@ module.exports = {
           });
           var xls = sails.json2xls(excelData);
           var folder = "./.tmp/";
-          var path = "Student 2016 - " + new Date() + ".xlsx";
+          var path = "Students 2016 - " + new Date() + ".xlsx";
           var finalPath = folder + path;
           sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
             if (err) {
@@ -631,7 +631,7 @@ module.exports = {
           });
           var xls = sails.json2xls(excelData);
           var folder = "./.tmp/";
-          var path = "Student 2016" + ".xlsx";
+          var path = "Students ALL - " + new Date() + ".xlsx";
           var finalPath = folder + path;
           sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
             if (err) {
