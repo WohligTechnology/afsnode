@@ -233,21 +233,11 @@ module.exports = {
         }
         //error handling, e.g. file does not exist
     },
-    generateExcel: function(nameParam, found, res) {
-    var name = _.kebabCase(nameParam);
-    var excelData = [];
-    _.each(found, function(singleData) {
-      var singleExcel = {};
-      _.each(singleData, function(n, key) {
-        if (key != "__v" && key != "createdAt" && key != "updatedAt") {
-          singleExcel[_.capitalize(key)] = n;
-        }
-      });
-      excelData.push(singleExcel);
-    });
+    generateExcel: function(nameParam, excelData, res) {
+    var name = _.kebabCase(nameParam +   "-" + new Date());
     var xls = sails.json2xls(excelData);
     var folder = "./.tmp/";
-    var path = name+  "-" + moment().format("MMM-DD-YYYY-hh-mm-ss-a") + ".xlsx";
+    var path = name + ".xlsx";
     var finalPath = folder + path;
     sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
       if (err) {
