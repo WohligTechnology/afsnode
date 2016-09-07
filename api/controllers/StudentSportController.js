@@ -419,7 +419,7 @@ module.exports = {
   excelDownloadStudent: function(req, res) {
     StudentSport.aggregate([{
       $match: {
-        year: "2015"
+        year: "2016"
       }
     },
     {
@@ -449,55 +449,64 @@ module.exports = {
           });
         } else {
           var excelData = [];
-          excelData = _.map(resp, function(key) {
+          var iterate = 0;
+          _.each(resp, function(key) {
             var row = {};
-            if(key._id !== null || key._id !== ""){
+            if(key._id){
               row = {
                 "Year": "2016",
-                "_id":key._id._id,
-                  "ID": key._id.sfaid,
-                "Students Name": key._id.name,
-                "School ": key._id.school.name,
-                "School ID ": key._id.school.sfaid,
-                "Gender": key._id.gender,
-                "D.O.B.": new Date(key._id.dob).getDate()+ '/' + (new Date(key._id.dob).getMonth() + 1)  + '/' + ( key._id.dob).getFullYear(),
-                "Payment": key._id.payment,
-                "Address": key._id.address,
-                "Location ": key._id.location,
-                "Email": key._id.email,
-                "Contact": key._id.contact,
-                "date of form": key._id.dateOfForm.getDate()  + '/' + (key._id.dateOfForm.getMonth() + 1)+ '/' +  key._id.dateOfForm.getFullYear(),
-                "time of form":key._id.hours+":"+key._id.minutes+" "+key._id.timer
+                // "_id":key._id._id,
+                  "SFAID": key._id.sfaid,
+                "NAME": key._id.name,
+                "SCHOOL NAME ": key._id.school.name,
+                "SCHOOL ID ": key._id.school.sfaid,
+                "GENDER": key._id.gender,
+                "PAYMENT STATUS": key._id.payment,
+                "ADDRESS": key._id.address,
+                "LOCATION ": key._id.location,
+                "EMAIL": key._id.email,
+                "CONTACT": key._id.contact,
+                "DATE OF FORM": key._id.dateOfForm.getDate()  + '/' + (key._id.dateOfForm.getMonth() + 1)+ '/' +  key._id.dateOfForm.getFullYear(),
+                "TIME OF FORM":key._id.hours+":"+key._id.minutes+" "+key._id.timer
               };
+              if(key._id.dob){
+                row.DOB= new Date(key._id.dob).getDate()+ '/' + (new Date(key._id.dob).getMonth() + 1)  + '/' + ( key._id.dob).getFullYear();
+                console.log(iterate,row.DOB);
+                iterate++;
+              }
             }
-            row['Sports 2016'] = "";
-            row.Category = "";
-            row['Sub-Category'] = "";
-            row['Age Group'] = "";
+
+            row["SPORTS '16"] = "";
+            row.CATEGORY = "";
+            row['SUB CATEGORY'] = "";
+            row['AGE GROUP'] = "";
             _.each(key.sports, function(sport) {
               if (sport.name) {
-                row['Sports 2016'] += sport.name+", ";
+                row["SPORTS '16"] += sport.name+", ";
               } else {
-                row['Sports 2016'] += "N.A."+", ";
+                row["SPORTS '16"] += "N.A."+", ";
               }
               if (sport.firstcategory) {
-                row.Category += sport.firstcategory+", ";
+                row.CATEGORY += sport.firstcategory+", ";
               } else {
-                row.Category += "N.A."+", ";
+                row.CATEGORY += "N.A."+", ";
               }
               if (sport.secondcategory) {
-                row['Sub-Category'] += sport.secondcategory+", ";
+                row['SUB CATEGORY'] += sport.secondcategory+", ";
               } else {
-                row['Sub-Category'] += "N.A."+", ";
+                row['SUB CATEGORY'] += "N.A."+", ";
               }
               if (sport.agegroup) {
-                row['Age Group'] += sport.agegroup+", ";
+                row['AGE GROUP'] += sport.agegroup+", ";
               } else {
-                row['Age Group'] += "N.A."+", ";
+                row['AGE GROUP'] += "N.A."+", ";
               }
 
             });
-            return row;
+            excelData.push(row);
+          });
+          excelData = _.sortBy(excelData,function (key) {
+            return key.SFAID;
           });
           var xls = sails.json2xls(excelData);
           var folder = "./.tmp/";
