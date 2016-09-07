@@ -456,20 +456,26 @@ module.exports = {
                 // "_id":key._id._id,
                 "SFAID": key._id.sfaid,
                 "NAME": key._id.name,
-                "SCHOOL NAME ": key._id.school.name,
-                "SCHOOL ID ": key._id.school.sfaid,
+                "VIA": key._id.via,
                 "GENDER": key._id.gender,
                 "PAYMENT STATUS": key._id.payment,
                 "ADDRESS": key._id.address,
                 "LOCATION ": key._id.location,
                 "EMAIL": key._id.email,
                 "CONTACT": key._id.contact,
-                "DATE OF FORM": key._id.dateOfForm.getDate() + '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear(),
                 "TIME OF FORM": key._id.hours + ":" + key._id.minutes + " " + key._id.timer
               };
               if (key._id.dob) {
                 row.DOB = new Date(key._id.dob).getDate() + '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
 
+              }
+              if (key._id.dateOfForm) {
+                row["DATE OF FORM"] = key._id.dateOfForm.getDate() + '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear();
+
+              }
+              if (key._id.school) {
+                row["SCHOOL NAME "] = key._id.school.name;
+                row["SCHOOL ID "] = key._id.school.sfaid;
               }
             }
 
