@@ -418,4 +418,19 @@ module.exports = {
             callMe(0);
         });
     },
+    excelDownloadAllSchool : function (req,res) {
+      School.find({},{},{},function (err,response) {
+        if(err){
+          res.json({
+            value:false,
+            error:err
+          });
+        }else{
+          // res.json({
+          //   value:true,
+          //   data:response
+          // });
+        }
+      });
+    }
 };
