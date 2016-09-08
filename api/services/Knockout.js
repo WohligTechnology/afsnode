@@ -7,7 +7,7 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
-  matchid:Number,
+  matchid: Number,
   roundno: {
     type: Number,
     default: 0
@@ -55,16 +55,16 @@ var schema = new Schema({
   },
   resultplayer1: {
     type: String,
-      },
+  },
   resultteam1: {
     type: String,
-      },
+  },
   resultplayer2: {
     type: String,
-      },
+  },
   resultteam2: {
     type: String,
-      },
+  },
   team1: {
     type: Schema.Types.ObjectId,
     ref: 'Team'
@@ -94,44 +94,66 @@ module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
     function updateParticipantsAndCallback(details) {
-      StudentSport.findOneAndUpdate({
-        sport:details.sport,
-        knockout:details.knockout,
-        student:details.student,
-        school:details.school
-      },{
-        $set:details
-      },{
-        upsert:true,
-        new :true
-      },function (err,response) {
-        if(err){
-
+      // StudentSport.findOneAndUpdate({
+      //   sport:details.sport,
+      //   knockout:details.knockout,
+      //   student:details.student,
+      //   school:details.school
+      // },{
+      //   $set:details
+      // },{
+      //   upsert:true,
+      //   new :true
+      // },function (err,response) {
+      //   if(err){
+      //
+      //   }else{
+      //
+      //   }
+      // });
+      var constraints = {};
+      if(details.participantType == "player"){
+        if(details["result"+details.participantType+"1"] === "Won" || details["result"+details.participantType+"1"] === "Bye"){
+          constraints.student=details[details.participantType+"1"];
         }else{
-
+          constraints.student=details[details.participantType+"2"];
         }
-      });
+        constraints.year = details.year;
+        constraints.sport = details.sport;
+        constraints.drawFormat = "Knockout";
+        constraints.knockout = details._id;
+        StudentStats.saveData(constraints,function (err,response) {
+          if(err){
+
+          }else{
+
+          }
+        });
+      }else{
+        callback(null,"team is left");
+      }
     }
+
     function updateAndCallback(nextRound) {
       console.log(nextRound);
       delete nextRound.matchid;
       var upsertData = {};
-      Knockout.getLastKnockout({},function (err,response) {
-        if(err){
-          callback(err,null);
-        }else{
-          upsertData.matchid = response+1;
+      Knockout.getLastKnockout({}, function(err, response) {
+        if (err) {
+          callback(err, null);
+        } else {
+          upsertData.matchid = response + 1;
           Knockout.findOneAndUpdate({
-            year:nextRound.year,
+            year: nextRound.year,
             sport: nextRound.sport,
             event: nextRound.event,
             participantType: nextRound.participantType,
             roundno: nextRound.roundno,
             order: nextRound.order
-          },{
-            $set:nextRound,
-            $setOnInsert:{
-              matchid : upsertData.matchid
+          }, {
+            $set: nextRound,
+            $setOnInsert: {
+              matchid: upsertData.matchid
             }
           }, {
             upsert: true,
@@ -192,14 +214,14 @@ var models = {
               nomatch = true;
             }
 
-            if(nomatch){
-              if(data2.participantType == 'player'){
+            if (nomatch) {
+              if (data2.participantType == 'player') {
                 Student.find({
                   name: "No Match "
-                }).exec(function (err,response) {
-                  if(err){
-                    callback(err,null);
-                  }else{
+                }).exec(function(err, response) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
                     console.log(response);
                     result['result' + data2.participantType] = response[0]._id;
                     if (data2.order % 2 === 0) {
@@ -214,13 +236,13 @@ var models = {
                     updateAndCallback(nextRound);
                   }
                 });
-              }else{
+              } else {
                 Team.find({
                   name: "No Match "
-                }).exec(function (err,response) {
-                  if(err){
-                    callback(err,null);
-                  }else{
+                }).exec(function(err, response) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
                     console.log(response);
                     result['result' + data2.participantType] = response[0]._id;
                     if (data2.order % 2 === 0) {
@@ -234,9 +256,9 @@ var models = {
                     nextRound.roundno = nextRound.roundno + 1;
                     updateAndCallback(nextRound);
                   }
-              });
-            }
-          }else{
+                });
+              }
+            } else {
               if (data2.order % 2 === 0) {
                 nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
                 nextRound.parent1 = data2._id;
@@ -254,11 +276,11 @@ var models = {
         }
       });
     } else {
-      Knockout.getLastKnockout({},function (err,response) {
-        if(err){
-          callback(null,err);
-        }else{
-          knockout.matchid = parseInt(response)+1;
+      Knockout.getLastKnockout({}, function(err, response) {
+        if (err) {
+          callback(null, err);
+        } else {
+          knockout.matchid = parseInt(response) + 1;
           knockout.save(function(err, data2) {
             if (err) {
               callback(err, null);
@@ -307,7 +329,7 @@ var models = {
           });
         },
         function(callback) {
-          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2',"name").populate('sport').populate("agegroup", "name").exec(function(err, data2) {
+          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -333,7 +355,7 @@ var models = {
   },
   getLastOrder: function(data, callback) {
     Knockout.find({
-      year:data.year,
+      year: data.year,
       sport: data.sport,
       event: data.event,
       participantType: data.participantType,
@@ -390,45 +412,45 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        var populatequery =[{
-          path:'parent1',
-          populate : [{
-            path:'parent2',
-            populate : [{
-              path:'parent2'
-            },{
-              path :'parent1'
+        var populatequery = [{
+          path: 'parent1',
+          populate: [{
+            path: 'parent2',
+            populate: [{
+              path: 'parent2'
+            }, {
+              path: 'parent1'
             }]
-          },{
-            path :'parent1',
-            populate : [{
-              path:'parent2'
-            },{
-              path :'parent1'
+          }, {
+            path: 'parent1',
+            populate: [{
+              path: 'parent2'
+            }, {
+              path: 'parent1'
             }]
           }]
-        },{
+        }, {
           path: 'parent2',
-          populate : [{
-            path:'parent2',
-            populate : [{
-              path:'parent2'
-            },{
-              path :'parent1'
+          populate: [{
+            path: 'parent2',
+            populate: [{
+              path: 'parent2'
+            }, {
+              path: 'parent1'
             }]
-          },{
-            path :'parent1',
-            populate : [{
-              path:'parent2'
-            },{
-              path :'parent1'
+          }, {
+            path: 'parent1',
+            populate: [{
+              path: 'parent2'
+            }, {
+              path: 'parent1'
             }]
           }]
         }];
-        Knockout.populate(response,populatequery,function (err,data2) {
-          if(err){
+        Knockout.populate(response, populatequery, function(err, data2) {
+          if (err) {
             callback(err, null);
-          }else{
+          } else {
 
             callback(null, data2);
 
@@ -445,7 +467,7 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-            callback(null, response);
+        callback(null, response);
       }
     }).populate('player1').populate('player2').populate('sport').populate('team1').populate('team2');
   }

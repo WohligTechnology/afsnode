@@ -44,59 +44,50 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          // console.log(data3);
           StudentStats.populate(data3, [{
-              path: 'sport'
-            }, {
-              path: 'student',
-              populate: {
-                path: 'school'
+            path: 'sport'
+          }, {
+            path: 'student',
+            populate: {
+              path: 'school'
+            }
+          }], function(err, response) {
+            if (err) {
+              callback(err, null);
+            } else {
+              var constraints = {
+                year: response.year,
+                "sportslist._id": response.sport.sportslist._id,
+                "student": response.student._id,
+                "agegroup._id": response.sport.agegroup._id
+              };
+              if (response.sport.firstcategory && response.sport.firstcategory._id) {
+                constraints["firstcategory._id"] = response.sport.firstcategory._id;
               }
-            }], function(err, response) {
-              if (err) {
-                callback(err,null);
-              } else {
-                var match = {
+              StudentSport.findOneAndUpdate(constraints, {
+                $setOnInsert: {
+                  student: response.student._id,
                   year: response.year,
-                  "sportslist._id": response.sport.sportslist._id,
-                  "student": response.student._id,
-                  "agegroup._id": response.sport.agegroup._id
-                };
-                if (response.sport.firstcategory && response.sport.firstcategory._id) {
-                  match["firstcategory._id"] = response.sport.firstcategory._id;
+                  sportslist: response.sport.sportslist,
+                  agegroup: response.sport.agegroup,
+                  firstcategory: response.sport.firstcategory,
+                  secondcategory: response.sport.secondcategory,
+                  "school._id": response.student.school._id,
+                  "school.name": response.student.school.name
                 }
-                console.log(match);
-                // StudentSport.findOne(match, function(err, deleted) {
-                //   if (err) {
-                //     callback(err, null);
-                //   } else {
-                //     callback(null, deleted);
-                //   }
-                // });
-                StudentSport.findOneAndUpdate(match, {
-                  $setOnInsert: {
-                    student: response.student._id,
-                    year: response.year,
-                    sportslist: response.sport.sportslist,
-                    agegroup: response.sport.agegroup,
-                    firstcategory: response.sport.firstcategory,
-                    secondcategory: response.sport.secondcategory,
-                    "school._id": response.student.school._id,
-                    "school.name": response.student.school.name
-                  }
-                }, {
-                  upsert: true,
-                  new: true
-                }, function(err, data2) {
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    callback(null, data2);
-                  }
-                });
-              }
-            });
-            // callback(null, data3);
+              }, {
+                upsert: true,
+                new: true
+              }, function(err, data2) {
+                if (err) {
+                  callback(err, null);
+                } else {
+                  callback(null, data2);
+                }
+              });
+            }
+          });
+          // callback(null, data3);
         }
       });
     }
