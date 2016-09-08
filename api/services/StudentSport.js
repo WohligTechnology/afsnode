@@ -66,15 +66,16 @@ var schema = new Schema({
   student: {
     type: Schema.Types.ObjectId,
     ref: 'Student'
-  },
-  sportconfig:{
-    type:Schema.Types.ObjectId,
-    ref:'Sport'
-  },
-  knockout : {
-    type:Schema.Types.ObjectId,
-    ref:'Knockout'
   }
+  // ,
+  // sportconfig:{
+  //   type:Schema.Types.ObjectId,
+  //   ref:'Sport'
+  // },
+  // knockout : {
+  //   type:Schema.Types.ObjectId,
+  //   ref:'Knockout'
+  // }
   // ,
   // league: {
   //   type:Schema.Types.ObjectId,

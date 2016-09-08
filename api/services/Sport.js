@@ -12,7 +12,10 @@ var schema = new Schema({
     maxPlayers:Number,
     sportslist: {
         type: {
-            _id: Schema.Types.ObjectId,
+            _id: {
+              type:Schema.Types.ObjectId,
+              ref:'Sport'
+            },
             name: String,
             sporttype: String
         }
