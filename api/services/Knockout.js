@@ -91,9 +91,9 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
-    // function updatePlayersAndCallback(details,players,callback) {
-    //
-    // }
+    function updatePlayersAndCallback(details,players,callback) {
+
+    }
     function updateParticipantsAndCallback(details) {
       var constraints = {};
       if(details.participantType == "player"){
@@ -166,7 +166,7 @@ var models = {
               // }else{
               //
               // }
-              updateParticipantsAndCallback(data3)
+              updateParticipantsAndCallback(data3);
             }
           });
         }

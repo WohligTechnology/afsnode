@@ -48,71 +48,75 @@ var models = {
           // callback(null, data3);
       //   }
       // });
-      var isexistent = {};
-      isexistent = {
-        student:data.student,
-        year:data.year,
-        drawFormat:data.drawFormat
-      };
+      if(data.student !== "" || data.student !== undefined || data.student !==  null){
+        var isexistent = {};
+        isexistent = {
+          student:data.student,
+          year:data.year,
+          drawFormat:data.drawFormat
+        };
 
-      if(data.drawFormat == "Knockout"){
-        isexistent.knockout=data.knockout;
-      }
-      StudentStats.findOneAndUpdate(isexistent,{
-        $setOnInsert : data
-      },{
-        upsert:true,
-        new : true
-      },function (err,inserted) {
-        if(err){
-          callback(err,null);
-        }else{
-          console.log(inserted);
-          StudentStats.populate(inserted, [{
-            path: 'sport'
-          }, {
-            path: 'student',
-            populate: {
-              path: 'school'
-            }
-          }], function(err, response) {
-            if (err) {
-              callback(err, null);
-            } else {
-              var constraints = {
-                year: response.year,
-                "sportslist._id": response.sport.sportslist._id,
-                "student": response.student._id,
-                "agegroup._id": response.sport.agegroup._id
-              };
-              if (response.sport.firstcategory && response.sport.firstcategory._id) {
-                constraints["firstcategory._id"] = response.sport.firstcategory._id;
-              }
-              StudentSport.findOneAndUpdate(constraints, {
-                $setOnInsert: {
-                  student: response.student._id,
-                  year: response.year,
-                  sportslist: response.sport.sportslist,
-                  agegroup: response.sport.agegroup,
-                  firstcategory: response.sport.firstcategory,
-                  secondcategory: response.sport.secondcategory,
-                  "school._id": response.student.school._id,
-                  "school.name": response.student.school.name
-                }
-              }, {
-                upsert: true,
-                new: true
-              }, function(err, data2) {
-                if (err) {
-                  callback(err, null);
-                } else {
-                  callback(null, data2);
-                }
-              });
-            }
-          });
+        if(data.drawFormat == "Knockout"){
+          isexistent.knockout=data.knockout;
         }
-      });
+        StudentStats.findOneAndUpdate(isexistent,{
+          $setOnInsert : data
+        },{
+          upsert:true,
+          new : true
+        },function (err,inserted) {
+          if(err){
+            callback(err,null);
+          }else{
+            console.log(inserted);
+            StudentStats.populate(inserted, [{
+              path: 'sport'
+            }, {
+              path: 'student',
+              populate: {
+                path: 'school'
+              }
+            }], function(err, response) {
+              if (err) {
+                callback(err, null);
+              } else {
+                var constraints = {
+                  year: response.year,
+                  "sportslist._id": response.sport.sportslist._id,
+                  "student": response.student._id,
+                  "agegroup._id": response.sport.agegroup._id
+                };
+                if (response.sport.firstcategory && response.sport.firstcategory._id) {
+                  constraints["firstcategory._id"] = response.sport.firstcategory._id;
+                }
+                StudentSport.findOneAndUpdate(constraints, {
+                  $setOnInsert: {
+                    student: response.student._id,
+                    year: response.year,
+                    sportslist: response.sport.sportslist,
+                    agegroup: response.sport.agegroup,
+                    firstcategory: response.sport.firstcategory,
+                    secondcategory: response.sport.secondcategory,
+                    "school._id": response.student.school._id,
+                    "school.name": response.student.school.name
+                  }
+                }, {
+                  upsert: true,
+                  new: true
+                }, function(err, data2) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
+                    callback(null, data2);
+                  }
+                });
+              }
+            });
+          }
+        });
+      }else{
+        callback(null,{});
+      }
     }
   },
   getAll: function(data, callback) {
