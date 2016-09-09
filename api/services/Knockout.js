@@ -34,12 +34,10 @@ var schema = new Schema({
     default: Date.now
   },
   startTime: {
-    type: String,
-    default: ""
+    type: Date
   },
   endTime: {
-    type: String,
-    default: ""
+    type: Date
   },
   totalTime: {
     type: String,
@@ -93,24 +91,10 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
+    // function updatePlayersAndCallback(details,players,callback) {
+    //
+    // }
     function updateParticipantsAndCallback(details) {
-      // StudentSport.findOneAndUpdate({
-      //   sport:details.sport,
-      //   knockout:details.knockout,
-      //   student:details.student,
-      //   school:details.school
-      // },{
-      //   $set:details
-      // },{
-      //   upsert:true,
-      //   new :true
-      // },function (err,response) {
-      //   if(err){
-      //
-      //   }else{
-      //
-      //   }
-      // });
       var constraints = {};
       if(details.participantType == "player"){
         constraints.student=details[details.participantType+"1"];
@@ -133,7 +117,18 @@ var models = {
           }
         });
       }else{
-        callback(null,"team is left");
+        Knockout.populate(details,[{
+          path:'team1'
+        },{
+          path:'team2'
+        }],function (err,response) {
+          if(err){
+            callback(err,null);
+          }else{
+            console.log(response);
+            callback(null,"team isn left");
+          }
+        });
       }
     }
 
@@ -332,7 +327,10 @@ var models = {
           });
         },
         function(callback) {
-          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1','name').populate('team2','name').exec(function(err, data2) {
+          Knockout.find(checkObj).sort({
+            roundno:1,
+            order:1
+          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1','name').populate('team2','name').exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
