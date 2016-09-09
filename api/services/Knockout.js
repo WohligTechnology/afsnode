@@ -202,6 +202,7 @@ var models = {
             delete nextRound.resultplayer2;
             delete nextRound.resultteam1;
             delete nextRound.resultteam2;
+            delete  nextRound.score;
             var result = {};
             if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
