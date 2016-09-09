@@ -113,20 +113,23 @@ var models = {
       // });
       var constraints = {};
       if(details.participantType == "player"){
-        if(details["result"+details.participantType+"1"] === "Won" || details["result"+details.participantType+"1"] === "Bye"){
-          constraints.student=details[details.participantType+"1"];
-        }else{
-          constraints.student=details[details.participantType+"2"];
-        }
+        constraints.student=details[details.participantType+"1"];
         constraints.year = details.year;
         constraints.sport = details.sport;
         constraints.drawFormat = "Knockout";
         constraints.knockout = details._id;
         StudentStats.saveData(constraints,function (err,response) {
           if(err){
-
+            callback(err,null);
           }else{
-
+            constraints.student=details[details.participantType+"2"];
+            StudentStats.saveData(constraints,function (err,resp) {
+              if(err){
+                callback(err,null);
+              }else{
+                callback(null,resp);
+              }
+            });
           }
         });
       }else{
@@ -168,7 +171,7 @@ var models = {
               // }else{
               //
               // }
-              callback(null, data3);
+              updateParticipantsAndCallback(data3)
             }
           });
         }
@@ -285,7 +288,7 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              callback(null, data2);
+              updateParticipantsAndCallback(data2);
             }
           });
         }

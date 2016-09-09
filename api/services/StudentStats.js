@@ -40,11 +40,35 @@ var models = {
         }
       });
     } else {
-      studentstats.save(function(err, data3) {
-        if (err) {
-          callback(err, null);
-        } else {
-          StudentStats.populate(data3, [{
+      // studentstats.save(function(err, data3) {
+      //   if (err) {
+      //     callback(err, null);
+      //   } else {
+
+          // callback(null, data3);
+      //   }
+      // });
+      var isexistent = {};
+      isexistent = {
+        student:data.student,
+        year:data.year,
+        drawFormat:data.drawFormat
+      };
+
+      if(data.drawFormat == "Knockout"){
+        isexistent.knockout=data.knockout;
+      }
+      StudentStats.findOneAndUpdate(isexistent,{
+        $setOnInsert : data
+      },{
+        upsert:true,
+        new : true
+      },function (err,inserted) {
+        if(err){
+          callback(err,null);
+        }else{
+          console.log(inserted);
+          StudentStats.populate(inserted, [{
             path: 'sport'
           }, {
             path: 'student',
@@ -87,7 +111,6 @@ var models = {
               });
             }
           });
-          // callback(null, data3);
         }
       });
     }
@@ -99,8 +122,11 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    });
+    }).populate('student','name').populate('sport').populate('knockout').populate('team');
   },
+  // getLimited:function (data,callback) {
+  //
+  // },
   deleteData: function(data, callback) {
     StudentStats.findOneAndRemove({
       _id: data._id
