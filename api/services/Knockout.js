@@ -91,8 +91,60 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
-    function updatePlayersAndCallback(details,players,callback) {
+    function saveme(details,num,status) {
+      var constraints = {};
+      constraints.year = details.year;
+      constraints.sport = details.sport;
+      constraints.drawFormat = "Knockout";
+      constraints.knockout = details._id;
+      if(status && details.team1){
+        constraints.student = details.team1.players[num];
+        constraints.team = details.team1._id;
+      }else{
+        constraints.student = details.team2.players[num];
+        constraints.team = details.team2._id;
 
+      }
+      StudentStats.saveData(constraints,function (err,response) {
+        if(err){
+          callback(err,null);
+        }else{
+          num++;
+          updatePlayersAndCallback(details,num,status);
+        }
+      });
+    }
+    function updatePlayersAndCallback(details,num,status) {
+      if(details.team1 && !details.team2){
+        console.log(num,details.team1.players.length);
+
+      }else if(!details.team1 && details.team2){
+        console.log(num,details.team2.players.length);
+
+      }else{
+        console.log(num,details.team1.players.length,details.team2.players.length);
+
+      }
+      var firstteam = "";
+      var secondteam = "";
+      if(details.team1){
+        firstteam = "team1";
+        secondteam = "team2";
+      }else{
+        firstteam = "team2";
+        secondteam = "team1";
+      }
+      if(num >= (details[secondteam].players.length - 1) && status === false){
+        callback(null,"done");
+      }else if(num >= (details[firstteam].players.length - 1) && status === true){
+        if(details[secondteam]){
+          saveme(details,0,false);
+        }else{
+          callback(null,"done");
+        }
+      }else{
+        saveme(details,num,status);
+      }
     }
     function updateParticipantsAndCallback(details) {
       var constraints = {};
@@ -119,19 +171,25 @@ var models = {
       }else{
         Knockout.populate(details,[{
           path:'team1'
-        },{
+        //   ,
+        //   populate:{
+        //     path:'players'
+        // }
+      },{
           path:'team2'
-        }],function (err,response) {
+        //   ,
+        //   populate:{
+        //     path:'players'
+        // }
+      }],function (err,response) {
           if(err){
             callback(err,null);
           }else{
-            console.log(response);
-            callback(null,"team isn left");
+            updatePlayersAndCallback(response,0,true);
           }
         });
       }
     }
-
     function updateAndCallback(nextRound) {
       console.log(nextRound);
       delete nextRound.matchid;

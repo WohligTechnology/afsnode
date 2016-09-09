@@ -496,7 +496,9 @@ var models = {
     });
   },
   makeEmptyPayment: function (data,callback) {
-    Student.update({},{
+    Student.update({
+      payment:"Unpaid"
+    },{
       $set:{
         payment : ""
       }
