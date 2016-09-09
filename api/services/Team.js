@@ -138,9 +138,10 @@ var models = {
       };
     }
     teamconstraints['sport'] = data.sport;
-    teamconstraints['agegroup'] = data.agegroup;
+    // teamconstraints['agegroup'] = data.agegroup;
     teamconstraints['gender'] = data.gender;
     teamconstraints['year'] = data.year;
+    console.log(teamconstraints);
     Team.find(teamconstraints).limit(20).exec(function(err, response) {
       if (err) {
         callback(err, null)

@@ -332,7 +332,7 @@ var models = {
           });
         },
         function(callback) {
-          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").exec(function(err, data2) {
+          Knockout.find(checkObj).sort().skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1','name').populate('team2','name').exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
