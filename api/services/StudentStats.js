@@ -45,29 +45,29 @@ var models = {
       //     callback(err, null);
       //   } else {
 
-          // callback(null, data3);
+      // callback(null, data3);
       //   }
       // });
-      if(data.student !== "" || data.student !== undefined || data.student !==  null){
+      if (data.student !== "" && data.student !== undefined && data.student !== null) {
         var isexistent = {};
         isexistent = {
-          student:data.student,
-          year:data.year,
-          drawFormat:data.drawFormat
+          student: data.student,
+          year: data.year,
+          drawFormat: data.drawFormat
         };
 
-        if(data.drawFormat == "Knockout"){
-          isexistent.knockout=data.knockout;
+        if (data.drawFormat == "Knockout") {
+          isexistent.knockout = data.knockout;
         }
-        StudentStats.findOneAndUpdate(isexistent,{
-          $setOnInsert : data
-        },{
-          upsert:true,
-          new : true
-        },function (err,inserted) {
-          if(err){
-            callback(err,null);
-          }else{
+        StudentStats.findOneAndUpdate(isexistent, {
+          $setOnInsert: data
+        }, {
+          upsert: true,
+          new: true
+        }, function(err, inserted) {
+          if (err) {
+            callback(err, null);
+          } else {
             console.log(inserted);
             StudentStats.populate(inserted, [{
               path: 'sport'
@@ -114,8 +114,8 @@ var models = {
             });
           }
         });
-      }else{
-        callback(null,{});
+      } else {
+        callback(null, {});
       }
     }
   },
@@ -126,7 +126,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('student','name').populate('sport').populate('knockout').populate('team');
+    }).populate('student', 'name').populate('sport').populate('knockout').populate('team');
   },
   // getLimited:function (data,callback) {
   //

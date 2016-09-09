@@ -494,6 +494,21 @@ var models = {
         callback([], null);
       }
     });
+  },
+  makeEmptyPayment: function (data,callback) {
+    Student.update({},{
+      $set:{
+        payment : ""
+      }
+    },{
+      multi:true
+    },function (err,data) {
+      if(err){
+        callback(err,null);
+      }else{
+        callback(null,data);
+      }
+    });
   }
 };
 module.exports = _.assign(module.exports, models);
