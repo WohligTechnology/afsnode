@@ -53,7 +53,8 @@ var models = {
         isexistent = {
           student: data.student,
           year: data.year,
-          drawFormat: data.drawFormat
+          drawFormat: data.drawFormat,
+          sport:data.sport
         };
 
         if (data.drawFormat == "Knockout") {
