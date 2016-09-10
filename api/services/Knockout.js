@@ -134,10 +134,10 @@ var models = {
         firstteam = "team2";
         secondteam = "team1";
       }
-      if(num >= (details[secondteam].players.length - 1) && status === false){
+      if(details[secondteam] !== null && details[secondteam] !==undefined && details[secondteam] !== "" && num >= (details[secondteam].players.length) && status === false){
         callback(null,"done");
-      }else if(num >= (details[firstteam].players.length - 1) && status === true){
-        if(details[secondteam]){
+      }else if(num >= (details[firstteam].players.length) && status === true){
+        if(details[secondteam] !== null && details[secondteam] !==undefined && details[secondteam] !== "" ){
           saveme(details,0,false);
         }else{
           callback(null,"done");
