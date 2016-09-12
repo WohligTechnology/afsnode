@@ -91,105 +91,108 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Knockout', schema);
 var models = {
   saveData: function(data, callback) {
-    function saveme(details,num,status) {
+    function saveme(details, num, status) {
       var constraints = {};
       constraints.year = details.year;
       constraints.sport = details.sport;
       constraints.drawFormat = "Knockout";
       constraints.knockout = details._id;
-      if(status && details.team1){
+      if (status && details.team1) {
         constraints.student = details.team1.players[num];
         constraints.team = details.team1._id;
-      }else{
+      } else {
         constraints.student = details.team2.players[num];
         constraints.team = details.team2._id;
 
       }
-      StudentStats.saveData(constraints,function (err,response) {
-        if(err){
-          callback(err,null);
-        }else{
+      StudentStats.saveData(constraints, function(err, response) {
+        if (err) {
+          callback(err, null);
+        } else {
           num++;
-          updatePlayersAndCallback(details,num,status);
+          updatePlayersAndCallback(details, num, status);
         }
       });
     }
-    function updatePlayersAndCallback(details,num,status) {
-      if(details.team1 && !details.team2){
-        console.log(num,details.team1.players.length);
 
-      }else if(!details.team1 && details.team2){
-        console.log(num,details.team2.players.length);
+    function updatePlayersAndCallback(details, num, status) {
+      if (details.team1 && !details.team2) {
+        console.log(num, details.team1.players.length);
 
-      }else{
-        console.log(num,details.team1.players.length,details.team2.players.length);
+      } else if (!details.team1 && details.team2) {
+        console.log(num, details.team2.players.length);
+
+      } else {
+        console.log(num, details.team1.players.length, details.team2.players.length);
 
       }
       var firstteam = "";
       var secondteam = "";
-      if(details.team1){
+      if (details.team1) {
         firstteam = "team1";
         secondteam = "team2";
-      }else{
+      } else {
         firstteam = "team2";
         secondteam = "team1";
       }
-      if(details[secondteam] !== null && details[secondteam] !==undefined && details[secondteam] !== "" && num >= (details[secondteam].players.length) && status === false){
-        callback(null,"done");
-      }else if(num >= (details[firstteam].players.length) && status === true){
-        if(details[secondteam] !== null && details[secondteam] !==undefined && details[secondteam] !== "" ){
-          saveme(details,0,false);
-        }else{
-          callback(null,"done");
+      if (details[secondteam] !== null && details[secondteam] !== undefined && details[secondteam] !== "" && num >= (details[secondteam].players.length) && status === false) {
+        callback(null, "done");
+      } else if (num >= (details[firstteam].players.length) && status === true) {
+        if (details[secondteam] !== null && details[secondteam] !== undefined && details[secondteam] !== "") {
+          saveme(details, 0, false);
+        } else {
+          callback(null, "done");
         }
-      }else{
-        saveme(details,num,status);
+      } else {
+        saveme(details, num, status);
       }
     }
+
     function updateParticipantsAndCallback(details) {
       var constraints = {};
-      if(details.participantType == "player"){
-        constraints.student=details[details.participantType+"1"];
+      if (details.participantType == "player") {
+        constraints.student = details[details.participantType + "1"];
         constraints.year = details.year;
         constraints.sport = details.sport;
         constraints.drawFormat = "Knockout";
         constraints.knockout = details._id;
-        StudentStats.saveData(constraints,function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
-            constraints.student=details[details.participantType+"2"];
-            StudentStats.saveData(constraints,function (err,resp) {
-              if(err){
-                callback(err,null);
-              }else{
-                callback(null,resp);
+        StudentStats.saveData(constraints, function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            constraints.student = details[details.participantType + "2"];
+            StudentStats.saveData(constraints, function(err, resp) {
+              if (err) {
+                callback(err, null);
+              } else {
+                callback(null, resp);
               }
             });
           }
         });
-      }else{
-        Knockout.populate(details,[{
-          path:'team1'
-        //   ,
-        //   populate:{
-        //     path:'players'
-        // }
-      },{
-          path:'team2'
-        //   ,
-        //   populate:{
-        //     path:'players'
-        // }
-      }],function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
-            updatePlayersAndCallback(response,0,true);
+      } else {
+        Knockout.populate(details, [{
+          path: 'team1'
+            //   ,
+            //   populate:{
+            //     path:'players'
+            // }
+        }, {
+          path: 'team2'
+            //   ,
+            //   populate:{
+            //     path:'players'
+            // }
+        }], function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            updatePlayersAndCallback(response, 0, true);
           }
         });
       }
     }
+
     function updateAndCallback(nextRound) {
       console.log(nextRound);
       delete nextRound.matchid;
@@ -260,7 +263,7 @@ var models = {
             delete nextRound.resultplayer2;
             delete nextRound.resultteam1;
             delete nextRound.resultteam2;
-            delete  nextRound.score;
+            delete nextRound.score;
             var result = {};
             if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
@@ -387,9 +390,9 @@ var models = {
         },
         function(callback) {
           Knockout.find(checkObj).sort({
-            roundno:1,
-            order:1
-          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1','name').populate('team2','name').exec(function(err, data2) {
+            roundno: 1,
+            order: 1
+          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name').exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -464,6 +467,56 @@ var models = {
         callback(null, deleted);
       }
     });
+  },
+  deleteKnockoutCompletely: function(data, callback) {
+    Knockout.find({
+      $or: [{
+        _id: data._id
+      }, {
+        parent1: data._id
+      }, {
+        parent2: data._id
+      }]
+    }).exec(function (err,results) {
+      if(err){
+        callback(err,null);
+      }else{
+        var knockouts = [];
+        _.each(results,function (key) {
+          knockouts.push(key._id);
+        });
+        console.log(knockouts);
+        StudentStats.remove({
+              drawFormat: "Knockout",
+              knockout: {
+                $in : knockouts
+              }
+            }, function(err, response) {
+              if (err) {
+                callback(err,null);
+              }else{
+                Knockout.remove({
+                  $or: [{
+                    _id: data._id
+                  }, {
+                    parent1: data._id
+                  }, {
+                    parent2: data._id
+                  }]
+                }, function(err, deleted) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
+                    callback(null,deleted);
+
+                  }
+                });
+              }
+            });
+        // callback(null,results);
+      }
+    });
+
   },
   getOneKnockoutTree: function(data, callback) {
     Knockout.findOne({
