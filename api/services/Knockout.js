@@ -12,6 +12,9 @@ var schema = new Schema({
     type: Number,
     default: 0
   },
+  round: {
+    type: String
+  },
   order: {
     type: Number,
     default: 0
