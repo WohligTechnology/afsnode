@@ -69,6 +69,7 @@ var schema = new Schema({
         contact: String,
         email: String
     }],
+    notpaidfor : String,
     timestamp: Date,
     representative: String,
     numberOfSports: String,
