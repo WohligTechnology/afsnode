@@ -176,16 +176,8 @@ var models = {
       } else {
         Knockout.populate(details, [{
           path: 'team1'
-            //   ,
-            //   populate:{
-            //     path:'players'
-            // }
         }, {
           path: 'team2'
-            //   ,
-            //   populate:{
-            //     path:'players'
-            // }
         }], function(err, response) {
           if (err) {
             callback(err, null);

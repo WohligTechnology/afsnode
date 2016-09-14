@@ -59,7 +59,11 @@ var models = {
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, {
+        $set:data
+      }, {
+        new:true
+      },function(err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -158,7 +162,7 @@ var models = {
       }
       if (found && found.length > 0) {
         exit++;
-        if (data.heat.length != 0) {
+        if (data.heat.length !== 0) {
           var nedata;
           nedata = _.remove(found, function(n) {
             var flag = false;
@@ -166,7 +170,7 @@ var models = {
               if (n1.name == n.name) {
                 flag = true;
               }
-            })
+            });
             return flag;
           });
         }

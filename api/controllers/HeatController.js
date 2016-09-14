@@ -80,7 +80,7 @@ module.exports = {
     },
     getOne: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 Heat.getOne(req.body, function(err, respo) {
                     if (err) {
                         res.json({
