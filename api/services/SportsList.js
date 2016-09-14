@@ -59,6 +59,19 @@ var models = {
             }
         });
     },
+    getAllHeatSport: function(data, callback) {
+        SportsList.find({
+          drawFormat : "Heats"
+        }, {}, {}).sort({
+            _id: -1
+        }).exec(function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
     deleteData: function(data, callback) {
         SportsList.findOneAndRemove({
             _id: data._id

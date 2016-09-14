@@ -20,7 +20,37 @@ var schema = new Schema({
   participantType: {
     type: String,
     default: "player"
-  }
+  },
+  round: {
+    type: String,
+    default: "Heat 1"
+  },
+  video:{
+    type:String
+  },
+  heats: [{
+    player: {
+      type: Schema.Types.ObjectId,
+      ref: 'Student'
+    },team:{
+      type:Schema.Types.ObjectId,
+      ref:'Team'
+    },date:{
+      type:Date
+    },
+    laneno:{
+      type:Number
+    },
+    result:{
+      type:String
+    },
+    timing:{
+      type:String
+    },
+    standing:{
+      type:Number
+    }
+}]
 });
 module.exports = sails.mongoose.model('Heat', schema);
 var models = {
@@ -66,14 +96,32 @@ var models = {
       }
     });
   },
+  getLastHeat: function(data, callback) {
+    Heat.find({}, {
+      _id: 0,
+      matchid: 1
+    }).sort({
+      matchid: -1
+    }).limit(1).lean().exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 0);
+      } else {
+        console.log(data2);
+        callback(null, data2[0].matchid);
+      }
+    });
+  },
   deleteData: function(data, callback) {
     Heat.findOneAndRemove({
       _id: data._id
     }, function(err, deleted) {
       if (err) {
-        callback(err, null)
+        callback(err, null);
       } else {
-        callback(null, deleted)
+        callback(null, deleted);
       }
     });
   },

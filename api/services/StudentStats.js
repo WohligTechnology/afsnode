@@ -23,6 +23,10 @@ var schema = new Schema({
   knockout: {
     type: Schema.Types.ObjectId,
     ref: 'Knockout'
+  },
+  heat: {
+    type: Schema.Types.ObjectId,
+    ref: 'Heat'
   }
 });
 module.exports = sails.mongoose.model('StudentStats', schema);
@@ -59,6 +63,9 @@ var models = {
 
         if (data.drawFormat == "Knockout") {
           isexistent.knockout = data.knockout;
+        }else if(data.drawFormat == "Heats"){
+          isexistent.heat = data.heat;
+
         }
         StudentStats.findOneAndUpdate(isexistent, {
           $setOnInsert: data

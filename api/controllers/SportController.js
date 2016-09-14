@@ -173,6 +173,28 @@ module.exports = {
       });
     }
   },
+  heatSports: function(req, res) {
+    if (req.body) {
+      Sport.heatSports(req.body, function(err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getSportsByYear: function(req, res) {
     if (req.body) {
       Sport.getSportsByYear(req.body, function(err, respo) {
