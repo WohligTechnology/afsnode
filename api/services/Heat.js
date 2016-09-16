@@ -33,6 +33,9 @@ var schema = new Schema({
   video:{
     type:String
   },
+  date:{
+    type:Date
+  },
   heats: [{
     player: {
       type: Schema.Types.ObjectId,
@@ -40,8 +43,6 @@ var schema = new Schema({
     },team:{
       type:Schema.Types.ObjectId,
       ref:'Team'
-    },date:{
-      type:Date
     },
     laneno:{
       type:Number
