@@ -8,6 +8,7 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
   matchid: Number,
+  order:Number,
   sport: {
     type: Schema.Types.ObjectId,
     ref: "Sport",
@@ -23,7 +24,11 @@ var schema = new Schema({
   },
   round: {
     type: String,
-    default: "Heat 1"
+    default: "Round"
+  },
+  heat:{
+    type:String,
+    default:"Heat 1"
   },
   video:{
     type:String
@@ -55,6 +60,42 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Heat', schema);
 var models = {
   saveData: function(data, callback) {
+    // function updateParticipantsAndCallback(details) {
+    //   var constraints = {};
+    //   if (details.participantType == "player") {
+    //     constraints.student = details[details.participantType + "1"];
+    //     constraints.year = details.year;
+    //     constraints.sport = details.sport;
+    //     constraints.drawFormat = "Heats";
+    //     constraints.heat = details._id;
+    //     StudentStats.saveData(constraints, function(err, response) {
+    //       if (err) {
+    //         callback(err, null);
+    //       } else {
+    //         constraints.student = details[details.participantType + "2"];
+    //         StudentStats.saveData(constraints, function(err, resp) {
+    //           if (err) {
+    //             callback(err, null);
+    //           } else {
+    //             callback(null, resp);
+    //           }
+    //         });
+    //       }
+    //     });
+    //   } else {
+    //     Heat.populate(details, [{
+    //       path: 'team1'
+    //     }, {
+    //       path: 'team2'
+    //     }], function(err, response) {
+    //       if (err) {
+    //         callback(err, null);
+    //       } else {
+    //         updatePlayersAndCallback(response, 0, true);
+    //       }
+    //     });
+    //   }
+    // }
     var heat = this(data);
     if (data._id) {
       this.findOneAndUpdate({
@@ -71,32 +112,31 @@ var models = {
         }
       });
     } else {
-      Heat.find({
-        "name": data.name
-      }).exec(function(err, data2) {
+      Heat.getLastHeat({}, function(err, response) {
         if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (data2 && data2[0]) {
-          callback(null, data2);
+          callback(null, err);
         } else {
-          heat.save(function(err, data3) {
+          heat.matchid = parseInt(response) + 1;
+          heat.save(function(err, data2) {
             if (err) {
               callback(err, null);
             } else {
-              callback(null, data3);
+              callback(null,data2);
             }
           });
         }
       });
+
     }
   },
   getAll: function(data, callback) {
-    Heat.find({}, {}, {}, function(err, deleted) {
+    Heat.find({
+      sport: data.sport
+    }, {}, {}, function(err, found) {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        callback(null, found);
       }
     });
   },

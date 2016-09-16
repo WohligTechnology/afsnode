@@ -107,6 +107,29 @@ module.exports = {
             });
         }
     },
+    getLastHeat: function(req, res) {
+        if (req.body) {
+            Heat.getLastHeat(req.body, function(err, respo) {
+                if (err) {
+                  console.log("in err");
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     findForDrop: function(req, res) {
         if (req.body) {
             if (req.body.thirdcategory && Array.isArray(req.body.thirdcategory)) {
