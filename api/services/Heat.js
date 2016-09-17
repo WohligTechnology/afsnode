@@ -26,7 +26,7 @@ var schema = new Schema({
     type: String,
     default: "Round"
   },
-  heat:{
+  name:{
     type:String,
     default:"Heat 1"
   },
