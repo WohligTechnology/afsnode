@@ -466,11 +466,11 @@ module.exports = {
                 "TIME OF FORM": key._id.hours + ":" + key._id.minutes + " " + key._id.timer
               };
               if (key._id.dob) {
-                row.DOB = new Date(key._id.dob).getDate() + '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
+                row.DOB = (new Date(key._id.dob).getDate() +1) + '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
 
               }
               if (key._id.dateOfForm) {
-                row["DATE OF FORM"] = key._id.dateOfForm.getDate() + '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear();
+                row["DATE OF FORM"] = (key._id.dateOfForm.getDate() +1) + '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear();
 
               }
               if (key._id.school) {
@@ -584,11 +584,11 @@ module.exports = {
                 "TIME OF FORM": key._id.hours + ":" + key._id.minutes + " " + key._id.timer
               };
               if (key._id.dob) {
-                row.DOB = new Date(key._id.dob).getDate() + '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
+                row.DOB = (new Date(key._id.dob).getDate() +1 )+ '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
 
               }
               if (key._id.dateOfForm) {
-                row["DATE OF FORM"] = key._id.dateOfForm.getDate() + '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear();
+                row["DATE OF FORM"] = (key._id.dateOfForm.getDate() +1 )+ '/' + (key._id.dateOfForm.getMonth() + 1) + '/' + key._id.dateOfForm.getFullYear();
 
               }
               if (key._id.school) {
