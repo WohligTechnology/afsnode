@@ -19,8 +19,7 @@ var schema = new Schema({
     default: "Heats"
   },
   participantType: {
-    type: String,
-    default: "player"
+    type: String
   },
   round: {
     type: String,
@@ -36,11 +35,12 @@ var schema = new Schema({
   date:{
     type:Date
   },
-  heats: [{
+  heats:[{
     player: {
       type: Schema.Types.ObjectId,
       ref: 'Student'
-    },team:{
+    },
+    team:{
       type:Schema.Types.ObjectId,
       ref:'Team'
     },
@@ -97,6 +97,13 @@ var models = {
     //     });
     //   }
     // }
+    function runThroughHeats(heat) {
+      if(heat.participantType == 'player'){
+        
+      }else{
+
+      }
+    }
     var heat = this(data);
     if (data._id) {
       this.findOneAndUpdate({
@@ -177,9 +184,23 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        // Heat.populate(deleted,{
+        //   path:'heats',
+        //   populate:[{
+        //     path:'player'
+        //   },{
+        //     path:'team'
+        //   }]
+        // },function (err,response) {
+        //   console.log(response);
+        //   if(err){
+        //     callback(err,null);
+        //   }else{
+            callback(null, deleted);
+          // }
+        // });
       }
-    });
+    }).populate('sport').populate('heats.player').populate('heats.team');
   },
   findForDrop: function(data, callback) {
     var returns = [];
