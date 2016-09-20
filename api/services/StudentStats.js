@@ -15,6 +15,10 @@ var schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
+  school:{
+    type:Schema.Types.ObjectId,
+    ref:'School'
+  },
   team: {
     type: Schema.Types.ObjectId,
     ref: 'Team'
@@ -60,7 +64,14 @@ var models = {
           drawFormat: data.drawFormat,
           sport:data.sport
         };
-
+        StudentStats.populate(data,{
+          path:'student'
+        },function (err,response) {
+          if(err){
+            callback(err,null);
+          }else{
+            console.log(response);
+            data.school = response.student.school;
         if (data.drawFormat == "Knockout") {
           isexistent.knockout = data.knockout;
         }else if(data.drawFormat == "Heats"){
@@ -76,7 +87,7 @@ var models = {
           if (err) {
             callback(err, null);
           } else {
-            console.log(inserted);
+            // console.log(inserted);
             StudentStats.populate(inserted, [{
               path: 'sport'
             }, {
@@ -122,6 +133,8 @@ var models = {
             });
           }
         });
+      }
+    });
       } else {
         callback(null, {});
       }
