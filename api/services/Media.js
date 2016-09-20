@@ -30,7 +30,6 @@ var schema = new Schema({
       type:String,
       default:""
     }
-
 });
 module.exports = sails.mongoose.model('Media', schema);
 var models = {
@@ -48,10 +47,9 @@ var models = {
             });
         } else {
             Media.find({
-                "name": data.name
+                "folder": data.name
             }).exec(function(err, data2) {
                 if (err) {
-                    console.log(err);
                     callback(err, null);
                 } else if (data2 && data2[0]) {
                     callback(null, data2);
@@ -81,9 +79,9 @@ var models = {
             _id: data._id
         }, function(err, deleted) {
             if (err) {
-                callback(err, null)
+                callback(err, null);
             } else {
-                callback(null, deleted)
+                callback(null, deleted);
             }
         });
     },
