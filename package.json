@@ -27,6 +27,7 @@
     "lwip": "0.0.9",
     "mime": "^1.3.4",
     "moment": "^2.14.1",
+    "mongo-xlsx": "^1.0.12",
     "mongodb": "2.1.7",
     "mongoose": "^4.5.4",
     "mongoose-populate-virtuals": "^1.0.3",
