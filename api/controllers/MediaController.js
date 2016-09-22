@@ -5,7 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 var mongoXlsx = require('mongo-xlsx');
-// xlsxj = require("xlsx-to-json");
+xlsxj = require("xlsx-to-json");
 
 module.exports = {
   saveData: function(req, res) {
@@ -41,14 +41,19 @@ module.exports = {
         //   // console.log('Mongo data: ', mongoData);
         // });
         xlsxj({
-          input: "sample.xlsx",
-          output: "output.json",
-          sheet: "tags"
+          input: uploadedFiles[0].fd,
+          output: "output.json"
         }, function(err, result) {
           if (err) {
-            console.error(err);
+            res.json({
+              value:false,
+              error:err
+            });
           } else {
-            console.log(result);
+            res.json({
+              value:true,
+              data:result
+            });
           }
         });
       }
