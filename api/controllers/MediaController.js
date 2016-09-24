@@ -31,6 +31,9 @@ module.exports = {
     }
   },
   uploadMedia: function(req, res) {
+    function saveMe(iterator) {
+
+    }
     req.file("file").upload(function(err, uploadedFiles) {
       if (err) {
         console.log(err);
@@ -42,7 +45,7 @@ module.exports = {
         // });
         xlsxj({
           input: uploadedFiles[0].fd,
-          output: "output.json"
+          output: ".tmp/public/output.json"
         }, function(err, result) {
           if (err) {
             res.json({
@@ -50,10 +53,11 @@ module.exports = {
               error:err
             });
           } else {
-            res.json({
-              value:true,
-              data:result
-            });
+            // res.json({
+            //   value:true,
+            //   data:result
+            // });
+
           }
         });
       }
