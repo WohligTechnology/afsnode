@@ -31,10 +31,47 @@ module.exports = {
     }
   },
   uploadMedia: function(req, res) {
-    function saveMe(iterator) {
 
-    }
     req.file("file").upload(function(err, uploadedFiles) {
+      var results = [];
+      function saveMe(num) {
+        // console.log(results[num]);
+        var media = {};
+        // console.log(num);
+
+        media = results[num];
+        if(results[num].date){
+          media.date = new Date(results[num].date);
+        }
+        if(results[num].order){
+          media.order = parseInt(results[num].order);
+        }
+        if(results[num].imageorder){
+          media.imageorder = parseInt(results[num].imageorder);
+        }
+        Media.saveData(media,function (err,data) {
+          if(err){
+            res.json({
+              value:false,
+              error:err
+            });
+          }else{
+            saveAll(++num);
+          }
+        });
+      }
+      function saveAll(num) {
+        console.log(results.length," <= ",num);
+        if(results.length <= num){
+          res.json({
+            value:true,
+            data:"Everything Done"
+          });
+        }else{
+
+          saveMe(num);
+        }
+      }
       if (err) {
         console.log(err);
       } else {
@@ -43,6 +80,7 @@ module.exports = {
         // mongoXlsx.xlsx2MongoData(uploadedFiles[0].fd, model, function(err, mongoData) {
         //   // console.log('Mongo data: ', mongoData);
         // });
+
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
@@ -53,11 +91,8 @@ module.exports = {
               error:err
             });
           } else {
-            // res.json({
-            //   value:true,
-            //   data:result
-            // });
-
+            results = _.cloneDeep(result);
+            saveAll(0);
           }
         });
       }

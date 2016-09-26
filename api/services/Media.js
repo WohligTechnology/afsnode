@@ -11,22 +11,21 @@ var schema = new Schema({
     order: {
       type:Number
     },
-    photo:{
-      type:String,
-      default:''
-    },
-    video:{
-      type:String,
-      default:''
-    },
     imageorder:{
-      type:String,
-      default:''
+      type:Number
     },
     date:{
       type:Date
     },
     mediatitle:{
+      type:String,
+      default:""
+    },
+    mediatype:{
+      type:String,
+      default:""
+    },
+    medialink:{
       type:String,
       default:""
     }
