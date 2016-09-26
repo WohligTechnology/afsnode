@@ -70,13 +70,12 @@ var models = {
           if(err){
             callback(err,null);
           }else{
-            console.log(response);
+            // console.log(response);
             data.school = response.student.school;
         if (data.drawFormat == "Knockout") {
           isexistent.knockout = data.knockout;
         }else if(data.drawFormat == "Heats"){
           isexistent.heat = data.heat;
-
         }
         StudentStats.findOneAndUpdate(isexistent, {
           $setOnInsert: data

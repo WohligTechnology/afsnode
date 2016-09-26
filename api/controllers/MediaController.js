@@ -68,7 +68,6 @@ module.exports = {
             data:"Everything Done"
           });
         }else{
-
           saveMe(num);
         }
       }
@@ -77,10 +76,6 @@ module.exports = {
       } else {
         var model = null;
         console.log(uploadedFiles[0].fd);
-        // mongoXlsx.xlsx2MongoData(uploadedFiles[0].fd, model, function(err, mongoData) {
-        //   // console.log('Mongo data: ', mongoData);
-        // });
-
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
