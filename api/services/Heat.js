@@ -138,7 +138,6 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log(data2);
           if (data2.participantType) {
             if (data2.participantType == 'player') {
               heats = data2;
