@@ -1,12 +1,27 @@
 /**
- * Booking.js
+ * Banner.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-
+  order:{
+    type:Number,
+    default:0
+  },
+  image:{
+    type:String,
+    default:""
+  },
+  link:{
+    type:String,
+    default:""
+  },
+  status:{
+    type:Boolean,
+    default:true
+  }
 });
 module.exports = sails.mongoose.model('Banner', schema);
 var models = {

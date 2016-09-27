@@ -176,6 +176,18 @@ var models = {
       }
     });
   },
+  getOneStudentByName: function(data, callback) {
+    console.log(data);
+    Student.findOne({
+      name: data.name
+    }).populate("school", "_id name").lean().exec(function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    });
+  },
   editStudent: function(data, callback) {
     data.status = true;
     this.findOneAndUpdate({
