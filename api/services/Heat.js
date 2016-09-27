@@ -138,6 +138,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
+          console.log(data2);
           if (data2.participantType) {
             if (data2.participantType == 'player') {
               heats = data2;
@@ -234,7 +235,17 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        StudentStats.remove({
+          drawFormat:"Heats",
+          heat:data._id
+        }, function(err, deleted) {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null,deleted);
+
+          }
+        });
       }
     });
   },
