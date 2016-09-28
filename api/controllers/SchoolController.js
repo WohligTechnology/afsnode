@@ -102,7 +102,7 @@ module.exports = {
     },
     hide: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 School.hide(req.body, function(err, respo) {
                     if (err) {
                         res.json({
@@ -375,48 +375,89 @@ module.exports = {
         }
     },
     excelDownload: function(req, res) {
-        var arr = [];
-        var i = 0;
-        School.find().exec(function(err, found) {
-            // res.json({ data: found });
-            function callMe(num) {
-                var abc = found[num];
-                arr.push({
-                    "Id": abc.sfaid,
-                    "School Name": abc.name,
-                    "Board": abc.board,
-                    "Verified": abc.status,
-                    "Address": abc.address,
-                    "Location": abc.location,
-                    "Email Id": abc.email,
-                    "Contact": abc.contact,
-                    "SFA Representative": abc.representative,
-                    "No. of Sports": abc.numberOfSports,
-                    "Type": abc.paymentType,
-                    "Principal": abc.principal
-                });
-                num++;
-                if (num == found.length) {
-                    var xls = sails.json2xls(arr);
-                    var path = "./School Data.xlsx";
-                    sails.fs.writeFileSync(path, xls, 'binary');
-                    var excel = sails.fs.readFileSync(path);
-                    var mimetype = sails.mime.lookup(path);
-                    res.set('Content-Type', "application/octet-stream");
-                    res.set('Content-Disposition', "attachment;filename=" + path);
-                    res.send(excel);
-                    // res.json({ data: arr });
-                    setTimeout(function() {
-                        sails.fs.unlink(path, function(err) {
-                            console.log(err);
-                        });
-                    }, 10000);
-                } else {
-                    callMe(num);
-                }
+      School.find({}, {}, {}, function(err, response) {
+        if (err) {
+          res.json({
+            value: false,
+            error: err
+          });
+        } else {
+          var excelData = [];
+          var row = {};
+          _.each(response, function(key) {
+            row = {};
+            if(key.year){
+              row['YEAR'] = "";
+              _.each(key.year,function (key) {
+                row['YEAR'] = row['YEAR']+key+", ";
+              });
             }
-            callMe(0);
-        });
+            row['SFAID'] = key.sfaid;
+            row['NAME'] = key.name;
+            row['BOARD'] = key.board;
+            row['ADDRESS'] = key.address;
+            row['LOCATION'] = key.location;
+            row['EMAIL'] = key.email;
+            row['CONTACT'] = key.contact;
+            // _.each(key.sports,function (key) {
+            //   if(key){
+            //
+            //   }
+            // });
+        if(key.sports){
+          newSports = sails._.chain(key.sports)
+                .groupBy("year")
+                .toPairs()
+                .map(function(currentItem) {
+                    return _.zipObject(["year", "sports"], currentItem);
+                })
+                .value();
+          var sports2016 = _.find(newSports,function (key) {
+            return key.year == "2016";
+          });
+          if( sports2016 && sports2016.sports){
+            row['SPORTS 2016'] = "";
+            _.each(sports2016.sports,function (key) {
+              row['SPORTS 2016'] = row['SPORTS 2016'] + key.name + ", ";
+            });
+            row['SPORTS 2016 count']=sports2016.sports.length;
+          }
+          var sports2015 = _.find(newSports,function (key) {
+            return key.year == "2015";
+          });
+          if( sports2015 && sports2015.sports){
+            row['SPORTS 2015'] = "";
+            _.each(sports2015.sports,function (key) {
+              row['SPORTS 2015'] = row['SPORTS 2015'] + key.name + ", ";
+            });
+            row['SPORTS 2015 count']=sports2015.sports.length;
+          }
+          // console.log(sports2016);
+        }
+        row['SFA REPRESENTATIVE']= key.representative;
+        row['NO. OF SPORTS']= key.numberOfSports;
+        row['PAYMENT TYPE']= key.paymentType;
+        row['PRINCIPAL']= key.principal;
+        // console.log(_.find(key.contingentLeader,function (key) {
+        //   return key.year == 2015;
+        // }));
+        // if(){
+        //   row['CONTINGENT LEADER 2016']= _.find(key.contingentLeader,function (key) {
+        //     return key.year == 2016;
+        //   }).student.name;
+        // }
+        // row['CONTINGENT LEADER 2016']= key.principal;
+        row['SUPPORTER NAME']= key.supporterName;
+
+            excelData.push(row);
+
+          });
+          excelData = _.sortBy(excelData, function(key) {
+            return key.SFAID;
+          });
+          Config.generateExcel("School", excelData, res);
+        }
+      });
     },
     excelDownloadAllSchool : function (req,res) {
       School.find({},{},{},function (err,response) {
