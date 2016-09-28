@@ -252,6 +252,17 @@ var models = {
         callback(null, deleted);
       }
     }).populate('players', "_id name sfaid").populate('captain', "_id name sfaid").populate("school", "name sfaid").populate('sport', "name").populate("agegroup", "name").populate("category", "name");
+  },
+  getOneTeamByName: function(data, callback) {
+    Team.findOne({
+      name: data.name
+    }, function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    }).populate('players', "_id name sfaid").populate('captain', "_id name sfaid").populate("school", "name sfaid").populate('sport', "name").populate("agegroup", "name").populate("category", "name");
   }
 };
 module.exports = _.assign(module.exports, models);

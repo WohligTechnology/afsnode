@@ -107,27 +107,31 @@ var models = {
                 if (response.sport.firstcategory && response.sport.firstcategory._id) {
                   constraints["firstcategory._id"] = response.sport.firstcategory._id;
                 }
-                StudentSport.findOneAndUpdate(constraints, {
-                  $setOnInsert: {
-                    student: response.student._id,
-                    year: response.year,
-                    sportslist: response.sport.sportslist,
-                    agegroup: response.sport.agegroup,
-                    firstcategory: response.sport.firstcategory,
-                    secondcategory: response.sport.secondcategory,
-                    "school._id": response.student.school._id,
-                    "school.name": response.student.school.name
-                  }
-                }, {
-                  upsert: true,
-                  new: true
-                }, function(err, data2) {
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    callback(null, data2);
-                  }
-                });
+                if(response.school){
+                  StudentSport.findOneAndUpdate(constraints, {
+                    $setOnInsert: {
+                      student: response.student._id,
+                      year: response.year,
+                      sportslist: response.sport.sportslist,
+                      agegroup: response.sport.agegroup,
+                      firstcategory: response.sport.firstcategory,
+                      secondcategory: response.sport.secondcategory,
+                      "school._id": response.student.school._id,
+                      "school.name": response.student.school.name
+                    }
+                  }, {
+                    upsert: true,
+                    new: true
+                  }, function(err, data2) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      callback(null, data2);
+                    }
+                  });
+                }else{
+                  callback(null,response);
+                }
               }
             });
           }
