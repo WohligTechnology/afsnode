@@ -38,15 +38,6 @@ var models = {
                 }
             });
         } else {
-            Banner.find({
-                "name": data.name
-            }).exec(function(err, data2) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else if (data2 && data2[0]) {
-                    callback(null, data2);
-                } else {
                     banner.save(function(err, data3) {
                         if (err) {
                             callback(err, null);
@@ -54,8 +45,7 @@ var models = {
                             callback(null, data3);
                         }
                     });
-                }
-            });
+
         }
     },
     getAll: function(data, callback) {
