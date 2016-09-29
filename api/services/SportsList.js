@@ -9,7 +9,9 @@ var schema = new Schema({
     name: String,
     sporttype: String,
     tableContent: Schema.Types.Mixed,
-    drawFormat: String
+    drawFormat: String,
+    inactiveimage:String,
+    image:String
 });
 module.exports = sails.mongoose.model('SportsList', schema);
 var models = {
