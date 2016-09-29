@@ -115,6 +115,23 @@ module.exports = {
       });
     }
   },
+  getLimited: function(req, res) {
+    if (req.body) {
+      if (req.body.pagenumber) {
+        Media.findLimited(req.body, res.callback);
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid Params"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid Request"
+      });
+    }
+  },
   deleteData: function(req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
