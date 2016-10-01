@@ -75,7 +75,7 @@ module.exports = {
         console.log(err);
       } else {
         var model = null;
-        console.log(uploadedFiles[0].fd);
+        // console.log(uploadedFiles[0].fd);
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
@@ -87,6 +87,7 @@ module.exports = {
             });
           } else {
             results = _.cloneDeep(result);
+            console.log(results);
             saveAll(0);
           }
         });
