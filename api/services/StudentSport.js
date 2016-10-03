@@ -109,7 +109,8 @@ var models = {
   getSchoolSportByGender: function(data, callback) {
     StudentSport.aggregate([{
       $match: {
-        "school._id": data._id
+        "school._id": data._id,
+        "year":data.year
       }
     },
      {
