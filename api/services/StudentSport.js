@@ -11,7 +11,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'SportsList'
+        ref: 'SportsList'
       },
       name: String,
       sporttype: String
@@ -21,7 +21,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'Agegroup'
+        ref: 'Agegroup'
       },
       name: String
     }
@@ -30,7 +30,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'FirstCategory'
+        ref: 'FirstCategory'
       },
       name: String
     }
@@ -39,7 +39,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'SecondCategory'
+        ref: 'SecondCategory'
       },
       name: String
     }
@@ -48,7 +48,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'ThirdCategory'
+        ref: 'ThirdCategory'
       },
       name: String
     }
@@ -58,7 +58,7 @@ var schema = new Schema({
     type: {
       _id: {
         type: Schema.Types.ObjectId,
-        ref:'School'
+        ref: 'School'
       },
       name: String
     }
@@ -106,6 +106,62 @@ var models = {
       });
     }
   },
+  getSchoolSportByGender: function(data, callback) {
+    StudentSport.aggregate([{
+      $match: {
+        "school._id": data._id
+      }
+    },
+     {
+      $lookup: {
+        from: 'students' ,
+        localField: 'student' ,
+        foreignField: '_id',
+        as: 'student'
+      }
+    },{
+      $unwind:"$student"
+    }, {
+      $group: {
+        _id: {
+          sport: "$sportslist._id",
+          gender:"$student.gender"
+        },
+        "count":{
+          $sum:1
+        }
+      }
+    },{
+      $group:{
+        "_id":"$_id.sport",
+        "gender":{
+          $addToSet:{
+            name : "$_id.gender",
+            "count":"$count"
+          }
+        }
+      }
+    }
+    // ,{
+    //   $unwind:"$sport"
+    // }
+  ]).exec(function(err, response) {
+      if (err) {
+        callback(err, null);
+      } else {
+        SportsList.populate(response,{
+          path:"_id"
+        },function (err,data) {
+          if (err) {
+            callback(err, null);
+          } else {
+        callback(null, data);
+      }
+    });
+        // callback(null, data);
+      }
+    });
+  },
   getAll: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, deleted) {
       if (err) {
@@ -137,29 +193,27 @@ var models = {
       }
     });
   },
-  getFirstCategoryFromSport : function (data,callback) {
+  getFirstCategoryFromSport: function(data, callback) {
     Sport.aggregate([{
-      $match:{
-        'sportslist._id':data.sport
+      $match: {
+        'sportslist._id': data.sport
       }
-    },{
-      $group:{
-        _id:null,
-        category:{
-          $addToSet : "$firstcategory"
+    }, {
+      $group: {
+        _id: null,
+        category: {
+          $addToSet: "$firstcategory"
         }
       }
-    },{
-      $project:{
-        category:1
+    }, {
+      $project: {
+        category: 1
       }
-    }
-  ]).exec(function (err,response) {
-      if(err){
-        callback(err,null);
-      }
-      else {
-        callback(null,response);
+    }]).exec(function(err, response) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, response);
       }
     });
   },
@@ -178,23 +232,23 @@ var models = {
     //     }
     // }).populate("student");
     var studentconstraints = {};
-    if(data.sfaid){
-      studentconstraints ={
-        $match :{
-          'student.sfaid':data.sfaid
+    if (data.sfaid) {
+      studentconstraints = {
+        $match: {
+          'student.sfaid': data.sfaid
         }
       };
-    }else{
+    } else {
       data.search = new RegExp(data.search, "i");
       studentconstraints = {
-        $match :{
-          'student.name':{
-            '$regex':data.search
+        $match: {
+          'student.name': {
+            '$regex': data.search
           }
         }
       };
     }
-    if(data.gender){
+    if (data.gender) {
       studentconstraints.$match['student.gender'] = data.gender;
     }
     console.log(studentconstraints);
@@ -210,9 +264,9 @@ var models = {
         foreignField: '_id',
         as: 'student'
       }
-    },{
-      $unwind:'$student'
-    },studentconstraints, {
+    }, {
+      $unwind: '$student'
+    }, studentconstraints, {
       $project: {
         _id: 0,
         student: 1
@@ -238,9 +292,9 @@ var models = {
         //
         //   }
         // });
-            data2 = _.map(data2,function (key) {
-              return key.student;
-            });
+        data2 = _.map(data2, function(key) {
+          return key.student;
+        });
         callback(null, data2);
       } else {
         callback({}, null);
@@ -262,23 +316,23 @@ var models = {
     //     }
     // }).populate("student");
     var studentconstraints = {};
-    if(data.sfaid){
-      studentconstraints ={
-        $match :{
-          'student.sfaid':data.sfaid
+    if (data.sfaid) {
+      studentconstraints = {
+        $match: {
+          'student.sfaid': data.sfaid
         }
       };
-    }else{
+    } else {
       data.search = new RegExp(data.search, "i");
       studentconstraints = {
-        $match :{
-          'student.name':{
-            '$regex':data.search
+        $match: {
+          'student.name': {
+            '$regex': data.search
           }
         }
       };
     }
-    if(data.gender){
+    if (data.gender) {
       studentconstraints.$match['student.gender'] = data.gender;
     }
     console.log(studentconstraints);
@@ -294,9 +348,9 @@ var models = {
         foreignField: '_id',
         as: 'student'
       }
-    },{
-      $unwind:'$student'
-    },studentconstraints, {
+    }, {
+      $unwind: '$student'
+    }, studentconstraints, {
       $project: {
         _id: 0,
         student: 1
@@ -322,9 +376,9 @@ var models = {
         //
         //   }
         // });
-            data2 = _.map(data2,function (key) {
-              return key.student;
-            });
+        data2 = _.map(data2, function(key) {
+          return key.student;
+        });
         callback(null, data2);
       } else {
         callback({}, null);

@@ -71,6 +71,28 @@ module.exports = {
       });
     }
   },
+  getSchoolSportByGender: function(req, res) {
+    if (req.body) {
+      StudentSport.getSchoolSportByGender(req.body, function(err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getFirstCategoryFromSport: function(req, res) {
     if (req.body) {
       StudentSport.getFirstCategoryFromSport(req.body, function(err, respo) {
@@ -511,26 +533,6 @@ module.exports = {
           excelData = _.sortBy(excelData, function(key) {
             return key.SFAID;
           });
-          // var xls = sails.json2xls(excelData);
-          // var folder = "./.tmp/";
-          // var path = "Students 2016 - " + new Date() + ".xlsx";
-          // var finalPath = folder + path;
-          // sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
-          //   if (err) {
-          //     res.callback(err, null);
-          //   } else {
-          //     sails.fs.readFile(finalPath, function(err, excel) {
-          //       if (err) {
-          //         res.callback(err, null);
-          //       } else {
-          //         res.set('Content-Type', "application/octet-stream");
-          //         res.set('Content-Disposition', "attachment;filename=" + path);
-          //         res.send(excel);
-          //         sails.fs.unlink(finalPath);
-          //       }
-          //     });
-          //   }
-          // });
           Config.generateExcel("Students 2016",excelData,res);
 
         }
