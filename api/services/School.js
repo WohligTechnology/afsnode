@@ -158,6 +158,42 @@ var models = {
             }
         });
     },
+    getLimitedSchool: function(data, callback) {
+      var check = new RegExp(data.search, "i");
+      var constraints = {};
+      if (data.search) {
+        constraints = {
+          name: {
+            '$regex': check
+          }
+        };
+      } else {
+        constraints = {
+          sfaid: data.sfaid
+        };
+      }
+      School.find(constraints,
+        {},
+        {limit:10}
+    ).lean().exec(function (err,data) {
+      if (err) {
+          callback(err, null);
+      } else {
+          callback(null, data);
+      }
+    });
+        // School.find(constraints, {
+        //     _id: 1,
+        //     name: 1,
+        //     sfaid: 1
+        // }, function(err, deleted) {
+        //     if (err) {
+        //         callback(err, null);
+        //     } else {
+        //         callback(null, deleted);
+        //     }
+        // });
+    },
     deleteData: function(data, callback) {
         School.findOneAndRemove({
             _id: data._id
