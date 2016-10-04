@@ -71,6 +71,28 @@ module.exports = {
       });
     }
   },
+  getSportsPopulated: function(req, res) {
+    if (req.body) {
+      StudentSport.getSportsPopulated(req.body, function(err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getSchoolSportByGender: function(req, res) {
     if (req.body) {
       StudentSport.getSchoolSportByGender(req.body, function(err, respo) {

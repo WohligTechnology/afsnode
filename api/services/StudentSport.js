@@ -397,6 +397,18 @@ var models = {
         callback(null, deleted);
       }
     });
+  },
+
+  getSportsPopulated: function(data, callback) {
+    StudentSport.find({
+      student: data.student
+    }, function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    }).populate('sportslist._id');
   }
 };
 module.exports = _.assign(module.exports, models);
