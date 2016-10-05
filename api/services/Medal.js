@@ -7,33 +7,24 @@
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
     year:String,
-    folder: String,
-    order: {
-      type:Number
+    school :{
+      type:Schema.Types.ObjectId,
+      ref:'School'
     },
-    imageorder:{
-      type:Number
+    student :{
+      type:Schema.Types.ObjectId,
+      ref:'Student'
     },
-    date:{
-      type:Date
+    sport:{
+      type:Schema.Types.ObjectId,
+      ref:'Sport'
     },
-    mediatitle:{
-      type:String,
-      default:""
-    },
-    mediatype:{
-      type:String,
-      default:""
-    },
-    medialink:{
-      type:String,
-      default:""
-    }
+    medalrank : Number
 });
-module.exports = sails.mongoose.model('Media', schema);
+module.exports = sails.mongoose.model('Medal', schema);
 var models = {
     saveData: function(data, callback) {
-        var media = this(data);
+        var medal = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -45,7 +36,7 @@ var models = {
                 }
             });
         } else {
-            Media.find({
+            Medal.find({
                 "folder": data.name
             }).exec(function(err, data2) {
                 if (err) {
@@ -53,7 +44,7 @@ var models = {
                 } else if (data2 && data2[0]) {
                     callback(null, data2);
                 } else {
-                    media.save(function(err, data3) {
+                    medal.save(function(err, data3) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -65,7 +56,7 @@ var models = {
         }
     },
     getAll: function(data, callback) {
-        Media.find({}, {}, {}, function(err, deleted) {
+        Medal.find({}, {}, {}, function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
@@ -74,7 +65,7 @@ var models = {
         });
     },
     deleteData: function(data, callback) {
-        Media.findOneAndRemove({
+        Medal.findOneAndRemove({
             _id: data._id
         }, function(err, deleted) {
             if (err) {
@@ -85,7 +76,7 @@ var models = {
         });
     },
     getOne: function(data, callback) {
-        Media.findOne({
+        Medal.findOne({
             _id: data._id
         }, function(err, deleted) {
             if (err) {
@@ -110,7 +101,7 @@ var models = {
 
       async.parallel([
           function(callback) {
-            Media.count(checkObj).exec(function(err, number) {
+            Medal.count(checkObj).exec(function(err, number) {
               if (err) {
                 console.log(err);
                 callback(err, null);
@@ -124,7 +115,7 @@ var models = {
             });
           },
           function(callback) {
-            Media.find(checkObj).sort({}).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+            Medal.find(checkObj).sort({}).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
               if (err) {
                 console.log(err);
                 callback(err, null);
@@ -159,7 +150,7 @@ var models = {
                 callback(null, data);
             }
         }
-        Media.find({
+        Medal.find({
             name: {
                 '$regex': check
             }
@@ -170,11 +161,11 @@ var models = {
             }
             if (found && found.length > 0) {
                 exit++;
-                if (data.media.length !== 0) {
+                if (data.medal.length !== 0) {
                     var nedata;
                     nedata = _.remove(found, function(n) {
                         var flag = false;
-                        _.each(data.media, function(n1) {
+                        _.each(data.medal, function(n1) {
                             if (n1.name == n.name) {
                                 flag = true;
                             }

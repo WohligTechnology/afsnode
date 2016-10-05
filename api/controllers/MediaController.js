@@ -191,6 +191,31 @@ module.exports = {
       });
     }
   },
+  sampleExcelDownload: function(req, res) {
+    var excelData = [];
+    excelData.push({
+      "year": "",
+      "folder": "",
+      "order": "",
+      "imageorder": "",
+      "date": "",
+      "mediatitle": "",
+      "mediatype": "",
+      "medialink": ""
+    });
+    excelData.push({
+      "year": "2015",
+      "folder": "Tennis",
+      "order": "0",
+      "imageorder": "1",
+      "date": "11/03/2015",
+      "mediatitle": "Tennis day 1",
+      "mediatype": "photo",
+      "medialink": "1.jpg"
+    });
+    Config.generateExcel("Media", excelData, res);
+
+  },
   findForDrop: function(req, res) {
     if (req.body) {
       if (req.body.firstcategory && Array.isArray(req.body.firstcategory)) {
