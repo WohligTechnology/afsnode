@@ -252,6 +252,20 @@ var models = {
             }
         });
     },
+    getSportBySportlist: function(data, callback) {
+        Sport.find({
+            "sportslist._id": data.sportlist
+        }).exec(function(err, data2) {
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else if (data2 && data2.length > 0) {
+                callback(null, data2);
+            } else {
+                callback([], null);
+            }
+        });
+    },
     heatSports: function(data, callback) {
         Sport.find({
             "sportslist._id": data.sportlist,
