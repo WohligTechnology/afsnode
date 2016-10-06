@@ -95,6 +95,34 @@ var models = {
             }
         });
     },
+    getFolders : function (data,callback) {
+      Media.aggregate([{
+        $match:{
+          "mediatype":"photo"
+        }
+      },  {
+        $group:{
+          _id:"$folder",
+          media:{
+            $addToSet:"$medialink"
+          }
+        }
+      },{
+        $project:{
+          _id:1,
+          media: { "$slice": ["$media", 0,1] }
+        }
+      },{
+        $unwind:"$media"
+      }
+    ]).exec(function (err,data) {
+        if(err){
+          callback(err,null);
+        }else{
+          callback(null,data);
+        }
+      });
+    },
     findLimited: function(data, callback) {
       var newreturns = {};
       newreturns.data = [];
