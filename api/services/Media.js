@@ -188,6 +188,15 @@ var models = {
                 callback([], null);
             }
         });
-    }
+    },
+    deleteAll: function(data, callback) {
+        Media.remove({}, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
 };
 module.exports = _.assign(module.exports, models);

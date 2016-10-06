@@ -156,15 +156,15 @@ var models = {
       }
     });
   },
-  deleteAll: function(data, callback) {
-    Student.remove({}, function(err, deleted) {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, deleted);
-      }
-    });
-  },
+  // deleteAll: function(data, callback) {
+  //   Student.remove({}, function(err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
   getOne: function(data, callback) {
     Student.findOne({
       _id: data._id
