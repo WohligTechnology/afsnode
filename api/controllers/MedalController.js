@@ -10,19 +10,26 @@ xlsxj = require("xlsx-to-json");
 module.exports = {
   saveData: function(req, res) {
     if (req.body) {
-      Media.saveData(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
+     if(req.body.medal && req.body.medal !== null){
+       Media.saveData(req.body, function(err, respo) {
+         if (err) {
+           res.json({
+             value: false,
+             data: err
+           });
+         } else {
+           res.json({
+             value: true,
+             data: respo
+           });
+         }
+       });
+     }else{
+       res.json({
+         value: false,
+         data: "Input Medal"
+       });
+     }
     } else {
       res.json({
         value: false,

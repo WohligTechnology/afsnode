@@ -11,19 +11,43 @@ var schema = new Schema({
       type:Schema.Types.ObjectId,
       ref:'School'
     },
-    student :{
+    player :{
       type:Schema.Types.ObjectId,
       ref:'Student'
+    },
+    team :{
+      type:Schema.Types.ObjectId,
+      ref:'Team'
+    },
+    participantType: {
+      type: String
     },
     sport:{
       type:Schema.Types.ObjectId,
       ref:'Sport'
     },
-    medalrank : Number
+    medal : Number
 });
 module.exports = sails.mongoose.model('Medal', schema);
 var models = {
     saveData: function(data, callback) {
+      function updateSingleStudent(tuple) {
+        Student.update({
+          _id:tuple.student
+        },{
+          $inc:{
+            totalPoints : data.points
+          }
+        },{
+
+        }, function(err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            callback(err,data);
+          }
+        });
+      }
         var medal = this(data);
         if (data._id) {
             this.findOneAndUpdate({
@@ -36,23 +60,47 @@ var models = {
                 }
             });
         } else {
-            Medal.find({
-                "folder": data.name
-            }).exec(function(err, data2) {
-                if (err) {
-                    callback(err, null);
-                } else if (data2 && data2[0]) {
-                    callback(null, data2);
-                } else {
-                    medal.save(function(err, data3) {
-                        if (err) {
-                            callback(err, null);
-                        } else {
-                            callback(null, data3);
-                        }
-                    });
+          Medal.populate(data,[{
+            path:'student'
+          },{
+            path:'team'
+          }],function (err,expanded) {
+            if(err){
+              callback(err,null);
+            }else{
+              if(data.participantType){
+                if(data.participantType == "player"){
+                  data.school = expanded.student.school;
+                }else{
+                  data.school = expanded.team.school;
                 }
-            });
+              }
+              medal.save(function(err, data3) {
+                  if (err) {
+                      callback(err, null);
+                  } else {
+                     if (data.medalrank){
+                       if(data.medalrank == 1){
+                         expanded.points = 5;
+                       }else if(data.medalrank == 2){
+                         expanded.points = 3;
+                       }else if(data.medalrank == 3){
+                         expanded.points = 2;
+                       }
+                     }
+                     if(data.participantType){
+                       if(data.participantType == "player"){
+                         updateSingleStudent(expanded);
+                       }else{
+
+                       }
+                     }
+                  }
+              });
+            }
+          });
+
+
         }
     },
     getAll: function(data, callback) {

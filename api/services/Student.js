@@ -19,6 +19,7 @@ var schema = new Schema({
   },
   deleteStatus: Boolean,
   gender: String,
+  totalPoints: Number,
   dob: Date,
   email: String,
   contact: String,
