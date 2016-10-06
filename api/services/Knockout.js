@@ -264,9 +264,9 @@ var models = {
             delete nextRound.endTime;
             delete nextRound.totalTime;
             var result = {};
-            if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
+            if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye" || data2['result' + data2.participantType + '1'] == "Walkover") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
               result['result' + data2.participantType] = data2[data2.participantType + '1'];
-            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" || data2['result' + data2.participantType + '2'] == "Bye")) {
+            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" || data2['result' + data2.participantType + '2'] == "Bye" || data2['result' + data2.participantType + '2'] == "Walkover")) {
               console.log("Loss");
               result['result' + data2.participantType] = data2[data2.participantType + '2'];
             } else {
