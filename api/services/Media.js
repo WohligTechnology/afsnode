@@ -98,7 +98,7 @@ var models = {
     getFolders : function (data,callback) {
       Media.aggregate([{
         $match:{
-          "mediatype":"photo"
+          "mediatype":data.mediatype
         }
       },  {
         $group:{
@@ -120,6 +120,62 @@ var models = {
           callback(err,null);
         }else{
           callback(null,data);
+        }
+      });
+    },
+    getLimitedMedia: function(data, callback) {
+      var newreturns = {};
+      newreturns.data = [];
+      var constraints = {};
+      // var check = new RegExp(data.search, "i");
+      // var checkid = new RegExp(parseInt(data.search));
+      data.pagenumber = parseInt(data.pagenumber);
+        var check = new RegExp(data.folder, "i");
+        constraints = {
+          'folder': {
+            '$regex': check
+          }
+        };
+        console.log(constraints);
+      async.parallel([
+        function(callback) {
+          Media.count(constraints).exec(function(err, number) {
+            if (err) {
+              console.log(err);
+              callback(err, null);
+            } else if (number && number !== "") {
+              console.log(number);
+              newreturns.total = number;
+              newreturns.totalpages = Math.ceil(number / 9);
+              callback(null, newreturns);
+            } else {
+              callback(null, newreturns);
+            }
+          });
+        },
+        function(callback) {
+          Media.find(constraints).sort({
+            imageorder: 1
+          }).skip(9 * (data.pagenumber - 1)).limit(9).exec(function(err, data2) {
+            if (err) {
+              console.log(err);
+              callback(err, null);
+            } else if (data2 && data2.length > 0) {
+              newreturns.data = data2;
+              callback(null, newreturns);
+            } else {
+              callback(null, newreturns);
+            }
+          });
+        }
+      ], function(err, data4) {
+        if (err) {
+          console.log(err);
+          callback(err, null);
+        } else if (data4) {
+          callback(null, newreturns);
+        } else {
+          callback(null, newreturns);
         }
       });
     },
