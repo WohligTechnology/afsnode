@@ -33,7 +33,7 @@ var models = {
     saveData: function(data, callback) {
       function updateSingleStudent(tuple) {
         Student.update({
-          _id:tuple.student
+          _id:tuple.player
         },{
           $inc:{
             totalPoints : data.points
@@ -48,7 +48,7 @@ var models = {
           }
         });
       }
-        var medal = this(data);
+      var medal = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -60,31 +60,37 @@ var models = {
                 }
             });
         } else {
+          console.log(data);
           Medal.populate(data,[{
-            path:'student'
+            path:'player'
           },{
             path:'team'
           }],function (err,expanded) {
             if(err){
               callback(err,null);
             }else{
+              // console.log(expanded);
+              console.log(data);
               if(data.participantType){
                 if(data.participantType == "player"){
-                  data.school = expanded.student.school;
+                  data.school = expanded.player.school;
                 }else{
                   data.school = expanded.team.school;
                 }
               }
+              data[data.participantType] = data[data.participantType]._id;
+              console.log(data);
+              medal = new Medal(data);
               medal.save(function(err, data3) {
                   if (err) {
                       callback(err, null);
                   } else {
-                     if (data.medalrank){
-                       if(data.medalrank == 1){
+                     if (data.medal){
+                       if(data.medal == 1){
                          expanded.points = 5;
-                       }else if(data.medalrank == 2){
+                       }else if(data.medal == 2){
                          expanded.points = 3;
-                       }else if(data.medalrank == 3){
+                       }else if(data.medal == 3){
                          expanded.points = 2;
                        }
                      }
@@ -111,6 +117,17 @@ var models = {
                 callback(null, deleted);
             }
         });
+    },
+    getAllBySport: function(data, callback) {
+        Medal.find({
+          sport:data.sport
+        }, {}, {}, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        }).populate('player').populate('team').populate('sport');
     },
     deleteData: function(data, callback) {
         Medal.findOneAndRemove({
