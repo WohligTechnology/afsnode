@@ -31,6 +31,7 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('Medal', schema);
 var models = {
     saveData: function(data, callback) {
+      var teamstudents = {};
       function updateSingleStudent(tuple) {
         Student.update({
           _id:tuple.player
@@ -44,8 +45,82 @@ var models = {
           if(err){
             callback(err,null);
           }else{
-            callback(err,data);
+            School.update({
+              _id:tuple.school
+            },{
+              $inc:{
+                totalPoints: data.points
+              }
+            },{
+
+            },function (err,data) {
+              if(err){
+                callback(err,null);
+              }else{
+                callback(null,data);
+              }
+            });
           }
+        });
+      }
+      function addStudent(singl) {
+        var constraints = {};
+        constraints = singl;
+        constraints.player = teamstudents.team.players[singl];
+        constraints.team = teamstudents.team._id;
+        medal = new Medal(constraints);
+        medal.save(function (err,added) {
+          if(err){
+            callback(err,null);
+          }else{
+            /// update code
+            Student.update({
+              _id : constraints.student
+            },{
+              $inc:{
+                totalPoints:constraints.points
+              }
+            },{
+
+            }, function (err,resp) {
+              if(err){
+                callback(err,null);
+              }else{
+                runThroughStudents(++singl);
+              }
+            });
+          }
+        });
+      }
+      function runThroughStudents(iterator) {
+        console.log(teamstudents);
+        if (teamstudents.team.players.length <= iterator) {
+          // runThroughHeats(++iterator);
+          callback(null,"done");
+        } else {
+          addStudent(iterator);
+        }
+      }
+      function updateTeamsAndAddStudents(tuple) {
+        Medal.populate(tuple,{
+          path:'team'
+        },function (err,expanded) {
+          School.update({
+            _id:tuple.school
+          },{
+            $inc:{
+              totalPoints: data.points
+            }
+          },{
+
+          },function (err,data) {
+            if(err){
+              callback(err,null);
+            }else{
+              teamstudents = expanded;
+              // callback(null,data);
+            }
+          });
         });
       }
       var medal = this(data);

@@ -134,7 +134,9 @@ var models = {
         constraints = {
           'folder': {
             '$regex': check
-          }
+          },
+          "year":data.year,
+          "mediatype":data.mediatype
         };
         console.log(constraints);
       async.parallel([
@@ -146,7 +148,7 @@ var models = {
             } else if (number && number !== "") {
               console.log(number);
               newreturns.total = number;
-              newreturns.totalpages = Math.ceil(number / 9);
+              newreturns.totalpages = Math.ceil(number / 12);
               callback(null, newreturns);
             } else {
               callback(null, newreturns);
@@ -156,7 +158,7 @@ var models = {
         function(callback) {
           Media.find(constraints).sort({
             imageorder: 1
-          }).skip(9 * (data.pagenumber - 1)).limit(9).exec(function(err, data2) {
+          }).skip(12 * (data.pagenumber - 1)).limit(12).exec(function(err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
