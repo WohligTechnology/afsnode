@@ -389,7 +389,8 @@ var models = {
 
   getSports: function(data, callback) {
     StudentSport.find({
-      student: data.student
+      student: data.student,
+      year:data.year
     }, function(err, deleted) {
       if (err) {
         callback(err, null);
