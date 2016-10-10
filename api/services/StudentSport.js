@@ -399,7 +399,7 @@ var models = {
   },
 
   getSportsPopulated: function(data, callback) {
-    StudentSport.findOne({
+    StudentSport.find({
       student: data.student,
       year:data.year
     }, function(err, found) {

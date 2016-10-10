@@ -33,6 +33,7 @@ var models = {
     saveData: function(data, callback) {
       var teamstudents = {};
       function updateSingleStudent(tuple) {
+        console.log("tuple",tuple);
         Student.update({
           _id:tuple.player
         },{
@@ -45,6 +46,7 @@ var models = {
           if(err){
             callback(err,null);
           }else{
+            console.log("data",data);
             School.update({
               _id:tuple.school
             },{
