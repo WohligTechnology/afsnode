@@ -399,14 +399,14 @@ var models = {
   },
 
   getSportsPopulated: function(data, callback) {
-    StudentSport.find({
+    StudentSport.findOne({
       student: data.student,
       year:data.year
-    }, function(err, deleted) {
+    }, function(err, found) {
       if (err) {
         callback(err, null);
       } else {
-        StudentSport.populate(deleted,{
+        SportsList.populate(found.toObject(),{
           path:'sportslist._id'
         },function (err,response) {
           if(err){
