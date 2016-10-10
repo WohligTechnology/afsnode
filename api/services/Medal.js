@@ -192,8 +192,6 @@ var models = {
               });
             }
           });
-
-
         }
     },
     getAll: function(data, callback) {
@@ -217,6 +215,7 @@ var models = {
         }).populate('player').populate('team').populate('sport').populate('school');
     },
     deleteData: function(data, callback) {
+      var teamstudents = {};
       function updateStudent(tuple) {
         Student.update({
           _id:tuple.player
@@ -260,6 +259,84 @@ var models = {
           }
         });
       }
+      function deleteStudent(singl) {
+        var constraints = {};
+        constraints.year = teamstudents.year;
+        constraints.participantType = 'player';
+        constraints.school = teamstudents.school;
+        constraints.sport = teamstudents.sport;
+        constraints.medal = teamstudents.medal;
+        constraints.player = teamstudents.team.players[singl];
+        constraints.team = teamstudents.team._id;
+        console.log("constraints",constraints);
+        // medal = new Medal(constraints);
+        Medal.findOneAndRemove(constraints, function(err, deleted) {
+          if(err){
+            callback(err,null);
+          }else{
+            /// update code
+            constraints.points = teamstudents.points;
+
+            Student.update({
+              _id : constraints.player
+            },{
+              $inc:{
+                totalPoints:(-1)*constraints.points
+              }
+            },{
+
+            }, function (err,resp) {
+              if(err){
+                callback(err,null);
+              }else{
+                runThroughStudents(++singl);
+              }
+            });
+          }
+        });
+      }
+      function runThroughStudents(iterator) {
+        console.log(teamstudents);
+        if (teamstudents.team.players.length <= iterator) {
+          // runThroughHeats(++iterator);
+          Medal.findOneAndRemove({
+              _id: teamstudents._id
+          }, function(err, deleted) {
+              if (err) {
+                  callback(err, null);
+              } else {
+                  callback(null, deleted);
+              }
+          });
+        } else {
+          deleteStudent(iterator);
+        }
+      }
+      function updateTeamsAndAddStudents(tuple) {
+        Medal.populate(tuple,{
+          path:'team'
+        },function (err,expanded) {
+          School.update({
+            _id:tuple.school
+          },{
+            $inc:{
+              totalPoints: (-1)*tuple.points
+            }
+          },{
+
+          },function (err,data) {
+            if(err){
+              callback(err,null);
+            }else{
+              teamstudents = expanded;
+              console.log("teamstudents",teamstudents);
+
+              runThroughStudents(0);
+              // callback(null,data);
+            }
+          });
+        });
+      }
       Medal.findOne({
           _id: data._id
       }, function(err, found) {
@@ -278,7 +355,7 @@ var models = {
               if(found.participantType == 'player'){
                 updateStudent(found);
               }else{
-                // updateTeamsAndAddStudent();
+                  updateTeamsAndAddStudents(found);
               }
           }
       });
@@ -291,6 +368,15 @@ var models = {
         //         callback(null, deleted);
         //     }
         // });
+    },
+    deleteAllMedal: function (data,callback) {
+      Medal.remove({},function (err,data) {
+        if(err){
+          callback(err,null);
+        }else{
+          callback(null,data);
+        }
+      });
     },
     getOne: function(data, callback) {
         Medal.findOne({
@@ -396,6 +482,36 @@ var models = {
                 callback([], null);
             }
         });
+    },
+    deleteAllPointData : function (data,callback) {
+      Student.update({},{
+        $set:{
+          totalPoints : 0
+        }
+      },{
+        multi : true
+      },function (err,updated) {
+        if(err){
+          callback(err,null);
+        }else{
+          console.log(updated);
+          // callback(null,data)
+          School.update({},{
+            $set:{
+              totalPoints : 0
+            }
+            },{
+            multi : true
+            },function (err,updated) {
+            if(err){
+              callback(err,null);
+            }else{
+              console.log(updated);
+              callback(null,updated);
+            }
+          });
+        }
+      });
     }
 };
 module.exports = _.assign(module.exports, models);
