@@ -406,9 +406,18 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        StudentSport.populate(deleted,{
+          path:'sportslist._id'
+        },function (err,response) {
+          if(err){
+            callback(err,null);
+          }else{
+            callback(null, response);
+
+          }
+        });
       }
-    }).populate('sportslist._id');
+    });
   }
 };
 module.exports = _.assign(module.exports, models);
