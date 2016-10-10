@@ -34,13 +34,13 @@ var models = {
       var teamstudents = {};
       function updateSingleStudent(tuple) {
         console.log("tuple",tuple);
+        var incConst = {};
+        incConst.$inc = {};
+        incConst.$inc['totalPoints'+tuple.year] = tuple.points;
+        console.log(incConst);
         Student.update({
           _id:tuple.player
-        },{
-          $inc:{
-            totalPoints : tuple.points
-          }
-        },{
+        },incConst,{
 
         }, function(err,data) {
           if(err){
@@ -49,11 +49,7 @@ var models = {
             console.log("data",data);
             School.update({
               _id:tuple.school
-            },{
-              $inc:{
-                totalPoints: tuple.points
-              }
-            },{
+            },incConst,{
 
             },function (err,data) {
               if(err){
@@ -77,6 +73,9 @@ var models = {
         constraints.player = teamstudents.team.players[singl];
         constraints.team = teamstudents.team._id;
         console.log("constraints",constraints);
+        var incConst = {};
+        incConst.$inc = {};
+        incConst.$inc['totalPoints'+constraints.year] = constraints.points;
         medal = new Medal(constraints);
         medal.save(function (err,added) {
           if(err){
@@ -85,11 +84,7 @@ var models = {
             /// update code
             Student.update({
               _id : constraints.player
-            },{
-              $inc:{
-                totalPoints:constraints.points
-              }
-            },{
+            },incConst,{
 
             }, function (err,resp) {
               if(err){
@@ -111,16 +106,15 @@ var models = {
         }
       }
       function updateTeamsAndAddStudents(tuple) {
+        var incConst = {};
+        incConst.$inc = {};
+        incConst.$inc['totalPoints'+tuple.year] = tuple.points;
         Medal.populate(tuple,{
           path:'team'
         },function (err,expanded) {
           School.update({
             _id:tuple.school
-          },{
-            $inc:{
-              totalPoints: tuple.points
-            }
-          },{
+          },incConst,{
 
           },function (err,data) {
             if(err){
@@ -184,6 +178,7 @@ var models = {
                      if(data.participantType){
                        if(data.participantType == "player"){
                          updateSingleStudent(expanded);
+                         console.log("player");
                        }else{
                          updateTeamsAndAddStudents(expanded);
                        }
@@ -217,13 +212,12 @@ var models = {
     deleteData: function(data, callback) {
       var teamstudents = {};
       function updateStudent(tuple) {
+        var incConst = {};
+        incConst.$inc = {};
+        incConst.$inc['totalPoints'+tuple.year] = (-1)*tuple.points;
         Student.update({
           _id:tuple.player
-        },{
-          $inc:{
-            totalPoints : (-1)*tuple.points
-          }
-        },{
+        },incConst,{
 
         }, function(err,data) {
           if(err){
@@ -232,11 +226,7 @@ var models = {
             console.log("data",data);
             School.update({
               _id:tuple.school
-            },{
-              $inc:{
-                totalPoints: (-1)*tuple.points
-              }
-            },{
+            },incConst,{
 
             },function (err,data) {
               if(err){
@@ -276,14 +266,12 @@ var models = {
           }else{
             /// update code
             constraints.points = teamstudents.points;
-
+            var incConst = {};
+            incConst.$inc = {};
+            incConst.$inc['totalPoints'+constraints.year] = (-1)*constraints.points;
             Student.update({
               _id : constraints.player
-            },{
-              $inc:{
-                totalPoints:(-1)*constraints.points
-              }
-            },{
+            },incConst,{
 
             }, function (err,resp) {
               if(err){
@@ -313,16 +301,15 @@ var models = {
         }
       }
       function updateTeamsAndAddStudents(tuple) {
+        var incConst = {};
+        incConst.$inc = {};
+        incConst.$inc['totalPoints'+tuple.year] = (-1)*tuple.points;
         Medal.populate(tuple,{
           path:'team'
         },function (err,expanded) {
           School.update({
             _id:tuple.school
-          },{
-            $inc:{
-              totalPoints: (-1)*tuple.points
-            }
-          },{
+          },incConst,{
 
           },function (err,data) {
             if(err){
@@ -486,7 +473,9 @@ var models = {
     deleteAllPointData : function (data,callback) {
       Student.update({},{
         $set:{
-          totalPoints : 0
+          totalPoints2015 : 0,
+          totalPoints2016 : 0,
+          totalPoints2017 : 0
         }
       },{
         multi : true
@@ -498,7 +487,9 @@ var models = {
           // callback(null,data)
           School.update({},{
             $set:{
-              totalPoints : 0
+              totalPoints2015 : 0,
+              totalPoints2016 : 0,
+              totalPoints2017 : 0
             }
             },{
             multi : true
