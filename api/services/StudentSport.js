@@ -406,7 +406,7 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        SportsList.populate(found.toObject(),{
+        SportsList.populate(found,{
           path:'sportslist._id'
         },function (err,response) {
           if(err){
