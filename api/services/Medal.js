@@ -38,7 +38,7 @@ var models = {
           _id:tuple.player
         },{
           $inc:{
-            totalPoints : data.points
+            totalPoints : tuple.points
           }
         },{
 
@@ -51,7 +51,7 @@ var models = {
               _id:tuple.school
             },{
               $inc:{
-                totalPoints: data.points
+                totalPoints: tuple.points
               }
             },{
 
@@ -59,6 +59,7 @@ var models = {
               if(err){
                 callback(err,null);
               }else{
+                console.log(data);
                 callback(null,data);
               }
             });
@@ -67,9 +68,15 @@ var models = {
       }
       function addStudent(singl) {
         var constraints = {};
-        constraints = singl;
+        constraints.year = teamstudents.year;
+        constraints.participantType = 'player';
+        constraints.school = teamstudents.school;
+        constraints.sport = teamstudents.sport;
+        constraints.medal = teamstudents.medal;
+        constraints.points = teamstudents.points;
         constraints.player = teamstudents.team.players[singl];
         constraints.team = teamstudents.team._id;
+        console.log("constraints",constraints);
         medal = new Medal(constraints);
         medal.save(function (err,added) {
           if(err){
@@ -77,7 +84,7 @@ var models = {
           }else{
             /// update code
             Student.update({
-              _id : constraints.student
+              _id : constraints.player
             },{
               $inc:{
                 totalPoints:constraints.points
@@ -111,7 +118,7 @@ var models = {
             _id:tuple.school
           },{
             $inc:{
-              totalPoints: data.points
+              totalPoints: tuple.points
             }
           },{
 
@@ -120,6 +127,9 @@ var models = {
               callback(err,null);
             }else{
               teamstudents = expanded;
+              console.log("teamstudents",teamstudents);
+
+              runThroughStudents(0);
               // callback(null,data);
             }
           });
@@ -175,7 +185,7 @@ var models = {
                        if(data.participantType == "player"){
                          updateSingleStudent(expanded);
                        }else{
-
+                         updateTeamsAndAddStudents(expanded);
                        }
                      }
                   }
@@ -204,18 +214,83 @@ var models = {
             } else {
                 callback(null, deleted);
             }
-        }).populate('player').populate('team').populate('sport');
+        }).populate('player').populate('team').populate('sport').populate('school');
     },
     deleteData: function(data, callback) {
-        Medal.findOneAndRemove({
-            _id: data._id
-        }, function(err, deleted) {
-            if (err) {
-                callback(err, null);
-            } else {
-                callback(null, deleted);
-            }
+      function updateStudent(tuple) {
+        Student.update({
+          _id:tuple.player
+        },{
+          $inc:{
+            totalPoints : (-1)*tuple.points
+          }
+        },{
+
+        }, function(err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            console.log("data",data);
+            School.update({
+              _id:tuple.school
+            },{
+              $inc:{
+                totalPoints: (-1)*tuple.points
+              }
+            },{
+
+            },function (err,data) {
+              if(err){
+                callback(err,null);
+              }else{
+                // console.log(data);
+                // callback(null,data);
+                console.log(data);
+                Medal.findOneAndRemove({
+                    _id: tuple._id
+                }, function(err, deleted) {
+                    if (err) {
+                        callback(err, null);
+                    } else {
+                        callback(null, deleted);
+                    }
+                });
+              }
+            });
+          }
         });
+      }
+      Medal.findOne({
+          _id: data._id
+      }, function(err, found) {
+          if (err) {
+              callback(err, null);
+          } else {
+              if (found.medal){
+                if(found.medal == 1){
+                  found.points = 5;
+                }else if(found.medal == 2){
+                  found.points = 3;
+                }else if(found.medal == 3){
+                  found.points = 2;
+                }
+              }
+              if(found.participantType == 'player'){
+                updateStudent(found);
+              }else{
+                // updateTeamsAndAddStudent();
+              }
+          }
+      });
+        // Medal.findOneAndRemove({
+        //     _id: data._id
+        // }, function(err, deleted) {
+        //     if (err) {
+        //         callback(err, null);
+        //     } else {
+        //         callback(null, deleted);
+        //     }
+        // });
     },
     getOne: function(data, callback) {
         Medal.findOne({

@@ -28,7 +28,10 @@ var schema = new Schema({
     supporterLogo: String,
     blog: Schema.Types.Mixed,
     medals: Schema.Types.Mixed,
-    totalPoints: Number,
+    totalPoints: {
+      type:Number,
+      default:0
+    },
     rank: Number,
     sfaAwards: Schema.Types.Mixed,
     sfaRecords: Schema.Types.Mixed,
