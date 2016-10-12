@@ -194,6 +194,27 @@ var models = {
           });
         }
     },
+    countOneSchoolMedal:function () {
+      Medal.aggregate([{
+        school:data.school,
+        isAddedFromTeam : false,
+        year:data.year
+      },{
+        $group:{
+          _id:{
+            medal : "$medal"
+          },
+          count:"$count"
+        }
+      }
+    ]).exec(function (err,data) {
+        if(err){
+          callback(err,null);
+        }else{
+          callback(null,data);
+        }
+      });
+    },
     getAll: function(data, callback) {
         Medal.find({}, {}, {}, function(err, deleted) {
             if (err) {
