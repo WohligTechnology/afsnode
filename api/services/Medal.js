@@ -227,32 +227,36 @@ var models = {
         if(err){
           callback(err,null);
         }else{
-          var medalRepresentation = {};
-          if(_.find(data,function (key) {
-            return key._id == 1;
-          })){
-            medalRepresentation.gold= _.find(data,function (key) {
+          if(data.length > 0){
+            var medalRepresentation = {};
+            if(_.find(data,function (key) {
               return key._id == 1;
-            }).count;
-          }
+            })){
+              medalRepresentation.gold= _.find(data,function (key) {
+                return key._id == 1;
+              }).count;
+            }
 
-          if( _.find(data,function (key) {
-            return key._id == 2;
-          })){
-            medalRepresentation.silver= _.find(data,function (key) {
+            if( _.find(data,function (key) {
               return key._id == 2;
-            }).count;
-          }
+            })){
+              medalRepresentation.silver= _.find(data,function (key) {
+                return key._id == 2;
+              }).count;
+            }
 
-          if( _.find(data,function (key) {
-            return key._id == 3;
-          })){
-            medalRepresentation.bronze= _.find(data,function (key) {
+            if( _.find(data,function (key) {
               return key._id == 3;
-            }).count;
-          }
+            })){
+              medalRepresentation.bronze= _.find(data,function (key) {
+                return key._id == 3;
+              }).count;
+            }
 
-          callback(null,medalRepresentation);
+            callback(null,medalRepresentation);
+          }else{
+            callback({},null);
+          }
           // callback(null,data);
         }
       });

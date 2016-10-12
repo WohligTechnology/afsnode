@@ -49,6 +49,28 @@ module.exports = {
       });
     }
   },
+  updateAllStudentRef: function(req, res) {
+    if (req.body) {
+      StudentSport.updateAllStudentRef(req.body, function(err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getSports: function(req, res) {
     if (req.body) {
         StudentSport.getSports(req.body, function(err, respo) {
@@ -64,7 +86,7 @@ module.exports = {
             });
           }
         });
-    
+
     } else {
       res.json({
         value: false,

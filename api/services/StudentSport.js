@@ -108,57 +108,56 @@ var models = {
   },
   getSchoolSportByGender: function(data, callback) {
     StudentSport.aggregate([{
-      $match: {
-        "school._id": data._id,
-        "year":data.year
-      }
-    },
-     {
-      $lookup: {
-        from: 'students' ,
-        localField: 'student' ,
-        foreignField: '_id',
-        as: 'student'
-      }
-    },{
-      $unwind:"$student"
-    }, {
-      $group: {
-        _id: {
-          sport: "$sportslist._id",
-          gender:"$student.gender"
-        },
-        "count":{
-          $sum:1
+        $match: {
+          "school._id": data._id,
+          "year": data.year
         }
-      }
-    },{
-      $group:{
-        "_id":"$_id.sport",
-        "gender":{
-          $addToSet:{
-            name : "$_id.gender",
-            "count":"$count"
+      }, {
+        $lookup: {
+          from: 'students',
+          localField: 'student',
+          foreignField: '_id',
+          as: 'student'
+        }
+      }, {
+        $unwind: "$student"
+      }, {
+        $group: {
+          _id: {
+            sport: "$sportslist._id",
+            gender: "$student.gender"
+          },
+          "count": {
+            $sum: 1
+          }
+        }
+      }, {
+        $group: {
+          "_id": "$_id.sport",
+          "gender": {
+            $addToSet: {
+              name: "$_id.gender",
+              "count": "$count"
+            }
           }
         }
       }
-    }
-    // ,{
-    //   $unwind:"$sport"
-    // }
-  ]).exec(function(err, response) {
+      // ,{
+      //   $unwind:"$sport"
+      // }
+    ]).exec(function(err, response) {
       if (err) {
         callback(err, null);
       } else {
-        SportsList.populate(response,{
-          path:"_id"
-        },function (err,data) {
+        SportsList.populate(response, {
+          path: "_id"
+        }, function(err, data) {
           if (err) {
             callback(err, null);
           } else {
-        callback(null, data);
-      }
-    });
+            callback(null, data);
+          }
+        });
         // callback(null, data);
       }
     });
@@ -401,22 +400,68 @@ var models = {
   getSportsPopulated: function(data, callback) {
     StudentSport.find({
       student: data.student,
-      year:data.year
+      year: data.year
     }, function(err, found) {
       if (err) {
         callback(err, null);
       } else {
-        SportsList.populate(found,{
-          path:'sportslist._id'
-        },function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
+        SportsList.populate(found, {
+          path: 'sportslist._id'
+        }, function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
             callback(null, response);
 
           }
         });
       }
+    });
+  },
+  updateAllStudentRef: function(data, callback) {
+    StudentSport.find({}, {}, {}, function(err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        async.each(data, function(j, callback1) {
+
+          //   Mustdocity.saveData2(j, function(err, updated) {
+          //     if (err) {
+          //       console.log(err);
+          //       callback1(err, null);
+          //     } else {
+          //       if (updated._id) {
+          //         mustDoId.push(updated._id);
+          //       }
+          //       callback1(null, updated);
+          //     }
+          //   });
+          //
+          StudentSport.saveData({
+            _id:j._id
+          },{
+
+          },{
+            student:j.student
+          },function (err,resp) {
+            if(err){
+              callback1(err,null);
+            }else{
+              callback1(null,resp);
+
+            }
+          });
+        }, function(err) {
+          if (err) {
+            console.log(err);
+            callback(err, null);
+          } else {
+            callback(null, "Done");
+          }
+        });
+
+      }
+
     });
   }
 };
