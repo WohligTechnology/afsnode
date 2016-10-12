@@ -204,9 +204,9 @@ var models = {
       },{
         $group:{
           _id:{
-            medal : "$medal"
-          },
-          count:"$count"
+            medal : "$medal",
+            count:"$count"
+          }
         }
       }
     ]).exec(function (err,data) {
