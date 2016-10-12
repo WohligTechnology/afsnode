@@ -26,6 +26,10 @@ var schema = new Schema({
       type:Schema.Types.ObjectId,
       ref:'Sport'
     },
+    isAddedFromTeam : {
+      type:Boolean,
+      default:false
+    },
     medal : Number
 });
 module.exports = sails.mongoose.model('Medal', schema);
@@ -72,6 +76,7 @@ var models = {
         constraints.points = teamstudents.points;
         constraints.player = teamstudents.team.players[singl];
         constraints.team = teamstudents.team._id;
+        constraints.isAddedFromTeam = true;
         console.log("constraints",constraints);
         var incConst = {};
         incConst.$inc = {};
