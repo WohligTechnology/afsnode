@@ -205,30 +205,55 @@ var models = {
         }
       },{
         $group:{
-          _id:{
-            medal : "$medal",
-
-          },
+          _id:"$medal",
           "count":{
             $sum:1
           }
         }
       },{
-        $project:{
-          medal:"$_id.medal",
-          count:1,
-          "_id":0
-        }
-      },{
         $sort :{
-          "medal":1
+          "_id":1
         }
       }
+      // ,{
+      //   $project:{
+      //     medal:"$_id.medal",
+      //     count:1,
+      //     "_id":0
+      //   }
+      // }
+
     ]).exec(function (err,data) {
         if(err){
           callback(err,null);
         }else{
-          callback(null,data);
+          var medalRepresentation = {};
+          if(_.find(data,function (key) {
+            return key._id == 1;
+          })){
+            medalRepresentation.gold= _.find(data,function (key) {
+              return key._id == 1;
+            }).count;
+          }
+
+          if( _.find(data,function (key) {
+            return key._id == 2;
+          })){
+            medalRepresentation.silver= _.find(data,function (key) {
+              return key._id == 2;
+            }).count;
+          }
+
+          if( _.find(data,function (key) {
+            return key._id == 3;
+          })){
+            medalRepresentation.bronze= _.find(data,function (key) {
+              return key._id == 3;
+            }).count;
+          }
+
+          callback(null,medalRepresentation);
+          // callback(null,data);
         }
       });
     },
