@@ -127,19 +127,27 @@ module.exports = {
   },
   countOneSchoolMedal: function(req, res) {
     if (req.body) {
-      Medal.countOneSchoolMedal(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
+      if(req.body.school && req.body.year){
+        Medal.countOneSchoolMedal(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:"Input inadequate"
+        });
+      }
+
     } else {
       res.json({
         value: false,
