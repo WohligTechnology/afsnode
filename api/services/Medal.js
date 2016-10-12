@@ -254,7 +254,7 @@ var models = {
     countOneStudentMedal:function (data,callback) {
       Medal.aggregate([{
         $match:{
-          student:objectid(data.student),
+          player:objectid(data.student),
           year:data.year
         }
       },{
