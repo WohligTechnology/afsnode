@@ -284,7 +284,7 @@ var models = {
     console.log(studentconstraints);
     StudentSport.aggregate([{
       $match: {
-      'sportslist._id': objectid(data.sport),
+        'sportslist._id': data.sport,
         'year': data.year
       }
     }, {
