@@ -194,7 +194,7 @@ var models = {
           });
         }
     },
-    countOneSchoolMedal:function () {
+    countOneSchoolMedal:function (data,callback) {
       Medal.aggregate([{
         school:data.school,
         isAddedFromTeam : false,
