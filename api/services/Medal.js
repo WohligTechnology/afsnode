@@ -5,6 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;
+var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
     year:String,
     school :{
@@ -195,9 +196,10 @@ var models = {
         }
     },
     countOneSchoolMedal:function (data,callback) {
+      console.log(data);
       Medal.aggregate([{
         $match:{
-          school:data.school,
+          school:objectid(data.school),
           isAddedFromTeam : false,
           year:data.year
         }
@@ -205,8 +207,21 @@ var models = {
         $group:{
           _id:{
             medal : "$medal",
-            count:"$count"
+
+          },
+          "count":{
+            $sum:1
           }
+        }
+      },{
+        $project:{
+          medal:"$_id.medal",
+          count:1,
+          "_id":0
+        }
+      },{
+        $sort :{
+          "medal":1
         }
       }
     ]).exec(function (err,data) {
