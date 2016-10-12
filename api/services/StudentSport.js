@@ -5,6 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;
+var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
   year: String,
   sportslist: {
@@ -87,9 +88,38 @@ var models = {
   saveData: function(data, callback) {
     var studentsport = this(data);
     if (data._id) {
+      console.log(data);
       this.findOneAndUpdate({
         _id: data._id
       }, data, function(err, data2) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data2);
+        }
+      });
+    } else {
+      studentsport.save(function(err, data2) {
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, data2);
+        }
+      });
+    }
+  },
+  saveDataMass: function(data, callback) {
+    var studentsport = this(data);
+    if (data._id) {
+      // data.student = "'"+data.student.toString()+"'";
+      console.log(data);
+      this.findOneAndUpdate({
+        _id: data._id
+      }, {
+        $set:{
+          "student":data.student
+        }
+      }, function(err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -254,7 +284,7 @@ var models = {
     console.log(studentconstraints);
     StudentSport.aggregate([{
       $match: {
-        'sportslist._id': data.sport,
+      'sportslist._id': objectid(data.sport),
         'year': data.year
       }
     }, {
@@ -418,11 +448,40 @@ var models = {
       }
     });
   },
+  // updateAllStudentRef: function(data, callback) {
+  //   var studentsports = [];
+  //   function saveMeeeeee(iterator) {
+  //     console.log();
+  //     StudentSport.saveData(studentsports[iterator],function (err,response) {
+  //       runThroughSaves(++iterator);
+  //     });
+  //   }
+  //   function runThroughSaves(iterator) {
+  //     if(studentsports.length <= iterator){
+  //       callback(null,"done");
+  //     }else
+  //     {
+  //       saveMeeeeee(iterator);
+  //     }
+  //   }
+  //   StudentSport.find({}, {}, {}, function(err, data) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       console.log(data.length);
+  //       studentsports = data;
+  //       runThroughSaves(0);
+  //
+  //     }
+  //
+  //   });
+  // }
   updateAllStudentRef: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, data) {
       if (err) {
         callback(err, null);
       } else {
+        console.log(data.length);
         async.each(data, function(j, callback1) {
 
           //   Mustdocity.saveData2(j, function(err, updated) {
@@ -437,20 +496,35 @@ var models = {
           //     }
           //   });
           //
-          StudentSport.saveData({
-            _id:j._id
-          },{
+          if(j.student && j.sportslist){
+            StudentSport.findOneAndUpdate({
+              _id:j._id
+            },{
 
-          },{
-            student:j.student
-          },function (err,resp) {
-            if(err){
-              callback1(err,null);
-            }else{
-              callback1(null,resp);
+            },{
+              $set:{
+                student:objectid(j.student),
+                "sportslist._id":objectid(j.sportslist._id)
+              }
+            },function (err,resp) {
+              if(err){
+                callback1(err,null);
+              }else{
+                callback1(null,resp);
 
-            }
-          });
+              }
+            });
+              // StudentSport.saveDataMass(j, function(err, updated) {
+              //   if (err) {
+              //     console.log(err);
+              //     callback1(err, null);
+              //   } else {
+              //     callback1(null, updated);
+              //   }
+              // });
+          }else{
+            callback1(null,"done");
+          }
         }, function(err) {
           if (err) {
             console.log(err);

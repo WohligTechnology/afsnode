@@ -71,12 +71,12 @@ var models = {
         var constraints = {};
         constraints.year = teamstudents.year;
         constraints.participantType = 'player';
-        constraints.school = teamstudents.school;
+        // constraints.school = teamstudents.school;
         constraints.sport = teamstudents.sport;
         constraints.medal = teamstudents.medal;
         constraints.points = teamstudents.points;
         constraints.player = teamstudents.team.players[singl];
-        constraints.team = teamstudents.team._id;
+        // constraints.team = teamstudents.team._id;
         constraints.isAddedFromTeam = true;
         console.log("constraints",constraints);
         var incConst = {};
@@ -214,16 +214,7 @@ var models = {
         $sort :{
           "_id":1
         }
-      }
-      // ,{
-      //   $project:{
-      //     medal:"$_id.medal",
-      //     count:1,
-      //     "_id":0
-      //   }
-      // }
-
-    ]).exec(function (err,data) {
+      }]).exec(function (err,data) {
         if(err){
           callback(err,null);
         }else{
@@ -257,7 +248,61 @@ var models = {
           }else{
             callback({},null);
           }
-          // callback(null,data);
+        }
+      });
+    },
+    countOneStudentMedal:function (data,callback) {
+      console.log(data);
+      Medal.aggregate([{
+        $match:{
+          student:objectid(data.school),
+          year:data.year
+        }
+      },{
+        $group:{
+          _id:"$medal",
+          "count":{
+            $sum:1
+          }
+        }
+      },{
+        $sort :{
+          "_id":1
+        }
+      }]).exec(function (err,data) {
+        if(err){
+          callback(err,null);
+        }else{
+          if(data.length > 0){
+            var medalRepresentation = {};
+            if(_.find(data,function (key) {
+              return key._id == 1;
+            })){
+              medalRepresentation.gold= _.find(data,function (key) {
+                return key._id == 1;
+              }).count;
+            }
+
+            if( _.find(data,function (key) {
+              return key._id == 2;
+            })){
+              medalRepresentation.silver= _.find(data,function (key) {
+                return key._id == 2;
+              }).count;
+            }
+
+            if( _.find(data,function (key) {
+              return key._id == 3;
+            })){
+              medalRepresentation.bronze= _.find(data,function (key) {
+                return key._id == 3;
+              }).count;
+            }
+
+            callback(null,medalRepresentation);
+          }else{
+            callback({},null);
+          }
         }
       });
     },
