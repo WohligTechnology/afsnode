@@ -196,9 +196,11 @@ var models = {
     },
     countOneSchoolMedal:function (data,callback) {
       Medal.aggregate([{
-        school:data.school,
-        isAddedFromTeam : false,
-        year:data.year
+        $match:{
+          school:data.school,
+          isAddedFromTeam : false,
+          year:data.year
+        }
       },{
         $group:{
           _id:{
