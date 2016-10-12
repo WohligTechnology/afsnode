@@ -155,6 +155,36 @@ module.exports = {
       });
     }
   },
+  countOneStudentMedal: function(req, res) {
+    if (req.body) {
+      if(req.body.student && req.body.year){
+        Medal.countOneStudentMedal(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:"Input inadequate"
+        });
+      }
+
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   deleteAllPointData: function(req, res) {
     if (req.body) {
       Medal.deleteAllPointData(req.body, function(err, respo) {

@@ -252,10 +252,9 @@ var models = {
       });
     },
     countOneStudentMedal:function (data,callback) {
-      console.log(data);
       Medal.aggregate([{
         $match:{
-          student:objectid(data.school),
+          student:objectid(data.student),
           year:data.year
         }
       },{
