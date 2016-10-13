@@ -636,6 +636,43 @@ var models = {
       }
     });
   },
+  getSchoolByYear: function(data, callback) {
+    var newreturns = {};
+    newreturns.data = [];
+    async.parallel([
+      function(callback) {
+        var constraints ={};
+        if(data.year && data.year !== ''){
+          constraints.year =  data.year;
+        }
+        School.find(constraints,{},{},function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            newreturns.data = data;
+            callback(null,data);
+          }
+        });
+      },
+      function(callback) {
+        School.count().exec(function(err, deleted) {
+          if (err) {
+            callback(err, null);
+          } else {
+            newreturns.count = deleted;
+            callback(null, newreturns);
+          }
+        });
+      }
+    ], function(err, found) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else {
+        callback(null, newreturns);
+      }
+    });
+  },
   searchSchool: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];
