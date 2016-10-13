@@ -649,11 +649,15 @@ var models = {
             $in: years
           };
         }
-        School.find(constraints,{},{},function (err,data) {
+        School.find(constraints,{
+          _id:1,
+          name:1
+        }).lean().exec(function (err,data) {
           if(err){
             callback(err,null);
           }else{
             newreturns.data = data;
+            console.log(data.length);
             callback(null,data);
           }
         });
