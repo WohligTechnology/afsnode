@@ -643,7 +643,11 @@ var models = {
       function(callback) {
         var constraints ={};
         if(data.year && data.year !== ''){
-          constraints.year =  data.year;
+          var years = [];
+          years.push(data.year);
+          constraints.year =  {
+            $in: years
+          };
         }
         School.find(constraints,{},{},function (err,data) {
           if(err){
