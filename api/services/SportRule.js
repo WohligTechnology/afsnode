@@ -109,6 +109,7 @@ var models = {
   },
   getOneByName: function(data, callback) {
     var check = new RegExp(data.name, "i");
+    // console.log(check);
     SportRule.aggregate([{
       $lookup: {
         from: "sportslists",
@@ -120,14 +121,24 @@ var models = {
       $unwind:'$sportid'
     },{
       $match:{
-        'sportid.name': check
+        'sportid.name': {
+        "$regex":check  
+        }
+
       }
     }
   ]).exec(function(err, response) {
       if(err){
         callback(err,null);
       }else{
-        callback(null,response[0]);
+        // console.log(response);
+        // log
+        if(response.length>0){
+          callback(null,response[0]);
+
+        }else{
+          callback({},null);
+        }
       }
     });
     // SportRule.findOne({
