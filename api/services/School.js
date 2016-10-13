@@ -651,7 +651,10 @@ var models = {
         }
         School.find(constraints,{
           _id:1,
-          name:1
+          name:1,
+          sfaid :1
+        }).sort({
+          sfaid :1
         }).lean().exec(function (err,data) {
           if(err){
             callback(err,null);
