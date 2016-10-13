@@ -51,7 +51,7 @@ module.exports = {
     },
     getSchoolByYear: function(req, res) {
         if (req.body) {
-            if(req.body.year){
+            // if(req.body.year){
               School.getSchoolByYear(req.body, function(err, respo) {
                   if (err) {
                       res.json({
@@ -65,12 +65,12 @@ module.exports = {
                       });
                   }
               });
-            }else{
-              res.json({
-                  value: false,
-                  data: "Input inadequate"
-              });
-            }
+            // }else{
+            //   res.json({
+            //       value: false,
+            //       data: "Input inadequate"
+            //   });
+            // }
         } else {
             res.json({
                 value: false,
