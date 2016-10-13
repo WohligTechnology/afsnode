@@ -122,7 +122,7 @@ var models = {
     },{
       $match:{
         'sportid.name': {
-        "$regex":check  
+        "$regex":check
         }
 
       }
@@ -131,8 +131,6 @@ var models = {
       if(err){
         callback(err,null);
       }else{
-        // console.log(response);
-        // log
         if(response.length>0){
           callback(null,response[0]);
 
@@ -141,15 +139,6 @@ var models = {
         }
       }
     });
-    // SportRule.findOne({
-    //   'sportid.name': check
-    // }).populate("sportid").exec(function(err, deleted) {
-    //   if (err) {
-    //     callback(err, null);
-    //   } else {
-    //     callback(null, deleted);
-    //   }
-    // });
   }
 };
 module.exports = _.assign(module.exports, models);

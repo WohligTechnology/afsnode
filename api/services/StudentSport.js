@@ -68,20 +68,6 @@ var schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   }
-  // ,
-  // sportconfig:{
-  //   type:Schema.Types.ObjectId,
-  //   ref:'Sport'
-  // },
-  // knockout : {
-  //   type:Schema.Types.ObjectId,
-  //   ref:'Knockout'
-  // }
-  // ,
-  // league: {
-  //   type:Schema.Types.ObjectId,
-  //   ref: 'League'
-  // }
 });
 module.exports = sails.mongoose.model('StudentSport', schema);
 var models = {

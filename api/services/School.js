@@ -413,6 +413,7 @@ var models = {
             }
           });
         },
+
         function(callback) {
           School.find(checkObj).sort({
             sfaid: -1
@@ -514,14 +515,6 @@ var models = {
         };
         var sortconstraints = {};
         sortconstraints['school.totalPoints' + data.year] = -1;
-        // School.find(constraints).sort(sortconstraints).limit(20).exec(function(err, deleted) {
-        //     if (err) {
-        //         callback(err, null);
-        //     } else {
-        //         newreturns.data = deleted;
-        //         callback(null, deleted);
-        //     }
-        // });
         School.aggregate([{
             $match: constraints
           }, {

@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;
+var objectid = require("mongodb").ObjectId;
+
 var schema = new Schema({
   year: String,
   sport: {
@@ -15,9 +17,9 @@ var schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
-  school:{
-    type:Schema.Types.ObjectId,
-    ref:'School'
+  school: {
+    type: Schema.Types.ObjectId,
+    ref: 'School'
   },
   team: {
     type: Schema.Types.ObjectId,
@@ -48,96 +50,88 @@ var models = {
         }
       });
     } else {
-      // studentstats.save(function(err, data3) {
-      //   if (err) {
-      //     callback(err, null);
-      //   } else {
-
-      // callback(null, data3);
-      //   }
-      // });
       if (data.student !== "" && data.student !== undefined && data.student !== null) {
         var isexistent = {};
         isexistent = {
           student: data.student,
           year: data.year,
           drawFormat: data.drawFormat,
-          sport:data.sport
+          sport: data.sport
         };
-        StudentStats.populate(data,{
-          path:'student'
-        },function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
-            // console.log(response);
-            data.school = response.student.school;
-        if (data.drawFormat == "Knockout") {
-          isexistent.knockout = data.knockout;
-        }else if(data.drawFormat == "Heats"){
-          isexistent.heat = data.heat;
-        }
-        StudentStats.findOneAndUpdate(isexistent, {
-          $setOnInsert: data
-        }, {
-          upsert: true,
-          new: true
-        }, function(err, inserted) {
+        StudentStats.populate(data, {
+          path: 'student'
+        }, function(err, response) {
           if (err) {
             callback(err, null);
           } else {
-            // console.log(inserted);
-            StudentStats.populate(inserted, [{
-              path: 'sport'
+            // console.log(response);
+            data.school = response.student.school;
+            if (data.drawFormat == "Knockout") {
+              isexistent.knockout = data.knockout;
+            } else if (data.drawFormat == "Heats") {
+              isexistent.heat = data.heat;
+            }
+            StudentStats.findOneAndUpdate(isexistent, {
+              $setOnInsert: data
             }, {
-              path: 'student',
-              populate: {
-                path: 'school'
-              }
-            }], function(err, response) {
+              upsert: true,
+              new: true
+            }, function(err, inserted) {
               if (err) {
                 callback(err, null);
               } else {
-                var constraints = {
-                  year: response.year,
-                  "sportslist._id": response.sport.sportslist._id,
-                  "student": response.student._id,
-                  "agegroup._id": response.sport.agegroup._id
-                };
-                if (response.sport.firstcategory && response.sport.firstcategory._id) {
-                  constraints["firstcategory._id"] = response.sport.firstcategory._id;
-                }
-                if(response.school){
-                  StudentSport.findOneAndUpdate(constraints, {
-                    $setOnInsert: {
-                      student: response.student._id,
+                // console.log(inserted);
+                StudentStats.populate(inserted, [{
+                  path: 'sport'
+                }, {
+                  path: 'student',
+                  populate: {
+                    path: 'school'
+                  }
+                }], function(err, response) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
+                    var constraints = {
                       year: response.year,
-                      sportslist: response.sport.sportslist,
-                      agegroup: response.sport.agegroup,
-                      firstcategory: response.sport.firstcategory,
-                      secondcategory: response.sport.secondcategory,
-                      "school._id": response.student.school._id,
-                      "school.name": response.student.school.name
+                      "sportslist._id": response.sport.sportslist._id,
+                      "student": response.student._id,
+                      "agegroup._id": response.sport.agegroup._id
+                    };
+                    if (response.sport.firstcategory && response.sport.firstcategory._id) {
+                      constraints["firstcategory._id"] = response.sport.firstcategory._id;
                     }
-                  }, {
-                    upsert: true,
-                    new: true
-                  }, function(err, data2) {
-                    if (err) {
-                      callback(err, null);
+                    if (response.school) {
+                      StudentSport.findOneAndUpdate(constraints, {
+                        $setOnInsert: {
+                          student: response.student._id,
+                          year: response.year,
+                          sportslist: response.sport.sportslist,
+                          agegroup: response.sport.agegroup,
+                          firstcategory: response.sport.firstcategory,
+                          secondcategory: response.sport.secondcategory,
+                          "school._id": response.student.school._id,
+                          "school.name": response.student.school.name
+                        }
+                      }, {
+                        upsert: true,
+                        new: true
+                      }, function(err, data2) {
+                        if (err) {
+                          callback(err, null);
+                        } else {
+                          callback(null, data2);
+                        }
+                      });
                     } else {
-                      callback(null, data2);
+                      callback(null, response);
                     }
-                  });
-                }else{
-                  callback(null,response);
-                }
+                  }
+                });
               }
             });
           }
         });
-      }
-    });
       } else {
         callback(null, {});
       }
@@ -155,6 +149,63 @@ var models = {
   // getLimited:function (data,callback) {
   //
   // },
+  getStudentStatByFilters: function(data, callback) {
+    var constraints = {};
+    // if (data.year) {
+    //   constraints.year =  data.year;
+    // }
+    // if (data.sport) {
+    //
+    // }
+    if(data.student){
+      constraints.student =data.student;
+    }
+    StudentStats.aggregate([{
+      $match:{
+        student:objectid(constraints.student)
+      }
+    },{
+      $lookup: {
+        from: 'sports',
+        localField: 'sport',
+        foreignField: '_id',
+        as: 'sport'
+      }
+    }, {
+      $unwind: "$sport"
+    }]).exec(function(err,data) {
+      if(err){
+        callback(err,null);
+      }else{
+        StudentStats.populate(data,[{
+          path:'student',
+          select:"name"
+        },{
+          path:'school',
+          select:"name"
+        },{
+          path:"team",
+          select:"name"
+        },{
+          path:'knockout',
+          populate:[{
+            path:'player1',
+            select:"name"
+          },{
+            path:'team1',
+            select:"name"
+          }]
+        }],function (err,response) {
+          if(err){
+              callback(err,null);
+          }else{
+            callback(null,response);
+          }
+
+        });
+      }
+    });
+  },
   deleteData: function(data, callback) {
     StudentStats.findOneAndRemove({
       _id: data._id
@@ -199,7 +250,7 @@ var models = {
       }
       if (found && found.length > 0) {
         exit++;
-        if (data.studentstats.length != 0) {
+        if (data.studentstats.length !== 0) {
           var nedata;
           nedata = _.remove(found, function(n) {
             var flag = false;
