@@ -501,36 +501,6 @@ var models = {
           console.log(data.length);
           async.each(data, function(j, callback1) {
 
-            //   Mustdocity.saveData2(j, function(err, updated) {
-            //     if (err) {
-            //       console.log(err);
-            //       callback1(err, null);
-            //     } else {
-            //       if (updated._id) {
-            //         mustDoId.push(updated._id);
-            //       }
-            //       callback1(null, updated);
-            //     }
-            //   });
-            //
-            // if (j.student && j.sportslist) {
-            //   StudentSport.findOneAndUpdate({
-            //     _id: j._id
-            //   }, {
-            //
-            //   }, {
-            //     $set: {
-            //       student: objectid(j.student),
-            //       "sportslist._id": objectid(j.sportslist._id)
-            //     }
-            //   }, function(err, resp) {
-            //     if (err) {
-            //       callback1(err, null);
-            //     } else {
-            //       callback1(null, resp);
-            //
-            //     }
-            //   });
               Sport.saveDataObjectId(j, function(err, updated) {
                 if (err) {
                   console.log(err);
@@ -539,9 +509,7 @@ var models = {
                   callback1(null, updated);
                 }
               });
-            // } else {
-            //   callback1(null, "done");
-            // }
+            
           }, function(err) {
             if (err) {
               console.log(err);

@@ -320,19 +320,6 @@ var models = {
     });
   },
   getStudentsbySportwithExclude: function(data, callback) {
-    //For Knockout
-    // StudentSport.find({
-    //     'sportslist._id': data.sport
-    // },{
-    //   _id:0,
-    //   student:1
-    // }, function(err, deleted) {
-    //     if (err) {
-    //         callback(err, null);
-    //     } else {
-    //         callback(null, deleted);
-    //     }
-    // }).populate("student");
     var studentconstraints = {};
     if (data.sfaid) {
       studentconstraints = {
@@ -380,24 +367,10 @@ var models = {
     }, {
       $limit: 10
     }]).exec(function(err, data2) {
-      // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
       } else if (data2 && data2.length > 0) {
-        // StudentSport.populate(data2,{
-        //   path:"student"
-        // },function (err,data) {
-        //   if(err){
-        //     callback(err, null);
-        //   }else{
-        //     data = _.map(data,function (key) {
-        //       return key.student;
-        //     });
-        //     callback(null, data);
-        //
-        //   }
-        // });
         data2 = _.map(data2, function(key) {
           return key.student;
         });
@@ -418,35 +391,14 @@ var models = {
       }
     });
   },
-
   getSportsPopulated: function(data, callback) {
-    // StudentSport.find({
-    //   student: data.student,
-    //   year: data.year
-    // }, function(err, found) {
-    //   if (err) {
-    //     callback(err, null);
-    //   } else {
-    //     SportsList.populate(found, {
-    //       path: 'sportslist._id'
-    //     }, function(err, response) {
-    //       if (err) {
-    //         callback(err, null);
-    //       } else {
-    //         callback(null, response);
-    //
-    //       }
-    //     });
-    //   }
-    // });
     console.log(data);
     StudentSport.aggregate([{
       $match: {
         student: objectid(data.student),
         year: data.year
       }
-    }
-    , {
+    }, {
       $group: {
         _id: "$sportslist._id"
       }
@@ -479,38 +431,9 @@ var models = {
             }
           }
         });
-        // callback(null, data);
       }
     });
   },
-  // updateAllStudentRef: function(data, callback) {
-  //   var studentsports = [];
-  //   function saveMeeeeee(iterator) {
-  //     console.log();
-  //     StudentSport.saveData(studentsports[iterator],function (err,response) {
-  //       runThroughSaves(++iterator);
-  //     });
-  //   }
-  //   function runThroughSaves(iterator) {
-  //     if(studentsports.length <= iterator){
-  //       callback(null,"done");
-  //     }else
-  //     {
-  //       saveMeeeeee(iterator);
-  //     }
-  //   }
-  //   StudentSport.find({}, {}, {}, function(err, data) {
-  //     if (err) {
-  //       callback(err, null);
-  //     } else {
-  //       console.log(data.length);
-  //       studentsports = data;
-  //       runThroughSaves(0);
-  //
-  //     }
-  //
-  //   });
-  // }
   updateAllStudentRef: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, data) {
       if (err) {
@@ -518,19 +441,6 @@ var models = {
       } else {
         console.log(data.length);
         async.each(data, function(j, callback1) {
-
-          //   Mustdocity.saveData2(j, function(err, updated) {
-          //     if (err) {
-          //       console.log(err);
-          //       callback1(err, null);
-          //     } else {
-          //       if (updated._id) {
-          //         mustDoId.push(updated._id);
-          //       }
-          //       callback1(null, updated);
-          //     }
-          //   });
-          //
           if (j.student && j.sportslist) {
             StudentSport.findOneAndUpdate({
               _id: j._id
@@ -549,14 +459,6 @@ var models = {
 
               }
             });
-            // StudentSport.saveDataMass(j, function(err, updated) {
-            //   if (err) {
-            //     console.log(err);
-            //     callback1(err, null);
-            //   } else {
-            //     callback1(null, updated);
-            //   }
-            // });
           } else {
             callback1(null, "done");
           }
