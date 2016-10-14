@@ -157,9 +157,30 @@ var models = {
     // if (data.sport) {
     //
     // }
+  var sportsconstraints = {};
     if(data.student){
       constraints.student =data.student;
     }
+    if(data.category){
+      sportsconstraints['sport.firstcategory.name']={
+        '$regex':new RegExp(data.category, "i")
+      };
+    }
+    if(data.sport){
+      sportsconstraints.sport={};
+      sportsconstraints.sport.$elemMatch ={
+        'sportslist._id':objectid(data.sport)
+      };
+      // ['sportslist._id']=objectid(data.sport);
+    }
+    if(data.year){
+      if(!sportsconstraints.sport){
+        sportsconstraints.sport={};
+
+      }
+      sportsconstraints.sport.$elemMatch['year'] = data.year;
+    }
+    console.log(sportsconstraints);
     StudentStats.aggregate([{
       $match:{
         student:objectid(constraints.student)
@@ -173,7 +194,10 @@ var models = {
       }
     }, {
       $unwind: "$sport"
-    }]).exec(function(err,data) {
+    },{
+      $match:sportsconstraints
+    }
+  ]).exec(function(err,data) {
       if(err){
         callback(err,null);
       }else{
@@ -190,10 +214,32 @@ var models = {
           path:'knockout',
           populate:[{
             path:'player1',
-            select:"name"
+            select:"name school",
+            populate:{
+              path:'school',
+              select:'name'
+            }
+          },{
+            path:'player2',
+            select:"name school",
+            populate:{
+              path:'school',
+              select:'name'
+            }
           },{
             path:'team1',
-            select:"name"
+            select:"name school",
+            populate:{
+              path:'school',
+              select:'name'
+            }
+          },{
+            path:'team2',
+            select:"name school",
+            populate:{
+              path:'school',
+              select:'name'
+            }
           }]
         }],function (err,response) {
           if(err){

@@ -14,7 +14,7 @@ var schema = new Schema({
         type: {
             _id: {
               type:Schema.Types.ObjectId,
-              ref:'Sport'
+              ref:'SportsList'
             },
             name: String,
             sporttype: String
@@ -195,6 +195,48 @@ var models = {
                 callback(null, data2);
             } else {
                 callback({}, null);
+            }
+        });
+    },
+    filterCategoryForFrontend: function(data, callback) {
+        var matchObj = {
+            "sportslist._id": data.sportList
+        };
+        console.log(matchObj);
+        Sport.aggregate([{
+            $match: matchObj
+        },
+        {
+            $group: {
+                _id: null,
+                firstcategory: {
+                    $addToSet: {
+
+                      _id:'$firstcategory._id',
+                    name:'$firstcategory.name'
+                    }
+                }
+            }
+        },{
+          $project:{
+            "firstcategory": { "$setDifference": [ "$firstcategory", [{}] ]
+          }
+        }
+      }]).exec(function(err, data2) {
+        console.log("darta1",data2);
+          console.log(data2);
+            if (err) {
+                console.log(err);
+                callback(err, null);
+            } else {
+               if(data2[0].firstcategory.length > 0){
+                 callback(null, data2[0].firstcategory);
+
+               }else{
+                 callback([],null);
+//
+               }
+
             }
         });
     },

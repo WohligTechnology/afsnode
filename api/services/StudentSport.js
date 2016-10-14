@@ -97,7 +97,6 @@ var models = {
   saveDataMass: function(data, callback) {
     var studentsport = this(data);
     if (data._id) {
-      // data.student = "'"+data.student.toString()+"'";
       console.log(data);
       this.findOneAndUpdate({
         _id: data._id
@@ -233,6 +232,15 @@ var models = {
       }
     });
   },
+  // getSportCategoryFromStudent: function () {
+  //   StudentSport.aggregate([{
+  //     $match:{
+  //       student:data.
+  //     }
+  //   }]).exec(function (err,data) {
+  //
+  //   });
+  // },
   getStudentsbySport: function(data, callback) {
     //For Knockout
     // StudentSport.find({
