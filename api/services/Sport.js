@@ -5,6 +5,8 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var Schema = sails.mongoose.Schema;
+var objectid = require("mongodb").ObjectId;
+
 var schema = new Schema({
     gender: String,
     year: String,
@@ -57,6 +59,44 @@ var models = {
                 if (err) {
                     callback(err, null);
                 } else {
+                    callback(null, data2);
+                }
+            });
+        } else {
+            sport.save(function(err, data2) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                    callback(null, data2);
+                }
+            });
+        }
+    },
+    saveDataObjectId: function(data, callback) {
+        var sport = this(data);
+        if (data._id) {
+          if(data.sportslist){
+            data.sportslist._id = objectid(data.sportslist._id);
+          }
+          if(data.agegroup){
+            data.agegroup._id = objectid(data.agegroup._id);
+          }
+          if(data.firstcategory){
+            data.firstcategory._id = objectid(data.firstcategory._id);
+          }
+          if(data.secondcategory){
+            data.secondcategory._id = objectid(data.secondcategory._id);
+          }
+          if(data.thirdcategory){
+            data.thirdcategory._id = objectid(data.thirdcategory._id);
+          }
+            this.update({
+                _id: data._id
+            }, sport,{}, function(err, data2) {
+                if (err) {
+                    callback(err, null);
+                } else {
+                  console.log(data2);
                     callback(null, data2);
                 }
             });
@@ -171,7 +211,7 @@ var models = {
     },
     filterCategory: function(data, callback) {
         var matchObj = {
-            "sportslist._id": data.sportList
+            "sportslist._id": objectid(data.sportList)
         };
         console.log(matchObj);
         Sport.aggregate([{
@@ -200,7 +240,7 @@ var models = {
     },
     filterCategoryForFrontend: function(data, callback) {
         var matchObj = {
-            "sportslist._id": data.sportList
+            "sportslist._id": objectid(data.sportList)
         };
         console.log(matchObj);
         Sport.aggregate([{
@@ -242,7 +282,7 @@ var models = {
     },
     getSports: function(data, callback) {
         var matchobj = {
-            "sportslist._id": data.sportslist,
+            "sportslist._id": objectid(data.sportslist),
             gender: data.gender,
             "agegroup.name": data.agegroup,
             "firstcategory.name": data.firstcategory,
@@ -295,9 +335,14 @@ var models = {
         });
     },
     getSportBySportlist: function(data, callback) {
+      console.log({
+          "sportslist._id": data.sportlist
+      });
         Sport.find({
             "sportslist._id": data.sportlist
         }).exec(function(err, data2) {
+          console.log(err);
+          console.log(data2);
             if (err) {
                 console.log(err);
                 callback(err, null);
@@ -447,6 +492,66 @@ var models = {
                 callback([], null);
             }
         });
+    },
+    updateAllSportRef : function (data,callback) {
+      Sport.find({},{},{},function (err,data) {
+        if(err){
+
+        }else{
+          console.log(data.length);
+          async.each(data, function(j, callback1) {
+
+            //   Mustdocity.saveData2(j, function(err, updated) {
+            //     if (err) {
+            //       console.log(err);
+            //       callback1(err, null);
+            //     } else {
+            //       if (updated._id) {
+            //         mustDoId.push(updated._id);
+            //       }
+            //       callback1(null, updated);
+            //     }
+            //   });
+            //
+            // if (j.student && j.sportslist) {
+            //   StudentSport.findOneAndUpdate({
+            //     _id: j._id
+            //   }, {
+            //
+            //   }, {
+            //     $set: {
+            //       student: objectid(j.student),
+            //       "sportslist._id": objectid(j.sportslist._id)
+            //     }
+            //   }, function(err, resp) {
+            //     if (err) {
+            //       callback1(err, null);
+            //     } else {
+            //       callback1(null, resp);
+            //
+            //     }
+            //   });
+              Sport.saveDataObjectId(j, function(err, updated) {
+                if (err) {
+                  console.log(err);
+                  callback1(err, null);
+                } else {
+                  callback1(null, updated);
+                }
+              });
+            // } else {
+            //   callback1(null, "done");
+            // }
+          }, function(err) {
+            if (err) {
+              console.log(err);
+              callback(err, null);
+            } else {
+              callback(null, "Done");
+            }
+          });
+        }
+      });
     }
 };
 module.exports = _.assign(module.exports, models);

@@ -124,7 +124,7 @@ var models = {
   getSchoolSportByGender: function(data, callback) {
     StudentSport.aggregate([{
         $match: {
-          "school._id": data._id,
+          "school._id": objectid(data._id),
           "year": data.year
         }
       }, {
@@ -211,7 +211,7 @@ var models = {
   getFirstCategoryFromSport: function(data, callback) {
     Sport.aggregate([{
       $match: {
-        'sportslist._id': data.sport
+        'sportslist._id': objectid(data.sport)
       }
     }, {
       $group: {
@@ -242,19 +242,7 @@ var models = {
   //   });
   // },
   getStudentsbySport: function(data, callback) {
-    //For Knockout
-    // StudentSport.find({
-    //     'sportslist._id': data.sport
-    // },{
-    //   _id:0,
-    //   student:1
-    // }, function(err, deleted) {
-    //     if (err) {
-    //         callback(err, null);
-    //     } else {
-    //         callback(null, deleted);
-    //     }
-    // }).populate("student");
+
     var studentconstraints = {};
     if (data.sfaid) {
       studentconstraints = {
@@ -276,9 +264,15 @@ var models = {
       studentconstraints.$match['student.gender'] = data.gender;
     }
     console.log(studentconstraints);
+    console.log({
+      $match: {
+        'sportslist._id': objectid(data.sport),
+        'year': data.year
+      }
+    });
     StudentSport.aggregate([{
       $match: {
-        'sportslist._id': data.sport,
+        'sportslist._id': objectid(data.sport),
         'year': data.year
       }
     }, {
@@ -360,9 +354,13 @@ var models = {
       studentconstraints.$match['student.gender'] = data.gender;
     }
     console.log(studentconstraints);
+    console.log({
+      'sportslist._id': objectid(data.sport),
+      'year': data.year
+    });
     StudentSport.aggregate([{
       $match: {
-        'sportslist._id': data.sport,
+        'sportslist._id': objectid(data.sport),
         'year': data.year
       }
     }, {

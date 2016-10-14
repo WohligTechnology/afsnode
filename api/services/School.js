@@ -253,26 +253,6 @@ var models = {
         callback(null, newreturns);
       }
     });
-    //     },
-    //     function(callback) {
-    //         StudentSport.find({
-    //             "school._id": data._id
-    //         }).populate("student").exec(function(err, data3) {
-    //             if (err) {
-    //                 callback(err, null);
-    //             } else {
-    //                 newreturns.student = data3;
-    //                 callback(null, newreturns);
-    //             }
-    //         });
-    //     }
-    // ], function(err, found) {
-    //     if (err) {
-    //         callback(err, null);
-    //     } else {
-    //         callback(null, newreturns);
-    //     }
-    // });
   },
   filterStud: function(data, callback) {
     var matchObj = {};
