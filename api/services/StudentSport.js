@@ -102,8 +102,8 @@ var models = {
       this.findOneAndUpdate({
         _id: data._id
       }, {
-        $set:{
-          "student":data.student
+        $set: {
+          "student": data.student
         }
       }, function(err, data2) {
         if (err) {
@@ -414,23 +414,66 @@ var models = {
   },
 
   getSportsPopulated: function(data, callback) {
-    StudentSport.find({
-      student: data.student,
-      year: data.year
-    }, function(err, found) {
+    // StudentSport.find({
+    //   student: data.student,
+    //   year: data.year
+    // }, function(err, found) {
+    //   if (err) {
+    //     callback(err, null);
+    //   } else {
+    //     SportsList.populate(found, {
+    //       path: 'sportslist._id'
+    //     }, function(err, response) {
+    //       if (err) {
+    //         callback(err, null);
+    //       } else {
+    //         callback(null, response);
+    //
+    //       }
+    //     });
+    //   }
+    // });
+    console.log(data);
+    StudentSport.aggregate([{
+      $match: {
+        student: objectid(data.student),
+        year: data.year
+      }
+    }
+    , {
+      $group: {
+        _id: "$sportslist._id"
+      }
+    },
+    {
+      $project: {
+        "_id":0,
+        "sport": "$_id"
+      }
+    }
+  ]).exec(function(err, data) {
       if (err) {
         callback(err, null);
       } else {
-        SportsList.populate(found, {
-          path: 'sportslist._id'
-        }, function(err, response) {
+        SportsList.populate(data,{
+          path:"sport"
+        },function (err,response) {
           if (err) {
-            callback(err, null);
-          } else {
-            callback(null, response);
+            callback(err,null);
+          }else{
+            if(response.length > 0){
+              var resp =_.map(response,function (key) {
+                return key.sport;
+              });
+              callback(null,resp);
 
+            }else{
+              callback([],null);
+
+            }
           }
         });
+        // callback(null, data);
       }
     });
   },
@@ -482,34 +525,34 @@ var models = {
           //     }
           //   });
           //
-          if(j.student && j.sportslist){
+          if (j.student && j.sportslist) {
             StudentSport.findOneAndUpdate({
-              _id:j._id
-            },{
+              _id: j._id
+            }, {
 
-            },{
-              $set:{
-                student:objectid(j.student),
-                "sportslist._id":objectid(j.sportslist._id)
+            }, {
+              $set: {
+                student: objectid(j.student),
+                "sportslist._id": objectid(j.sportslist._id)
               }
-            },function (err,resp) {
-              if(err){
-                callback1(err,null);
-              }else{
-                callback1(null,resp);
+            }, function(err, resp) {
+              if (err) {
+                callback1(err, null);
+              } else {
+                callback1(null, resp);
 
               }
             });
-              // StudentSport.saveDataMass(j, function(err, updated) {
-              //   if (err) {
-              //     console.log(err);
-              //     callback1(err, null);
-              //   } else {
-              //     callback1(null, updated);
-              //   }
-              // });
-          }else{
-            callback1(null,"done");
+            // StudentSport.saveDataMass(j, function(err, updated) {
+            //   if (err) {
+            //     console.log(err);
+            //     callback1(err, null);
+            //   } else {
+            //     callback1(null, updated);
+            //   }
+            // });
+          } else {
+            callback1(null, "done");
           }
         }, function(err) {
           if (err) {
