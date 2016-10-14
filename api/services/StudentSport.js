@@ -92,25 +92,42 @@ var models = {
       });
     }
   },
-  saveDataMass: function(data, callback) {
-    var studentsport = this(data);
+  saveDataObjectId: function(data, callback) {
+    var sport = this(data);
     if (data._id) {
-      console.log(data);
-      this.findOneAndUpdate({
+      if (data.sportslist) {
+        data.sportslist._id = objectid(data.sportslist._id);
+      }
+      if (data.agegroup) {
+        data.agegroup._id = objectid(data.agegroup._id);
+      }
+      if (data.firstcategory) {
+        data.firstcategory._id = objectid(data.firstcategory._id);
+      }
+      if (data.secondcategory) {
+        data.secondcategory._id = objectid(data.secondcategory._id);
+      }
+      if (data.thirdcategory) {
+        data.thirdcategory._id = objectid(data.thirdcategory._id);
+      }
+      if (data.school) {
+        data.school._id = objectid(data.school._id);
+      }
+      if (data.student) {
+        data.student = objectid(data.student);
+      }
+      this.update({
         _id: data._id
-      }, {
-        $set: {
-          "student": data.student
-        }
-      }, function(err, data2) {
+      }, sport, {}, function(err, data2) {
         if (err) {
           callback(err, null);
         } else {
+          console.log(data2);
           callback(null, data2);
         }
       });
     } else {
-      studentsport.save(function(err, data2) {
+      sport.save(function(err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -430,34 +447,23 @@ var models = {
       }
     });
   },
-  updateAllStudentRef: function(data, callback) {
+  updateAllStudentSportRef: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, data) {
       if (err) {
-        callback(err, null);
+
       } else {
         console.log(data.length);
         async.each(data, function(j, callback1) {
-          if (j.student && j.sportslist) {
-            StudentSport.findOneAndUpdate({
-              _id: j._id
-            }, {
 
-            }, {
-              $set: {
-                student: objectid(j.student),
-                "sportslist._id": objectid(j.sportslist._id)
-              }
-            }, function(err, resp) {
-              if (err) {
-                callback1(err, null);
-              } else {
-                callback1(null, resp);
+          StudentSport.saveDataObjectId(j, function(err, updated) {
+            if (err) {
+              console.log(err);
+              callback1(err, null);
+            } else {
+              callback1(null, updated);
+            }
+          });
 
-              }
-            });
-          } else {
-            callback1(null, "done");
-          }
         }, function(err) {
           if (err) {
             console.log(err);
@@ -466,9 +472,7 @@ var models = {
             callback(null, "Done");
           }
         });
-
       }
-
     });
   }
 };

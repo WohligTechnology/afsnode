@@ -49,9 +49,9 @@ module.exports = {
       });
     }
   },
-  updateAllStudentRef: function(req, res) {
+  updateAllStudentSportRef: function(req, res) {
     if (req.body) {
-      StudentSport.updateAllStudentRef(req.body, function(err, respo) {
+      StudentSport.updateAllStudentSportRef(req.body, function(err, respo) {
         if (err) {
           res.json({
             value: false,
