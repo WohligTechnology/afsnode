@@ -9,60 +9,58 @@ var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
   year: String,
   sportslist: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'SportsList'
-      },
-      name: String,
-      sporttype: String
-    }
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'SportsList'
+    },
+    name: String,
+    sporttype: String
+
   },
   agegroup: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Agegroup'
-      },
-      name: String
-    }
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Agegroup'
+    },
+    name: String
+
   },
   firstcategory: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'FirstCategory'
-      },
-      name: String
-    }
+
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'FirstCategory'
+    },
+    name: String
+
   },
   secondcategory: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'SecondCategory'
-      },
-      name: String
-    }
+
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'SecondCategory'
+    },
+    name: String
+
   },
   thirdcategory: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'ThirdCategory'
-      },
-      name: String
-    }
+
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'ThirdCategory'
+    },
+    name: String
+
   },
   medals: Schema.Types.Mixed,
   school: {
-    type: {
-      _id: {
-        type: Schema.Types.ObjectId,
-        ref: 'School'
-      },
-      name: String
-    }
+
+    _id: {
+      type: Schema.Types.ObjectId,
+      ref: 'School'
+    },
+    name: String
+
   },
   student: {
     type: Schema.Types.ObjectId,
@@ -402,31 +400,29 @@ var models = {
       $group: {
         _id: "$sportslist._id"
       }
-    },
-    {
+    }, {
       $project: {
-        "_id":0,
+        "_id": 0,
         "sport": "$_id"
       }
-    }
-  ]).exec(function(err, data) {
+    }]).exec(function(err, data) {
       if (err) {
         callback(err, null);
       } else {
-        SportsList.populate(data,{
-          path:"sport"
-        },function (err,response) {
+        SportsList.populate(data, {
+          path: "sport"
+        }, function(err, response) {
           if (err) {
-            callback(err,null);
-          }else{
-            if(response.length > 0){
-              var resp =_.map(response,function (key) {
+            callback(err, null);
+          } else {
+            if (response.length > 0) {
+              var resp = _.map(response, function(key) {
                 return key.sport;
               });
-              callback(null,resp);
+              callback(null, resp);
 
-            }else{
-              callback([],null);
+            } else {
+              callback([], null);
 
             }
           }
