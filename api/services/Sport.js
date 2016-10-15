@@ -286,6 +286,41 @@ var models = {
       }
     });
   },
+  filterAgegroupForFrontend: function(data, callback) {
+    var matchObj = {
+      "sportslist._id": objectid(data.sportList)
+    };
+    console.log(matchObj);
+    Sport.aggregate([{
+      $match: matchObj
+    }, {
+      $group: {
+        _id: '$agegroup.name'
+      }
+    }, {
+      $project: {
+        "_id":0,
+        "name": "$_id"
+      }
+    }
+  ]).exec(function(err, data2) {
+      console.log("darta1", data2);
+      console.log(data2);
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else {
+        if (data2.length > 0) {
+          callback(null, data2);
+
+        } else {
+          callback([], null);
+          //
+        }
+        // callback(null,data2)
+      }
+    });
+  },
   getSports: function(data, callback) {
     var matchobj = {
       "sportslist._id": objectid(data.sportslist),
