@@ -137,19 +137,29 @@ var models = {
         }
       };
     }
-    teamconstraints['sport'] = data.sport;
-    // teamconstraints['agegroup'] = data.agegroup;
-    teamconstraints['gender'] = data.gender;
-    teamconstraints['year'] = data.year;
+    teamconstraints.sport = data.sport;
+    // teamconstraints.agegroup = data.agegroup;
+    teamconstraints.gender = data.gender;
+    teamconstraints.year = data.year;
     console.log(teamconstraints);
     Team.find(teamconstraints).limit(20).exec(function(err, response) {
       if (err) {
-        callback(err, null)
+        callback(err, null);
       } else {
-        callback(null, response)
+        callback(null, response);
       }
-    })
+    });
   },
+  countTeam: function(data, callback) {
+    Team.count().exec(function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    });
+  },
+
   searchTeam: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];
