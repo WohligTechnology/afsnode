@@ -256,14 +256,13 @@ var models = {
     });
   },
   getSchoolStatByFilters: function(data, callback) {
-    var constraints = {};
+    var studentconstraints = {};
     var sportsconstraints = {};
-    if (data.school) {
-      constraints.school = data.school;
+    if (data.gender) {
+      studentconstraints['student.gender'] = data.gender;
     }
     console.log(data);
     if (data.category) {
-      console.log("here");
       sportsconstraints['sport.firstcategory.name'] = {
         '$regex': new RegExp(data.category, "i")
       };
@@ -278,18 +277,33 @@ var models = {
     console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
       $match: {
-        student: objectid(constraints.student)
+        school: objectid(data.school)
       }
     }, {
+      $lookup: {
+        from: 'students',
+        localField: 'student',
+        foreignField: '_id',
+        as: 'student'
+      }
+    },
+    {
+      $unwind: "$student"
+    },
+    {
+      $match : studentconstraints
+    },{
       $lookup: {
         from: 'sports',
         localField: 'sport',
         foreignField: '_id',
         as: 'sport'
       }
-    }, {
+    },
+    {
       $unwind: "$sport"
-    }, {
+    },
+    {
       $match:sportsconstraints
     },{
       $sort:{
@@ -301,9 +315,6 @@ var models = {
         callback(err, null);
       } else {
         StudentStats.populate(data, [{
-          path: 'student',
-          select: "name"
-        }, {
           path: 'school',
           select: "name"
         }, {
