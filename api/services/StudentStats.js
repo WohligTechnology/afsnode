@@ -164,7 +164,111 @@ var models = {
 
     }
     if(data.year){
-      sportsconstraints['sport.year'] = data.year
+      sportsconstraints['sport.year'] = data.year;
+    }
+    console.log("herea",sportsconstraints);
+    StudentStats.aggregate([{
+      $match: {
+        student: objectid(constraints.student)
+      }
+    }, {
+      $lookup: {
+        from: 'sports',
+        localField: 'sport',
+        foreignField: '_id',
+        as: 'sport'
+      }
+    }, {
+      $unwind: "$sport"
+    }, {
+      $match:sportsconstraints
+    }]).exec(function(err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        StudentStats.populate(data, [{
+          path: 'student',
+          select: "name"
+        }, {
+          path: 'school',
+          select: "name"
+        }, {
+          path: "team",
+          select: "name"
+        }, {
+          path: 'knockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
+          }]
+        }], function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            if(response.length > 0){
+              callback(null, response);
+
+
+            }else{
+              callback(response,null);
+
+            }
+          }
+
+        });
+      }
+    });
+  },
+  getSchoolStatByFilters: function(data, callback) {
+    var constraints = {};
+    var sportsconstraints = {};
+    if (data.student) {
+      constraints.student = data.student;
+    }
+    console.log(data);
+    if (data.category) {
+      console.log("here");
+      sportsconstraints['sport.firstcategory.name'] = {
+        '$regex': new RegExp(data.category, "i")
+      };
+    }
+    if (data.sport) {
+      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+
+    }
+    if(data.year){
+      sportsconstraints['sport.year'] = data.year;
     }
     console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
