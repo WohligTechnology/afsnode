@@ -236,7 +236,14 @@ var models = {
           if (err) {
             callback(err, null);
           } else {
-            callback(null, response);
+            if(response.length > 0){
+              callback(null, response);
+
+
+            }else{
+              callback(response,null);
+
+            }
           }
 
         });
