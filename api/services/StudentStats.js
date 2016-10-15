@@ -267,6 +267,11 @@ var models = {
         '$regex': new RegExp(data.category, "i")
       };
     }
+    if (data.agegroup) {
+      sportsconstraints['sport.agegroup.name'] = {
+        '$regex': new RegExp(data.agegroup, "i")
+      };
+    }
     if (data.sport) {
       sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
 
@@ -319,7 +324,11 @@ var models = {
           select: "name"
         }, {
           path: "team",
-          select: "name"
+          select: "name school",
+          populate:{
+            path:'school',
+            select:'name'
+          }
         }, {
           path: 'knockout',
           populate: [{

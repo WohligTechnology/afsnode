@@ -275,12 +275,17 @@ var models = {
         console.log(err);
         callback(err, null);
       } else {
-        if (data2[0].firstcategory.length > 0) {
-          callback(null, data2[0].firstcategory);
+        if(data2.length > 0){
+          if (data2[0].firstcategory.length > 0) {
+            callback(null, data2[0].firstcategory);
 
-        } else {
+          } else {
+            callback([], null);
+            //
+          }
+        }else{
           callback([], null);
-          //
+
         }
 
       }
