@@ -14,7 +14,10 @@ var schema = new Schema({
   address: String,
   email: String,
   contact: String,
-  logo: String,
+  logo: {
+    type:String,
+    default:""
+  },
   status: Boolean,
   deleteStatus: Boolean,
   principal: String,

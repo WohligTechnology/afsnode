@@ -258,8 +258,8 @@ var models = {
   getSchoolStatByFilters: function(data, callback) {
     var constraints = {};
     var sportsconstraints = {};
-    if (data.student) {
-      constraints.student = data.student;
+    if (data.school) {
+      constraints.school = data.school;
     }
     console.log(data);
     if (data.category) {
@@ -291,6 +291,11 @@ var models = {
       $unwind: "$sport"
     }, {
       $match:sportsconstraints
+    },{
+      $sort:{
+        '_id':-1,
+        "sport":1
+      }
     }]).exec(function(err, data) {
       if (err) {
         callback(err, null);
@@ -411,7 +416,7 @@ var models = {
               if (n1.name == n.name) {
                 flag = true;
               }
-            })
+            });
             return flag;
           });
         }
