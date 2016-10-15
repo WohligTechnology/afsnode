@@ -146,46 +146,32 @@ var models = {
       }
     }).populate('student', 'name').populate('sport').populate('knockout').populate('team');
   },
-  // getLimited:function (data,callback) {
-  //
-  // },
   getStudentStatByFilters: function(data, callback) {
     var constraints = {};
-    // if (data.year) {
-    //   constraints.year =  data.year;
-    // }
-    // if (data.sport) {
-    //
-    // }
-  var sportsconstraints = {};
-    if(data.student){
-      constraints.student =data.student;
+    var sportsconstraints = {};
+    if (data.student) {
+      constraints.student = data.student;
     }
-    if(data.category){
-      sportsconstraints['sport.firstcategory.name']={
-        '$regex':new RegExp(data.category, "i")
+    console.log(data);
+    if (data.category) {
+      console.log("here");
+      sportsconstraints['sport.firstcategory.name'] = {
+        '$regex': new RegExp(data.category, "i")
       };
     }
-    if(data.sport){
-      sportsconstraints.sport={};
-      sportsconstraints.sport.$elemMatch ={
-        'sportslist._id':objectid(data.sport)
-      };
-      // ['sportslist._id']=objectid(data.sport);
+    if (data.sport) {
+      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+
     }
     if(data.year){
-      if(!sportsconstraints.sport){
-        sportsconstraints.sport={};
-
-      }
-      sportsconstraints.sport.$elemMatch['year'] = data.year;
+      sportsconstraints['sport.year'] = data.year
     }
-    console.log(sportsconstraints);
+    console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
-      $match:{
-        student:objectid(constraints.student)
+      $match: {
+        student: objectid(constraints.student)
       }
-    },{
+    }, {
       $lookup: {
         from: 'sports',
         localField: 'sport',
@@ -194,58 +180,63 @@ var models = {
       }
     }, {
       $unwind: "$sport"
-    },{
+    }, {
       $match:sportsconstraints
-    }
-  ]).exec(function(err,data) {
-      if(err){
-        callback(err,null);
-      }else{
-        StudentStats.populate(data,[{
-          path:'student',
-          select:"name"
-        },{
-          path:'school',
-          select:"name"
-        },{
-          path:"team",
-          select:"name"
-        },{
-          path:'knockout',
-          populate:[{
-            path:'player1',
-            select:"name school",
-            populate:{
-              path:'school',
-              select:'name'
+    }]).exec(function(err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        StudentStats.populate(data, [{
+          path: 'student',
+          select: "name"
+        }, {
+          path: 'school',
+          select: "name"
+        }, {
+          path: "team",
+          select: "name"
+        }, {
+          path: 'knockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
             }
-          },{
-            path:'player2',
-            select:"name school",
-            populate:{
-              path:'school',
-              select:'name'
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
             }
-          },{
-            path:'team1',
-            select:"name school",
-            populate:{
-              path:'school',
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
               select:'name'
-            }
-          },{
-            path:'team2',
-            select:"name school",
-            populate:{
-              path:'school',
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
               select:'name'
-            }
+            }]
           }]
-        }],function (err,response) {
-          if(err){
-              callback(err,null);
-          }else{
-            callback(null,response);
+        }], function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null, response);
           }
 
         });
