@@ -6,7 +6,7 @@
  */
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
-  year:String,
+  year: String,
   sfaid: Number,
   name: String,
   firstname: String,
@@ -28,7 +28,10 @@ var schema = new Schema({
   location: String,
   address: String,
   parentName: String,
-  profilePic: String,
+  profilePic: {
+    type:String,
+    default:""
+  },
   blog: Schema.Types.Mixed,
   medals: Schema.Types.Mixed,
   sfaAwards: Schema.Types.Mixed,
@@ -292,23 +295,25 @@ var models = {
   searchStudent: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];
+
     var check = new RegExp(data.search, "i");
-    var checkid = new RegExp(parseInt(data.search));
+    var constraints = {};
+    if (data.search) {
+      constraints = {
+        name: {
+          '$regex': check
+        }
+      };
+    } else {
+      constraints = {
+        sfaid: data.sfaid
+      };
+    }
     data.pagenumber = parseInt(data.pagenumber);
     data.pagesize = parseInt(data.pagesize);
     async.parallel([
       function(callback) {
-        Student.count({
-          $or: [{
-            name: {
-              '$regex': check
-            }
-          }, {
-            safid: {
-              '$regex': checkid
-            }
-          }]
-        }).exec(function(err, number) {
+        Student.count(constraints).exec(function(err, number) {
           if (err) {
             console.log(err);
             callback(err, null);
@@ -322,17 +327,7 @@ var models = {
         });
       },
       function(callback) {
-        Student.find({
-          $or: [{
-            name: {
-              '$regex': check
-            }
-          }, {
-            safid: {
-              '$regex': checkid
-            }
-          }]
-        }).sort({
+        Student.find(constraints).sort({
           name: 1
         }).skip(data.pagesize * (data.pagenumber - 1)).limit(data.pagesize).exec(function(err, data2) {
           if (err) {
@@ -422,12 +417,12 @@ var models = {
         name: {
           '$regex': check
         },
-        school:data.school
+        school: data.school
       };
     } else {
       constraints = {
         sfaid: data.sfaid,
-        school:data.school
+        school: data.school
       };
     }
 
@@ -438,10 +433,10 @@ var models = {
     }
     Student.find(
       constraints, {
-      name: 1,
-      _id: 1,
-      sfaid: 1
-    }).limit(10).exec(function(err, found) {
+        name: 1,
+        _id: 1,
+        sfaid: 1
+      }).limit(10).exec(function(err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -478,14 +473,15 @@ var models = {
         name: {
           '$regex': check
         },
-        school:data.school
+        school: data.school
       };
     } else {
       constraints = {
         sfaid: data.sfaid,
-        school:data.school
+        school: data.school
       };
     }
+
     function callback2(exit, exitup, data) {
       if (exit == exitup) {
         callback(null, data);
@@ -510,20 +506,20 @@ var models = {
       }
     });
   },
-  makeEmptyPayment: function (data,callback) {
+  makeEmptyPayment: function(data, callback) {
     Student.update({
-      payment:"Unpaid"
-    },{
-      $set:{
-        payment : ""
+      payment: "Unpaid"
+    }, {
+      $set: {
+        payment: ""
       }
-    },{
-      multi:true
-    },function (err,data) {
-      if(err){
-        callback(err,null);
-      }else{
-        callback(null,data);
+    }, {
+      multi: true
+    }, function(err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, data);
       }
     });
   }
