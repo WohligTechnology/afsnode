@@ -88,6 +88,35 @@ module.exports = {
       });
     }
   },
+  searchTeam: function(req, res) {
+      if (req.body) {
+          if (req.body.pagesize && req.body.pagenumber) {
+              Team.searchTeam(req.body, function(err, respo) {
+                  if (err) {
+                      res.json({
+                          value: false,
+                          data: err
+                      });
+                  } else {
+                      res.json({
+                          value: true,
+                          data: respo
+                      });
+                  }
+              });
+          } else {
+              res.json({
+                  value: false,
+                  data: "Invalid params"
+              });
+          }
+      } else {
+          res.json({
+              value: false,
+              data: "Invalid call"
+          });
+      }
+  },
   getTeamsbySport: function(req, res) {
     if (req.body) {
       Team.getTeamsbySport(req.body, function(err, respo) {
