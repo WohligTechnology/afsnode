@@ -306,6 +306,23 @@ module.exports = {
             });
         }
     },
+    contingentStrengthByYear: function(req, res) {
+        if (req.body) {
+            if (req.body.pagenumber) {
+                School.contingentStrengthByYear(req.body, res.callback);
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Params"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid Request"
+            });
+        }
+    },
     schoolSearch: function(req, res) {
         if (req.body) {
             if (req.body.pagenumber) {

@@ -4,6 +4,8 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+ var objectid = require("mongodb").ObjectId;
+
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: [String],
@@ -424,6 +426,72 @@ var models = {
         }
       });
   },
+   contingentStrengthByYear: function(data, callback) {
+      var newreturns = {};
+      newreturns.data = [];
+      data.pagenumber = parseInt(data.pagenumber);
+      var checkObj = {};
+      if (data.year) {
+        checkObj = {
+          year: data.year
+        };
+      }
+      if(data.school){
+        checkObj.school = data.school;
+      }
+      async.parallel([
+          function(callback) {
+            Student.count(checkObj).exec(function(err, number) {
+              if (err) {
+                console.log(err);
+                callback(err, null);
+              } else if (number && number !== "") {
+                newreturns.total = number;
+                newreturns.totalpages = Math.ceil(number / 8);
+                callback(null, newreturns);
+              } else {
+                callback(null, newreturns);
+              }
+            });
+          },
+
+          function(callback) {
+            Student.find(checkObj).sort({
+              sfaid: 1
+            }).skip(8 * (data.pagenumber - 1)).limit(8).exec(function(err, data2) {
+              if (err) {
+                console.log(err);
+                callback(err, null);
+              } else if (data2 && data2.length > 0) {
+                newreturns.data = data2;
+                callback(null, newreturns);
+              } else {
+                callback(null, newreturns);
+              }
+            });
+          },
+          function (callback) {
+            Student.countContingentStrength(checkObj,function (err,data) {
+              if(err){
+                callback(err,null);
+              }else{
+                newreturns.gender=data[0];
+                callback(null,data);
+              }
+            });
+          }
+        ],
+        function(err, data4) {
+          if (err) {
+            console.log(err);
+            callback(err, null);
+          } else if (data4) {
+            callback(null, newreturns);
+          } else {
+            callback(null, newreturns);
+          }
+        });
+    },
   schoolSearch: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];

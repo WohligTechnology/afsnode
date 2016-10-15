@@ -4,6 +4,8 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+ var objectid = require("mongodb").ObjectId;
+
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -267,6 +269,65 @@ var models = {
           callback(null, newreturns);
         }
       });
+  },
+  countContingentStrength:function (data,callback) {
+    var checkObj ={};
+    if(data.school){
+      checkObj.school = objectid(data.school);
+    }
+    if(data.year){
+      checkObj.year =data.year;
+    }
+    console.log("gender",checkObj);
+    Student.aggregate([{
+      $match:checkObj
+    },{
+      $group:{
+        _id:"$gender",
+        count:{
+          $sum:1
+        }
+      }
+    },{
+      $project: {
+        "_id": "$_id",
+        "Boys": {
+          $cond: {
+            if: {
+              $eq: ["$_id", "Boys"]
+            },
+            then: "$count",
+            else: 0
+          }
+        },
+        "Girls": {
+          $cond: {
+            if: {
+              $eq: ["$_id", "Girls"]
+            },
+            then: "$count",
+            else: 0
+          }
+        }
+      }
+    },{
+      $group:{
+        "_id":null,
+        "Boys":{
+          $max :"$Boys"
+        },
+        "Girls":{
+          $max :"$Girls"
+        }
+      }
+    }
+    ]).exec(function (err,data) {
+      if(err){
+        callback(err,null);
+      }else{
+        callback(null,data);
+      }
+    });
   },
   findStud: function(data, callback) {
     var matchObj = {

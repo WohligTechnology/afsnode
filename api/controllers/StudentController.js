@@ -49,6 +49,28 @@ module.exports = {
             });
         }
     },
+    countContingentStrength: function(req, res) {
+        if (req.body) {
+            Student.countContingentStrength(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     makeEmptyPayment: function(req, res) {
         // if (req.body) {
             Student.makeEmptyPayment(req.body, function(err, respo) {
@@ -95,7 +117,7 @@ module.exports = {
     },
     hide: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 Student.hide(req.body, function(err, respo) {
                     if (err) {
                         res.json({
