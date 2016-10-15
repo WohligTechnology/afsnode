@@ -182,6 +182,11 @@ var models = {
       $unwind: "$sport"
     }, {
       $match:sportsconstraints
+    },{
+      $sort:{
+        '_id':-1,
+        "sport":1
+      }
     }]).exec(function(err, data) {
       if (err) {
         callback(err, null);
