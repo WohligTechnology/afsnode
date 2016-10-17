@@ -8,10 +8,10 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
     name: String
 });
-module.exports = sails.mongoose.model('FirstCategory', schema);
+module.exports = sails.mongoose.model('League', schema);
 var models = {
     saveData: function(data, callback) {
-        var firstcategory = this(data);
+        var league = this(data);
         if (data._id) {
             this.findOneAndUpdate({
                 _id: data._id
@@ -23,7 +23,7 @@ var models = {
                 }
             });
         } else {
-            FirstCategory.find({
+            League.find({
                 "name": data.name
             }).exec(function(err, data2) {
                 if (err) {
@@ -32,7 +32,7 @@ var models = {
                 } else if (data2 && data2[0]) {
                     callback(null, data2);
                 } else {
-                    firstcategory.save(function(err, data3) {
+                    league.save(function(err, data3) {
                         if (err) {
                             callback(err, null);
                         } else {
@@ -44,7 +44,7 @@ var models = {
         }
     },
     getAll: function(data, callback) {
-        FirstCategory.find({}, {}, {}, function(err, deleted) {
+        League.find({}, {}, {}, function(err, deleted) {
             if (err) {
                 callback(err, null);
             } else {
@@ -53,7 +53,7 @@ var models = {
         });
     },
     deleteData: function(data, callback) {
-        FirstCategory.findOneAndRemove({
+        League.findOneAndRemove({
             _id: data._id
         }, function(err, deleted) {
             if (err) {
@@ -64,7 +64,7 @@ var models = {
         });
     },
     getOne: function(data, callback) {
-        FirstCategory.findOne({
+        League.findOne({
             _id: data._id
         }, function(err, deleted) {
             if (err) {
@@ -85,7 +85,7 @@ var models = {
                 callback(null, data);
             }
         }
-        FirstCategory.find({
+        League.find({
             name: {
                 '$regex': check
             }
@@ -96,11 +96,11 @@ var models = {
             }
             if (found && found.length > 0) {
                 exit++;
-                if (data.firstcategory.length !== 0) {
+                if (data.league.length !== 0) {
                     var nedata;
                     nedata = _.remove(found, function(n) {
                         var flag = false;
-                        _.each(data.firstcategory, function(n1) {
+                        _.each(data.league, function(n1) {
                             if (n1.name == n.name) {
                                 flag = true;
                             }
