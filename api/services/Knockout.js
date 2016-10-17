@@ -217,11 +217,6 @@ var models = {
               console.log("err");
               callback(err, null);
             } else {
-              // if(nextRound.participantType == "player"){
-              //   Knockout.
-              // }else{
-              //
-              // }
               updateParticipantsAndCallback(data3);
             }
           });
@@ -240,94 +235,99 @@ var models = {
           console.log("err");
           callback(err, null);
         } else {
-          console.log("data.result", data2.result);
           if (data2 === null) {
             callback(null, data2);
-          } else if (data2.resultteam1 || data2.resultteam2 || data.resultplayer1 || data.resultplayer2) {
-            var nomatch = false;
-            var nextRound = data2.toObject();
-            delete nextRound._id;
-            delete nextRound.__v;
-            delete nextRound.player1;
-            delete nextRound.team1;
-            delete nextRound.player2;
-            delete nextRound.team2;
-            delete nextRound.parent1;
-            delete nextRound.parent2;
-            delete nextRound.resultplayer1;
-            delete nextRound.resultplayer2;
-            delete nextRound.resultteam1;
-            delete nextRound.resultteam2;
-            delete nextRound.score;
-            delete nextRound.round;
-            delete nextRound.startTime;
-            delete nextRound.endTime;
-            delete nextRound.totalTime;
-            var result = {};
-            if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye" || data2['result' + data2.participantType + '1'] == "Walkover") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
-              result['result' + data2.participantType] = data2[data2.participantType + '1'];
-            } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" || data2['result' + data2.participantType + '2'] == "Bye" || data2['result' + data2.participantType + '2'] == "Walkover")) {
-              console.log("Loss");
-              result['result' + data2.participantType] = data2[data2.participantType + '2'];
-            } else {
-              nomatch = true;
-            }
+          } else if (data.resultteam1 || data.resultteam2 || data.resultplayer1 || data.resultplayer2) {
+            if(data2.round.toUpperCase() == 'Final'.toUpperCase()){
+              callback(null,data2);
+            }else if(data2.round.toUpperCase() == 'Third Place'.toUpperCase()){
+              updateParticipantsAndCallback(data2);
+            }else{
+              var nomatch = false;
+              var nextRound = data2.toObject();
+              delete nextRound._id;
+              delete nextRound.__v;
+              delete nextRound.player1;
+              delete nextRound.team1;
+              delete nextRound.player2;
+              delete nextRound.team2;
+              delete nextRound.parent1;
+              delete nextRound.parent2;
+              delete nextRound.resultplayer1;
+              delete nextRound.resultplayer2;
+              delete nextRound.resultteam1;
+              delete nextRound.resultteam2;
+              delete nextRound.score;
+              delete nextRound.round;
+              delete nextRound.startTime;
+              delete nextRound.endTime;
+              delete nextRound.totalTime;
+              var result = {};
+              if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye" || data2['result' + data2.participantType + '1'] == "Walkover") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
+                result['result' + data2.participantType] = data2[data2.participantType + '1'];
+              } else if ((data2['result' + data2.participantType + '1'] == "Loss" || data2['result' + data2.participantType + '1'] == "No Show") && (data2['result' + data2.participantType + '2'] == "Won" || data2['result' + data2.participantType + '2'] == "Bye" || data2['result' + data2.participantType + '2'] == "Walkover")) {
+                console.log("Loss");
+                result['result' + data2.participantType] = data2[data2.participantType + '2'];
+              } else {
+                nomatch = true;
+              }
 
-            if (nomatch) {
-              if (data2.participantType == 'player') {
-                Student.find({
-                  name: "No Match "
-                }).exec(function(err, response) {
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    console.log(response);
-                    result['result' + data2.participantType] = response[0]._id;
-                    if (data2.order % 2 === 0) {
-                      nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
-                      nextRound.parent1 = data2._id;
+              if (nomatch) {
+                if (data2.participantType == 'player') {
+                  Student.find({
+                    name: "No Match "
+                  }).exec(function(err, response) {
+                    if (err) {
+                      callback(err, null);
                     } else {
-                      nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
-                      nextRound.parent2 = data2._id;
+                      console.log(response);
+                      result['result' + data2.participantType] = response[0]._id;
+                      if (data2.order % 2 === 0) {
+                        nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
+                        nextRound.parent1 = data2._id;
+                      } else {
+                        nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
+                        nextRound.parent2 = data2._id;
+                      }
+                      nextRound.order = parseInt(data2.order / 2);
+                      nextRound.roundno = nextRound.roundno + 1;
+                      updateAndCallback(nextRound);
                     }
-                    nextRound.order = parseInt(data2.order / 2);
-                    nextRound.roundno = nextRound.roundno + 1;
-                    updateAndCallback(nextRound);
-                  }
-                });
-              } else {
-                Team.find({
-                  name: "No Match "
-                }).exec(function(err, response) {
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    console.log(response);
-                    result['result' + data2.participantType] = response[0]._id;
-                    if (data2.order % 2 === 0) {
-                      nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
-                      nextRound.parent1 = data2._id;
+                  });
+                } else {
+                  Team.find({
+                    name: "No Match "
+                  }).exec(function(err, response) {
+                    if (err) {
+                      callback(err, null);
                     } else {
-                      nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
-                      nextRound.parent2 = data2._id;
+                      console.log(response);
+                      result['result' + data2.participantType] = response[0]._id;
+                      if (data2.order % 2 === 0) {
+                        nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
+                        nextRound.parent1 = data2._id;
+                      } else {
+                        nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
+                        nextRound.parent2 = data2._id;
+                      }
+                      nextRound.order = parseInt(data2.order / 2);
+                      nextRound.roundno = nextRound.roundno + 1;
+                      updateAndCallback(nextRound);
                     }
-                    nextRound.order = parseInt(data2.order / 2);
-                    nextRound.roundno = nextRound.roundno + 1;
-                    updateAndCallback(nextRound);
-                  }
-                });
-              }
-            } else {
-              if (data2.order % 2 === 0) {
-                nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
-                nextRound.parent1 = data2._id;
+                  });
+                }
               } else {
-                nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
-                nextRound.parent2 = data2._id;
+                if (data2.order % 2 === 0) {
+                  nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
+                  nextRound.parent1 = data2._id;
+                } else {
+                  nextRound[data2.participantType + '2'] = result['result' + data2.participantType];
+                  nextRound.parent2 = data2._id;
+                }
+                nextRound.order = parseInt(data2.order / 2);
+                nextRound.roundno = nextRound.roundno + 1;
+                updateAndCallback(nextRound);
               }
-              nextRound.order = parseInt(data2.order / 2);
-              nextRound.roundno = nextRound.roundno + 1;
-              updateAndCallback(nextRound);
             }
           } else {
             callback(null, data2);
