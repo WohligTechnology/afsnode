@@ -114,6 +114,26 @@ var models = {
       }
     });
   },
+  updateProfilePicture: function(data, callback) {
+    Student.findOneAndUpdate({
+      sfaid:parseInt(data.sfaid)
+    },{
+      $set:{
+        "profilePic":data.profilePic
+      }
+    },{
+      new : true
+    },function (err,response) {
+      if(err){
+        callback(err,null);
+      }else if(response){
+        callback(null,response.firstname + "'s profile updated");
+      }else{
+        callback("Student with SFAID "+data.sfaid+" not found.",null);
+
+      }
+    });
+  },
   getAll: function(data, callback) {
     Student.find({}, {}, {}).sort({
       sfaid: -1

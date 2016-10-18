@@ -71,6 +71,35 @@ module.exports = {
             });
         }
     },
+    updateProfilePicture: function(req, res) {
+        if (req.body) {
+            if(req.body.sfaid && req.body.profilePic){
+              Student.updateProfilePicture(req.body, function(err, respo) {
+                  if (err) {
+                      res.json({
+                          value: false,
+                          data: err
+                      });
+                  } else {
+                      res.json({
+                          value: true,
+                          data: respo
+                      });
+                  }
+              });
+            }else{
+              res.json({
+                value:false,
+                data:"Input Inadequate."
+              });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     makeEmptyPayment: function(req, res) {
         // if (req.body) {
             Student.makeEmptyPayment(req.body, function(err, respo) {
