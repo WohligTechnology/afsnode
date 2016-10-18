@@ -66,6 +66,35 @@ module.exports = {
       });
     }
   },
+  forSimilarNamesBackend: function(req, res) {
+    if (req.body) {
+      if(req.body.name){
+        Team.forSimilarNamesBackend(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:'Input inadequate'
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getLastId: function(req, res) {
     if (req.body) {
       Team.getLastId(req.body, function(err, respo) {

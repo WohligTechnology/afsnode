@@ -229,6 +229,24 @@ var models = {
       }
     });
   },
+  forSimilarNamesBackend: function(data, callback) {
+    var check = new RegExp(data.name, "i");
+    Team.find({
+      name:{
+        $regex:check
+      }
+    }).select({
+      name:1
+    }).sort({
+      name:-1
+    }).exec(function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    });
+  },
   findLimited: function(data, callback) {
     var newreturns = {};
     newreturns.data = [];
