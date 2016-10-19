@@ -62,7 +62,30 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('League', schema);
 var models = {
   saveData: function(data, callback) {
+    var leagues = {};
     var league = this(data);
+    function updateStudentsAndCallback() {
+      var constraints = {};
+      constraints.student = details[details.participantType + "1"];
+      constraints.year = details.year;
+      constraints.sport = details.sport;
+      constraints.drawFormat = "Knockout";
+      constraints.league = details._id;
+      StudentStats.saveData(constraints, function(err, response) {
+        if (err) {
+          callback(err, null);
+        } else {
+          constraints.student = details[details.participantType + "2"];
+          StudentStats.saveData(constraints, function(err, resp) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, resp);
+            }
+          });
+        }
+      });
+    }
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -85,7 +108,7 @@ var models = {
             } else {
               if (data2.participantType) {
                 if (data2.participantType == 'player') {
-                  leagues = data2;
+                  updatePlayersAndCallback();
 
                 } else {
                   League.populate(data2, [{
