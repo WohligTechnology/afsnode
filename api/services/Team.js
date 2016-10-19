@@ -239,7 +239,7 @@ var models = {
       name:1
     }).sort({
       name:-1
-    }).exec(function(err, deleted) {
+    }).lean().exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {

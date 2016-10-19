@@ -61,6 +61,19 @@ var models = {
             }
         });
     },
+    getSportByDrawFormat: function(data, callback) {
+        SportsList.find({
+          drawFormat : data.drawFormat
+        }, {}, {}).sort({
+            _id: -1
+        }).exec(function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
     getAllHeatSport: function(data, callback) {
         SportsList.find({
           drawFormat : "Heats"

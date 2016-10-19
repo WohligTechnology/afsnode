@@ -93,6 +93,35 @@ module.exports = {
             });
         }
     },
+    getSportByDrawFormat: function(req, res) {
+        if (req.body) {
+            if(req.body.drawFormat){
+              SportsList.getSportByDrawFormat(req.body, function(err, respo) {
+                  if (err) {
+                      res.json({
+                          value: false,
+                          data: err
+                      });
+                  } else {
+                      res.json({
+                          value: true,
+                          data: respo
+                      });
+                  }
+              });
+            }else{
+              res.json({
+                value:false,
+                data:'Input inadequate'
+              });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     groupSportListByType: function(req, res) {
         if (req.body) {
             SportsList.groupSportListByType(req.body, function(err, respo) {
