@@ -30,20 +30,16 @@ var schema = new Schema({
     ref: 'Team'
   },
   resultplayer1: {
-    type: Number,
-    default:0.0
+    type: String
   },
   resultteam1: {
-    type: Number,
-    default:0.0
+    type: String
   },
   resultplayer2: {
-    type: Number,
-    default:0.0
+    type: String
   },
   resultteam2: {
-    type: Number,
-    default:0.0
+    type: String
   },
   date: {
     type: Date
@@ -78,25 +74,59 @@ var models = {
         }
       });
     } else {
-      League.find({
-        "name": data.name
-      }).exec(function(err, data2) {
+      League.getLastLeague({}, function(err, response) {
         if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (data2 && data2[0]) {
-          callback(null, data2);
+          callback(null, err);
         } else {
-          league.save(function(err, data3) {
+          league.matchid = parseInt(response) + 1;
+          league.save(function(err, data2) {
             if (err) {
               callback(err, null);
             } else {
-              callback(null, data3);
+              if (data2.participantType) {
+                if (data2.participantType == 'player') {
+                  leagues = data2;
+
+                } else {
+                  League.populate(data2, [{
+                    path: 'team1'
+                  },{
+                      path:'team2'
+                  }], function(err, response) {
+                    if (err) {
+                      callback(err, null);
+                    } else {
+                      leagues = response;
+
+                    }
+                  });
+                }
+              } else {
+                callback(null, data2);
+              }
             }
           });
         }
       });
     }
+  },
+  getLastLeague: function(data, callback) {
+    League.find({}, {
+      _id: 0,
+      matchid: 1
+    }).sort({
+      matchid: -1
+    }).limit(1).lean().exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 0);
+      } else {
+        console.log(data2);
+        callback(null, data2[0].matchid);
+      }
+    });
   },
   getAll: function(data, callback) {
     League.find({}, {}, {}, function(err, deleted) {
@@ -112,9 +142,9 @@ var models = {
       _id: data._id
     }, function(err, deleted) {
       if (err) {
-        callback(err, null)
+        callback(err, null);
       } else {
-        callback(null, deleted)
+        callback(null, deleted);
       }
     });
   },

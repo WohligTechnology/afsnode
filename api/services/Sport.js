@@ -414,6 +414,21 @@ var models = {
       }
     });
   },
+  leagueSports: function(data, callback) {
+    Sport.find({
+      "sportslist._id": data.sportlist,
+      drawFormat: "League"
+    }).exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (data2 && data2.length > 0) {
+        callback(null, data2);
+      } else {
+        callback([], null);
+      }
+    });
+  },
   getSportsByYear: function(data, callback) {
     Sport.find({
       "year": data.year,

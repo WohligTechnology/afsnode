@@ -146,7 +146,7 @@ module.exports = {
     },
     deleteData: function(req, res) {
         if (req.body) {
-            if (req.body._id && req.body._id != "") {
+            if (req.body._id && req.body._id !== "") {
                 SportsList.deleteData(req.body, function(err, respo) {
                     if (err) {
                         res.json({

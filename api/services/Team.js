@@ -76,16 +76,7 @@ var models = {
         }
       });
     } else {
-      Team.update(matchObj, {
-        $set: {
-          name: data.name + " 'A'"
-        }
-      }).exec(function(err, updated) {
-        if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (updated.nModified > 0) {
-          team.name = data.name + " 'B'";
+      
           Team.getLastId({}, function(err, data3) {
             if (err) {
               console.log(err);
@@ -102,25 +93,7 @@ var models = {
               });
             }
           });
-        } else {
-          Team.getLastId({}, function(err, data3) {
-            if (err) {
-              console.log(err);
-              callback(err, null);
-            } else {
-              team.sfaid = data3;
-              team.save(function(err, data2) {
-                if (err) {
-                  console.log(err);
-                  callback(err, null);
-                } else {
-                  callback(null, data2);
-                }
-              });
-            }
-          });
-        }
-      });
+        
     }
   },
   getTeamsbySport: function(data, callback) {
