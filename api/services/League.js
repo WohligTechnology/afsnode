@@ -79,7 +79,7 @@ var models = {
       constraints.student = details[details.participantType + "1"];
       constraints.year = details.year;
       constraints.sport = details.sport;
-      constraints.drawFormat = "Knockout";
+      constraints.drawFormat = "League";
       constraints.league = details._id;
       StudentStats.saveData(constraints, function(err, response) {
         if (err) {
@@ -169,6 +169,60 @@ var models = {
         callback(null, deleted);
       }
     });
+  },
+  findLimited: function(data, callback) {
+    var newreturns = {};
+    newreturns.data = [];
+    data.pagenumber = parseInt(data.pagenumber);
+    var checkObj = {};
+
+    var check = new RegExp(data.sport, "i");
+    checkObj = {
+      'sport': data.sport
+    };
+
+    async.parallel([
+        function(callback) {
+          League.count(checkObj).exec(function(err, number) {
+            if (err) {
+              console.log(err);
+              callback(err, null);
+            } else if (number && number !== "") {
+              newreturns.total = number;
+              newreturns.totalpages = Math.ceil(number / 20);
+              callback(null, newreturns);
+            } else {
+              callback(null, newreturns);
+            }
+          });
+        },
+        function(callback) {
+          League.find(checkObj).sort({
+            roundno: 1,
+            order: 1
+          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').exec(function(err, data2) {
+            if (err) {
+              console.log(err);
+              callback(err, null);
+            } else if (data2 && data2.length > 0) {
+              newreturns.data = data2;
+              callback(null, newreturns);
+            } else {
+              callback(null, newreturns);
+            }
+          });
+        }
+      ],
+      function(err, data4) {
+        if (err) {
+          console.log(err);
+          callback(err, null);
+        } else if (data4) {
+          callback(null, newreturns);
+        } else {
+          callback(null, newreturns);
+        }
+      });
   },
   deleteData: function(data, callback) {
     League.findOneAndRemove({
