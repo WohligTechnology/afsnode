@@ -74,7 +74,7 @@ var models = {
   saveData: function(data, callback) {
     var leagues = {};
     var league = this(data);
-    function updateStudentsAndCallback() {
+    function updateStudentsAndCallback(details) {
       var constraints = {};
       constraints.student = details[details.participantType + "1"];
       constraints.year = details.year;
@@ -95,6 +95,25 @@ var models = {
           });
         }
       });
+    }
+    function savePlayya(team,iterator) {
+      
+    }
+     function runThroughTeam(team,iterator) {
+       if(league['team'+team].players.length <= iterator){
+
+       }else{
+         console.log('logo');
+       }
+     }
+    function selectTeamAndRun() {
+      if(leagues.participantType == 'team'){
+        if(leagues.team1 && leagues.team1.players.length > 0){
+          runThroughTeams(1,0);
+        }else{
+          runThroughTeams(2,0);
+        }
+      }
     }
     if (data._id) {
       this.findOneAndUpdate({
@@ -118,7 +137,7 @@ var models = {
             } else {
               if (data2.participantType) {
                 if (data2.participantType == 'player') {
-                  updatePlayersAndCallback();
+                  updateStudentsAndCallback(data2);
 
                 } else {
                   League.populate(data2, [{
