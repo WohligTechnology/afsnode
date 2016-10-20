@@ -21,25 +21,35 @@ var schema = new Schema({
   participantType: {
     type: String
   },
-  player: {
+  player1: {
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
-  team: {
+  player2: {
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  },
+  team1: {
     type: Schema.Types.ObjectId,
     ref: 'Team'
   },
-  resultplayer1: {
+  team2: {
+    type: Schema.Types.ObjectId,
+    ref: 'Team'
+  },
+  result1: {
     type: String
   },
-  resultteam1: {
+  result2: {
     type: String
   },
-  resultplayer2: {
-    type: String
+  point1:{
+    type:Number,
+    default:0.0
   },
-  resultteam2: {
-    type: String
+  point2:{
+    type:Number,
+    default:0.0
   },
   date: {
     type: Date
