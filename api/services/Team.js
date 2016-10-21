@@ -76,7 +76,7 @@ var models = {
         }
       });
     } else {
-      
+
           Team.getLastId({}, function(err, data3) {
             if (err) {
               console.log(err);
@@ -93,7 +93,7 @@ var models = {
               });
             }
           });
-        
+
     }
   },
   getTeamsbySport: function(data, callback) {
@@ -226,12 +226,18 @@ var models = {
     data.pagenumber = parseInt(data.pagenumber);
     var checkObj = {};
 
-    var check = new RegExp(data.name, "i");
-    checkObj = {
-      name: {
-        '$regex': check
-      }
-    };
+    if(data.sfaid){
+      checkObj = {
+        sfaid: data.sfaid
+      };
+    }else{
+      var check = new RegExp(data.name, "i");
+      checkObj = {
+        name: {
+          '$regex': check
+        }
+      };
+    }
 
     async.parallel([
         function(callback) {
