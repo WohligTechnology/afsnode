@@ -315,7 +315,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    });
+    }).populate('player1').populate('player2').populate('sport').populate('team1').populate('team2');
   },
   findForDrop: function(data, callback) {
     var returns = [];
