@@ -131,9 +131,9 @@ var models = {
     function selectTeamAndRun() {
       if(leagues.participantType == 'team'){
         if(leagues.team1 && leagues.team1.players.length > 0){
-          runThroughTeams(1,0);
+          runThroughTeam(1,0);
         }else{
-          runThroughTeams(2,0);
+          runThroughTeam(2,0);
         }
       }
     }
@@ -171,7 +171,7 @@ var models = {
                       callback(err, null);
                     } else {
                       leagues = response;
-
+                      selectTeamAndRun();
                     }
                   });
                 }
