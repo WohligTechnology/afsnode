@@ -144,7 +144,27 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          callback(null, data2);
+          if (data2.participantType) {
+            if (data2.participantType == 'player') {
+              updateStudentsAndCallback(data2);
+
+            } else {
+              League.populate(data2, [{
+                path: 'team1'
+              },{
+                  path:'team2'
+              }], function(err, response) {
+                if (err) {
+                  callback(err, null);
+                } else {
+                  leagues = response;
+                  selectTeamAndRun();
+                }
+              });
+            }
+          } else {
+            callback(null, data2);
+          }
         }
       });
     } else {
