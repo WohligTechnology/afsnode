@@ -97,13 +97,35 @@ var models = {
       });
     }
     function savePlayya(team,iterator) {
-      
+      var constraints = {};
+      constraints.year = leagues.year;
+      constraints.sport = leagues.sport;
+      constraints.drawFormat = "League";
+      constraints.league = leagues._id;
+      if (leagues['team'+team].players) {
+        constraints.student = leagues['team'+team].players[iterator];
+        constraints.team =leagues['team'+team]._id;
+      }
+      StudentStats.saveData(constraints, function(err, response) {
+        if (err) {
+          callback(err, null);
+        } else {
+          console.log(response);
+          runThroughTeam(team, ++iterator);
+        }
+      });
     }
      function runThroughTeam(team,iterator) {
-       if(league['team'+team].players.length <= iterator){
-
+       var otherteam = (team === 1)?2:1;
+       if(leagues['team'+team].players.length <= iterator){
+         if(leagues['team'+otherteam].players.length > 0){
+           leagues['team'+team].players = [];
+           runThroughTeam(otherteam,0);
+         }else{
+           callback(null,"done");
+         }
        }else{
-         console.log('logo');
+         savePlayya(team,iterator);
        }
      }
     function selectTeamAndRun() {
