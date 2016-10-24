@@ -125,6 +125,35 @@ module.exports = {
       });
     }
   },
+  getMedalsBySport: function(req, res) {
+    if (req.body) {
+      if(req.body.sport){
+        Medal.getMedalsBySport(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:"Input inadequate"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   countOneSchoolMedal: function(req, res) {
     if (req.body) {
       if(req.body.school && req.body.year){
