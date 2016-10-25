@@ -38,15 +38,11 @@ module.exports = {
     }
   },
   uploadMedal: function(req, res) {
-
     req.file("file").upload(function(err, uploadedFiles) {
       var results = [];
 
       function saveMe(num) {
-        // console.log(results[num]);
         var media = {};
-        // console.log(num);
-
         media = results[num];
         if (results[num].date) {
           media.date = new Date(results[num].date);

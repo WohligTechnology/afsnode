@@ -79,8 +79,7 @@ var schema = new Schema({
     default: ""
   },
   video: {
-    type: String,
-    default: ""
+    type: String
   },
   parent1: {
     type: Schema.Types.ObjectId,
@@ -367,7 +366,7 @@ var models = {
     data.pagenumber = parseInt(data.pagenumber);
     var checkObj = {};
 
-    var check = new RegExp(data.sport, "i");
+    // var check = new RegExp(data.sport, "i");
     checkObj = {
       'sport': data.sport
     };
@@ -484,7 +483,6 @@ var models = {
         _.each(results,function (key) {
           knockouts.push(key._id);
         });
-        console.log(knockouts);
         StudentStats.remove({
               drawFormat: "Knockout",
               knockout: {
