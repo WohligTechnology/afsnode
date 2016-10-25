@@ -260,6 +260,7 @@ var models = {
               delete nextRound.round;
               delete nextRound.startTime;
               delete nextRound.endTime;
+              delete nextRound.video;
               delete nextRound.totalTime;
               var result = {};
               if ((data2['result' + data2.participantType + '1'] == "Won" || data2['result' + data2.participantType + '1'] == "Bye" || data2['result' + data2.participantType + '1'] == "Walkover") && (data2['result' + data2.participantType + '2'] == "Loss" || data2['result' + data2.participantType + '2'] == "No Show")) {
