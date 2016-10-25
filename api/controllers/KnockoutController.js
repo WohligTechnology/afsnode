@@ -156,7 +156,7 @@ module.exports = {
               video : knockout.video
             }
         },{
-
+          new:true
         },function (err,data) {
           console.log(err);
           if(err){
@@ -165,7 +165,7 @@ module.exports = {
               data:err
             });
           }else{
-            console.log(data);
+            // console.log("new"data);
             saveAll(++num);
           }
 
@@ -245,7 +245,11 @@ module.exports = {
           row.VIDEO = key.video;
           excelData.push(row);
         });
-        Config.generateExcel("Knockout "+data2[0].sport.sportslist.name + ' '+((data2[0].sport.firstcategory.name)?(data2[0].sport.firstcategory.name):'')+' '+data2[0].sport.agegroup.name+' ' +data2[0].sport.gender + ' ',excelData,res);
+        if(data2.length > 0){
+          Config.generateExcel("Knockout "+data2[0].sport.sportslist.name + ' '+((data2[0].sport.firstcategory.name)?(data2[0].sport.firstcategory.name):'')+' '+data2[0].sport.agegroup.name+' ' +data2[0].sport.gender + ' ',excelData,res);
+        }else{
+          Config.generateExcel("Knockout ",excelData,res);
+        }
     });
   },
   deleteKnockoutCompletely: function(req, res) {
