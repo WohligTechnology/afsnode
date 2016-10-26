@@ -434,7 +434,11 @@ var models = {
     });
   },
   countStudent: function(data, callback) {
-    Student.count().exec(function(err, deleted) {
+    Student.count(
+      {
+      deleteStatus:false
+    }
+  ).exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
