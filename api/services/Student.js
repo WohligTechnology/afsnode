@@ -383,11 +383,13 @@ var models = {
       constraints = {
         name: {
           '$regex': check
-        }
+        },
+        deleteStatus:false
       };
     } else {
       constraints = {
-        sfaid: data.sfaid
+        sfaid: data.sfaid,
+        deleteStatus:false
       };
     }
     data.pagenumber = parseInt(data.pagenumber);
