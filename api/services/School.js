@@ -24,7 +24,10 @@ var schema = new Schema({
   deleteStatus: Boolean,
   principal: String,
   sports: [{
-    _id: Schema.Types.ObjectId,
+    _id: {
+      type:Schema.Types.ObjectId,
+      ref:'SportsList'
+    },
     name: String,
     sporttype: String,
     year: String
@@ -251,6 +254,22 @@ var models = {
     School.findOne({
       _id: data._id
     }).lean().exec(function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        newreturns = deleted;
+        callback(null, newreturns);
+      }
+    });
+  },
+  getOnePopulated: function(data, callback) {
+    // var newreturns = {};
+    // async.parallel([
+    // function(callback) {
+    console.log(data);
+    School.findOne({
+      _id: data._id
+    }).lean().populate('sports._id').exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
