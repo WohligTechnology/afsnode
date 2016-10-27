@@ -255,6 +255,31 @@ module.exports = {
     Config.generateExcel("Media", excelData, res);
 
   },
+  sampleExcelDownloadPress: function(req, res) {
+    var excelData = [];
+    excelData.push({
+      "year": "",
+      "folder": "",
+      "order": "",
+      "imageorder": "",
+      "date": "",
+      "mediatitle": "",
+      "mediatype": "",
+      "medialink": ""
+    });
+    excelData.push({
+      "year": "2015",
+      "folder": "press-coverage",
+      "order": "0",
+      "imageorder": "1",
+      "date": "11/03/2015",
+      "mediatitle": "Times of India",
+      "mediatype": "'press-video' or 'press-photo'",
+      "medialink": "1.jpg"
+    });
+    Config.generateExcel("Media press coverage", excelData, res);
+
+  },
   findForDrop: function(req, res) {
     if (req.body) {
       if (req.body.firstcategory && Array.isArray(req.body.firstcategory)) {
