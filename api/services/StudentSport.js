@@ -184,8 +184,10 @@ var models = {
         }, function(err, data) {
           if (err) {
             callback(err, null);
-          } else {
+          } else if(data.length > 0){
             callback(null, data);
+          }else{
+            callback(data,null);
           }
         });
         // callback(null, data);
