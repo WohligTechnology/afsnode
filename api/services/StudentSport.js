@@ -137,62 +137,95 @@ var models = {
     }
   },
   getSchoolSportByGender: function(data, callback) {
-    StudentSport.aggregate([{
-        $match: {
-          "school._id": objectid(data._id),
-          "year": data.year
-        }
-      }, {
-        $lookup: {
-          from: 'students',
-          localField: 'student',
-          foreignField: '_id',
-          as: 'student'
-        }
-      }, {
-        $unwind: "$student"
-      }, {
-        $group: {
-          _id: {
-            sport: "$sportslist._id",
-            gender: "$student.gender"
-          },
-          "count": {
-            $sum: 1
-          }
-        }
-      }, {
-        $group: {
-          "_id": "$_id.sport",
-          "gender": {
-            $addToSet: {
-              name: "$_id.gender",
-              "count": "$count"
+    var newreturns = {};
+    async.parallel([
+        function(callback) {
+          StudentSport.aggregate([{
+              $match: {
+                "school._id": objectid(data._id),
+                "year": data.year
+              }
+            }, {
+              $lookup: {
+                from: 'students',
+                localField: 'student',
+                foreignField: '_id',
+                as: 'student'
+              }
+            }, {
+              $unwind: "$student"
+            }, {
+              $group: {
+                _id: {
+                  sport: "$sportslist._id",
+                  gender: "$student.gender"
+                },
+                "count": {
+                  $sum: 1
+                }
+              }
+            }, {
+              $group: {
+                "_id": "$_id.sport",
+                "gender": {
+                  $addToSet: {
+                    name: "$_id.gender",
+                    "count": "$count"
+                  }
+                }
+              }
             }
+          ]).exec(function(err, response) {
+            if (err) {
+              callback(err, null);
+            } else {
+              SportsList.populate(response, {
+                path: "_id"
+              }, function(err, data) {
+                if (err) {
+                  callback(err, null);
+                } else if(data.length > 0){
+                  newreturns.sports = data;
+                  callback(null, data);
+                }else{
+                  newreturns.sports = data;
+                  callback(data,null);
+                }
+              });
+              // callback(null, data);
+            }
+          });
+        },
+        function (callback) {
+          var checkObj = {};
+          if (data.year) {
+            checkObj = {
+              year: data.year
+            };
           }
+          if(data._id){
+            checkObj.school = data._id;
+          }
+          Student.countContingentStrength(checkObj,function (err,data) {
+            if(err){
+              callback(err,null);
+            }else{
+              newreturns.gender=data[0];
+              callback(null,data);
+            }
+          });
         }
-      }
-      // ,{
-      //   $unwind:"$sport"
-      // }
-    ]).exec(function(err, response) {
-      if (err) {
-        callback(err, null);
-      } else {
-        SportsList.populate(response, {
-          path: "_id"
-        }, function(err, data) {
-          if (err) {
-            callback(err, null);
-          } else if(data.length > 0){
-            callback(null, data);
-          }else{
-            callback(data,null);
-          }
-        });
-        // callback(null, data);
-      }
-    });
+      ],
+      function(err, data4) {
+        if (err) {
+          console.log(err);
+          callback(err, null);
+        } else if (data4) {
+          callback(null, newreturns);
+        } else {
+          callback(null, newreturns);
+        }
+      });
   },
   getAll: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, deleted) {

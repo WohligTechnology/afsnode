@@ -4,7 +4,7 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
- var objectid = require("mongodb").ObjectId;
+var objectid = require("mongodb").ObjectId;
 
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
@@ -31,8 +31,8 @@ var schema = new Schema({
   address: String,
   parentName: String,
   profilePic: {
-    type:String,
-    default:""
+    type: String,
+    default: ""
   },
   blog: Schema.Types.Mixed,
   medals: Schema.Types.Mixed,
@@ -116,20 +116,20 @@ var models = {
   },
   updateProfilePicture: function(data, callback) {
     Student.findOneAndUpdate({
-      sfaid:parseInt(data.sfaid)
-    },{
-      $set:{
-        "profilePic":data.profilePic
+      sfaid: parseInt(data.sfaid)
+    }, {
+      $set: {
+        "profilePic": data.profilePic
       }
-    },{
-      new : true
-    },function (err,response) {
-      if(err){
-        callback(err,null);
-      }else if(response){
-        callback(null,response.firstname + "'s profile updated");
-      }else{
-        callback("Student with SFAID "+data.sfaid+" not found.",null);
+    }, {
+      new: true
+    }, function(err, response) {
+      if (err) {
+        callback(err, null);
+      } else if (response) {
+        callback(null, response.firstname + "'s profile updated");
+      } else {
+        callback("Student with SFAID " + data.sfaid + " not found.", null);
 
       }
     });
@@ -290,25 +290,26 @@ var models = {
         }
       });
   },
-  countContingentStrength:function (data,callback) {
-    var checkObj ={};
-    if(data.school){
+  countContingentStrength: function(data, callback) {
+    var checkObj = {};
+    console.log(data);
+    if (data.school) {
       checkObj.school = objectid(data.school);
     }
-    if(data.year){
-      checkObj.year =data.year;
+    if (data.year && data.year !== '2015') {
+      checkObj.year = data.year;
     }
-    console.log("gender",checkObj);
+    // console.log(checkObj);
     Student.aggregate([{
-      $match:checkObj
-    },{
-      $group:{
-        _id:"$gender",
-        count:{
-          $sum:1
+      $match: checkObj
+    }, {
+      $group: {
+        _id: "$gender",
+        count: {
+          $sum: 1
         }
       }
-    },{
+    }, {
       $project: {
         "_id": "$_id",
         "Boys": {
@@ -330,22 +331,21 @@ var models = {
           }
         }
       }
-    },{
-      $group:{
-        "_id":null,
-        "Boys":{
-          $max :"$Boys"
+    }, {
+      $group: {
+        "_id": null,
+        "Boys": {
+          $max: "$Boys"
         },
-        "Girls":{
-          $max :"$Girls"
+        "Girls": {
+          $max: "$Girls"
         }
       }
-    }
-    ]).exec(function (err,data) {
-      if(err){
-        callback(err,null);
-      }else{
-        callback(null,data);
+    }]).exec(function(err, resp1) {
+      if (err) {
+        callback(err, null);
+      } else {
+          callback(null, resp1);
       }
     });
   },
@@ -384,12 +384,12 @@ var models = {
         name: {
           '$regex': check
         },
-        deleteStatus:false
+        deleteStatus: false
       };
     } else {
       constraints = {
         sfaid: data.sfaid,
-        deleteStatus:false
+        deleteStatus: false
       };
     }
     data.pagenumber = parseInt(data.pagenumber);
@@ -436,11 +436,9 @@ var models = {
     });
   },
   countStudent: function(data, callback) {
-    Student.count(
-      {
-      deleteStatus:false
-    }
-  ).exec(function(err, deleted) {
+    Student.count({
+      deleteStatus: false
+    }).exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
