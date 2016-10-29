@@ -449,14 +449,28 @@ var models = {
       }
     }, {
       $group: {
-        _id: "$sportslist._id"
+        _id: "$sportslist._id",
+        sports:{
+          $addToSet:{
+            agegroup:"$agegroup",
+          firstcategory:"$firstcategory",
+          secondcategory:"$secondcategory",
+          thirdcategory:"$thirdcategory",
+          medals:"$medals",
+          school:"$school",
+          student:"$student",
+          }
+        }
       }
     }, {
       $project: {
         "_id": 0,
-        "sport": "$_id"
+        "sport": "$_id",
+        sports:1
+
       }
-    }]).exec(function(err, data) {
+    }
+  ]).exec(function(err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -467,10 +481,15 @@ var models = {
             callback(err, null);
           } else {
             if (response.length > 0) {
-              var resp = _.map(response, function(key) {
-                return key.sport;
-              });
-              callback(null, resp);
+              var sp = [];
+              var newob = {};
+               _.each(response,function (key) {
+                 newob = {};
+                 newob = _.clone(key.sport.toObject());
+                 newob.sports=_.cloneDeep(key.sports);
+                 sp.push(newob);
+             });
+              callback(null, sp);
 
             } else {
               callback([], null);

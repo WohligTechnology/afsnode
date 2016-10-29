@@ -330,7 +330,7 @@ var models = {
         }, function(err, data) {
           if (err) {
             callback(err, null);
-          } else {  
+          } else {
             asyncReturns.contingent['2016'] = data[0];
             callback(null, data);
           }
