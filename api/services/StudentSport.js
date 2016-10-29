@@ -452,6 +452,7 @@ var models = {
         _id: "$sportslist._id",
         sports:{
           $addToSet:{
+            year:"$year",
             agegroup:"$agegroup",
           firstcategory:"$firstcategory",
           secondcategory:"$secondcategory",
@@ -486,7 +487,7 @@ var models = {
                _.each(response,function (key) {
                  newob = {};
                  newob = _.clone(key.sport.toObject());
-                 newob.sports=_.cloneDeep(key.sports);
+                 newob.sports=_.clone(key.sports);
                  sp.push(newob);
              });
               callback(null, sp);
