@@ -453,6 +453,7 @@ var models = {
         sports:{
           $addToSet:{
             year:"$year",
+            sportslist:"$sportslist",
             agegroup:"$agegroup",
           firstcategory:"$firstcategory",
           secondcategory:"$secondcategory",
