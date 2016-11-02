@@ -225,6 +225,12 @@ var models = {
               callback(null,data);
             }
           });
+        },function (callback) {
+
+          School.getSchoolRank(data,function (err,data) {
+            newreturns.rank = data;
+            callback(null,"data");
+          });
         }
       ],
       function(err, data4) {

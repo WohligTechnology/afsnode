@@ -310,10 +310,10 @@ var models = {
           }
         });
       },
-        function(callback) {
+      function(callback) {
         Student.countContingentStrength({
-          school:data._id,
-          year:'2015'
+          school: data._id,
+          year: '2015'
         }, function(err, data) {
           if (err) {
             callback(err, null);
@@ -323,10 +323,10 @@ var models = {
           }
         });
       },
-        function(callback) {
+      function(callback) {
         Student.countContingentStrength({
-          school:data._id,
-          year:'2016'
+          school: data._id,
+          year: '2016'
         }, function(err, data) {
           if (err) {
             callback(err, null);
@@ -334,6 +334,14 @@ var models = {
             asyncReturns.contingent['2016'] = data[0];
             callback(null, data);
           }
+        });
+      },function (callback) {
+        var constraints = {};
+        constraints._id = data._id;
+        constraints.year = '2016';
+        School.getSchoolRank(constraints,function (err,data) {
+          asyncReturns.rank = data;
+          callback(null,"data");
         });
       }
 
@@ -360,9 +368,9 @@ var models = {
     if (!data.agegroup || data.agegroup == "All") {
       delete matchObj["agegroup.name"];
     }
-     if(data.sport){
-       matchObj['sportslist._id'] = objectid(data.sport);
-     }
+    if (data.sport) {
+      matchObj['sportslist._id'] = objectid(data.sport);
+    }
     // console.log(matchObj);
     StudentSport.aggregate([{
       $lookup: {
@@ -764,6 +772,40 @@ var models = {
         callback(err, null);
       } else {
         callback(null, newreturns);
+      }
+    });
+  },
+  getSchoolRank: function(data, callback) {
+    var constraints = {};
+    // constraints.school = objectid(data._id);
+
+    constraints['totalPoints' + data.year] = {
+      $ne: 0
+    };
+    var sortconstraints = {};
+    sortconstraints['totalPoints' + data.year] = -1;
+    School.aggregate([{
+      $match: constraints
+    }, {
+      $sort: sortconstraints
+    }]).exec(function(err, response) {
+      if (err) {
+        callback(err, null);
+      } else {
+        console.log(response.length);
+        if (response.length > 0) {
+          var index = _.findIndex(response, function(key) {
+            return key._id == data._id;
+          });
+          console.log(index);
+          if (index === -1) {
+            callback(null, 'N.A.');
+          } else {
+            callback(null,index + 1);
+          }
+        } else {
+          callback(0, null);
+        }
       }
     });
   },
