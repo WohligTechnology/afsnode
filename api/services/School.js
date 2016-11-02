@@ -360,6 +360,9 @@ var models = {
     if (!data.agegroup || data.agegroup == "All") {
       delete matchObj["agegroup.name"];
     }
+     if(data.sport){
+       matchObj['sportslist._id'] = objectid(data.sport);
+     }
     // console.log(matchObj);
     StudentSport.aggregate([{
       $lookup: {
