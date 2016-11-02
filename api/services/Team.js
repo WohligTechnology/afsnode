@@ -318,7 +318,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('players', "_id name sfaid profilePic").populate('captain', "_id name sfaid").populate("school", "name sfaid logo").populate('sport', "name").populate("agegroup", "name").populate("category", "name");
+    }).populate('players', "_id name sfaid profilePic").populate('captain', "_id name sfaid").populate("school", "name sfaid logo").populate('sport').populate("agegroup", "name").populate("category", "name");
   },
   getOneTeamByName: function(data, callback) {
     Team.findOne({
