@@ -270,7 +270,7 @@ var models = {
                     if (err) {
                       callback(err, null);
                     } else {
-                      // console.log(response);
+                      //Intelligence coming in 3,2,1 ..
                       result['result' + data2.participantType] = response[0]._id;
                       if (data2.order % 2 === 0) {
                         nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
@@ -281,6 +281,7 @@ var models = {
                       }
                       nextRound.order = parseInt(data2.order / 2);
                       nextRound.roundno = nextRound.roundno + 1;
+                      //FINISH
                       updateAndCallback(nextRound);
                     }
                   });
@@ -356,8 +357,6 @@ var models = {
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
     var checkObj = {};
-
-    // var check = new RegExp(data.sport, "i");
     checkObj = {
       'sport': data.sport
     };

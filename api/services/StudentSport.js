@@ -154,11 +154,23 @@ var models = {
               }
             }, {
               $unwind: "$student"
-            }, {
+            },{
+              $group:{
+                _id:{
+                  student:"$student._id",
+                  gender:"$student.gender",
+                },
+                "sportslist":{
+                  $addToSet:"$sportslist._id"
+                }
+              }
+            },{
+              $unwind:"$sportslist"
+            },{
               $group: {
                 _id: {
-                  sport: "$sportslist._id",
-                  gender: "$student.gender"
+                  sport: "$sportslist",
+                  gender: "$_id.gender"
                 },
                 "count": {
                   $sum: 1
