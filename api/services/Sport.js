@@ -102,7 +102,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log(data2);
+          // console.log(data2);
           callback(null, data2);
         }
       });
@@ -219,7 +219,7 @@ var models = {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
-    console.log(matchObj);
+    // console.log(matchObj);
     Sport.aggregate([{
       $match: matchObj
     }, {
@@ -233,7 +233,7 @@ var models = {
         }
       }
     }]).exec(function(err, data2) {
-      console.log(data2);
+      // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
@@ -248,7 +248,7 @@ var models = {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
-    console.log(matchObj);
+    // console.log(matchObj);
     Sport.aggregate([{
       $match: matchObj
     }, {
@@ -269,8 +269,8 @@ var models = {
         }
       }
     }]).exec(function(err, data2) {
-      console.log("darta1", data2);
-      console.log(data2);
+      // console.log("darta1", data2);
+      // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
@@ -295,7 +295,7 @@ var models = {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
-    console.log(matchObj);
+    // console.log(matchObj);
     Sport.aggregate([{
       $match: matchObj
     }, {
@@ -309,8 +309,8 @@ var models = {
       }
     }
   ]).exec(function(err, data2) {
-      console.log("darta1", data2);
-      console.log(data2);
+      // console.log("darta1", data2);
+      // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
@@ -353,7 +353,7 @@ var models = {
     if (!data.thirdcategory) {
       delete matchobj["thirdcategory.name"];
     }
-    console.log(matchobj);
+    // console.log(matchobj);
     Sport.find(matchobj).exec(function(err, data2) {
       if (err) {
         console.log(err);
@@ -381,9 +381,9 @@ var models = {
     });
   },
   getSportBySportlist: function(data, callback) {
-    console.log({
-      "sportslist._id": data.sportlist
-    });
+    // console.log({
+    //   "sportslist._id": data.sportlist
+    // });
     Sport.find({
       "sportslist._id": data.sportlist
     }).exec(function(err, data2) {
@@ -559,7 +559,7 @@ var models = {
       if (err) {
 
       } else {
-        console.log(data.length);
+        // console.log(data.length);
         async.each(data, function(j, callback1) {
 
           Sport.saveDataObjectId(j, function(err, updated) {

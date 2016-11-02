@@ -118,16 +118,6 @@ var models = {
     }
 
     function updatePlayersAndCallback(details, num, status) {
-      if (details.team1 && !details.team2) {
-        console.log(num, details.team1.players.length);
-
-      } else if (!details.team1 && details.team2) {
-        console.log(num, details.team2.players.length);
-
-      } else {
-        console.log(num, details.team1.players.length, details.team2.players.length);
-
-      }
       var firstteam = "";
       var secondteam = "";
       if (details.team1) {
@@ -188,7 +178,7 @@ var models = {
     }
 
     function updateAndCallback(nextRound) {
-      console.log(nextRound);
+      // console.log(nextRound);
       delete nextRound.matchid;
       var upsertData = {};
       Knockout.getLastKnockout({}, function(err, response) {
@@ -280,7 +270,7 @@ var models = {
                     if (err) {
                       callback(err, null);
                     } else {
-                      console.log(response);
+                      // console.log(response);
                       result['result' + data2.participantType] = response[0]._id;
                       if (data2.order % 2 === 0) {
                         nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
@@ -301,7 +291,7 @@ var models = {
                     if (err) {
                       callback(err, null);
                     } else {
-                      console.log(response);
+                      // console.log(response);
                       result['result' + data2.participantType] = response[0]._id;
                       if (data2.order % 2 === 0) {
                         nextRound[data2.participantType + '1'] = result['result' + data2.participantType];
@@ -451,7 +441,7 @@ var models = {
       } else if (_.isEmpty(data2)) {
         callback(null, 0);
       } else {
-        console.log(data2);
+        // console.log(data2);
         callback(null, data2[0].matchid);
       }
     });

@@ -158,9 +158,9 @@ var models = {
     if (data.student) {
       constraints.student = data.student;
     }
-    console.log(data);
+    // console.log(data);
     if (data.category) {
-      console.log("here");
+      // console.log("here");
       sportsconstraints['sport.firstcategory.name'] = {
         '$regex': new RegExp(data.category, "i")
       };
@@ -172,7 +172,7 @@ var models = {
     if(data.year){
       sportsconstraints['sport.year'] = data.year;
     }
-    console.log("herea",sportsconstraints);
+    // console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
       $match: {
         student: objectid(constraints.student)
@@ -267,7 +267,7 @@ var models = {
     if (data.gender) {
       studentconstraints['student.gender'] = data.gender;
     }
-    console.log(data);
+    // console.log(data);
     if (data.category) {
       sportsconstraints['sport.firstcategory.name'] = {
         '$regex': new RegExp(data.category, "i")
@@ -285,7 +285,7 @@ var models = {
     if(data.year){
       sportsconstraints['sport.year'] = data.year;
     }
-    console.log("herea",sportsconstraints);
+    // console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
       $match: {
         school: objectid(data.school)

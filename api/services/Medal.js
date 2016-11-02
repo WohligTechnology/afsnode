@@ -39,11 +39,11 @@ var models = {
     var teamstudents = {};
 
     function updateSingleStudent(tuple) {
-      console.log("tuple", tuple);
+      // console.log("tuple", tuple);
       var incConst = {};
       incConst.$inc = {};
       incConst.$inc['totalPoints' + tuple.year] = tuple.points;
-      console.log(incConst);
+      // console.log(incConst);
       Student.update({
         _id: tuple.player
       }, incConst, {
@@ -52,7 +52,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log("data", data);
+          // console.log("data", data);
           School.update({
             _id: tuple.school
           }, incConst, {
@@ -61,7 +61,7 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              console.log(data);
+              // console.log(data);
               callback(null, data);
             }
           });
@@ -80,7 +80,7 @@ var models = {
       constraints.player = teamstudents.team.players[singl];
       // constraints.team = teamstudents.team._id;
       constraints.isAddedFromTeam = true;
-      console.log("constraints", constraints);
+      // console.log("constraints", constraints);
       var incConst = {};
       incConst.$inc = {};
       incConst.$inc['totalPoints' + constraints.year] = constraints.points;
@@ -106,7 +106,7 @@ var models = {
     }
 
     function runThroughStudents(iterator) {
-      console.log(teamstudents);
+      // console.log(teamstudents);
       if (teamstudents.team.players.length <= iterator) {
         // runThroughHeats(++iterator);
         callback(null, "done");
@@ -131,7 +131,7 @@ var models = {
             callback(err, null);
           } else {
             teamstudents = expanded;
-            console.log("teamstudents", teamstudents);
+            // console.log("teamstudents", teamstudents);
 
             runThroughStudents(0);
             // callback(null,data);
@@ -151,7 +151,7 @@ var models = {
         }
       });
     } else {
-      console.log(data);
+      // console.log(data);
       Medal.populate(data, [{
         path: 'player'
       }, {
@@ -161,7 +161,7 @@ var models = {
           callback(err, null);
         } else {
           // console.log(expanded);
-          console.log(data);
+          // console.log(data);
           if (data.participantType) {
             if (data.participantType == "player") {
               data.school = expanded.player.school;
@@ -170,7 +170,7 @@ var models = {
             }
           }
           data[data.participantType] = data[data.participantType]._id;
-          console.log(data);
+          // console.log(data);
           medal = new Medal(data);
           medal.save(function(err, data3) {
             if (err) {
@@ -200,7 +200,7 @@ var models = {
     }
   },
   countOneSchoolMedal: function(data, callback) {
-    console.log(data);
+    // console.log(data);
     Medal.aggregate([{
       $match: {
         school: objectid(data.school),
@@ -501,7 +501,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log("data", data);
+          // console.log("data", data);
           School.update({
             _id: tuple.school
           }, incConst, {
@@ -512,7 +512,7 @@ var models = {
             } else {
               // console.log(data);
               // callback(null,data);
-              console.log(data);
+              // console.log(data);
               Medal.findOneAndRemove({
                 _id: tuple._id
               }, function(err, deleted) {
@@ -537,7 +537,7 @@ var models = {
       constraints.medal = teamstudents.medal;
       constraints.player = teamstudents.team.players[singl];
       constraints.team = teamstudents.team._id;
-      console.log("constraints", constraints);
+      // console.log("constraints", constraints);
       // medal = new Medal(constraints);
       Medal.findOneAndRemove(constraints, function(err, deleted) {
         if (err) {
@@ -564,7 +564,7 @@ var models = {
     }
 
     function runThroughStudents(iterator) {
-      console.log(teamstudents);
+      // console.log(teamstudents);
       if (teamstudents.team.players.length <= iterator) {
         // runThroughHeats(++iterator);
         Medal.findOneAndRemove({
@@ -597,7 +597,7 @@ var models = {
             callback(err, null);
           } else {
             teamstudents = expanded;
-            console.log("teamstudents", teamstudents);
+            // console.log("teamstudents", teamstudents);
 
             runThroughStudents(0);
             // callback(null,data);
@@ -764,7 +764,7 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        console.log(updated);
+        // console.log(updated);
         // callback(null,data)
         School.update({}, {
           $set: {
@@ -778,7 +778,7 @@ var models = {
           if (err) {
             callback(err, null);
           } else {
-            console.log(updated);
+            // console.log(updated);
             callback(null, updated);
           }
         });

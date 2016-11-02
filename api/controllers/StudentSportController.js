@@ -280,7 +280,7 @@ module.exports = {
               console.log(err);
             } else {
               num++;
-              console.log(num);
+              // console.log(num);
               if (num == data2.length) {
                 res.json({
                   value: true,
@@ -387,7 +387,7 @@ module.exports = {
           res.set('Content-Type', "application/octet-stream");
           res.set('Content-Disposition', "attachment;filename=" + path);
           res.send(excel);
-          console.log(excel);
+          // console.log(excel);
           setTimeout(function() {
             sails.fs.unlink(path, function(err) {
               console.log(err);

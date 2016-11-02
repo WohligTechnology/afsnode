@@ -78,7 +78,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log(response);
+          // console.log(response);
           saveTeam(iterator, ++playya);
         }
       });
@@ -101,7 +101,7 @@ var models = {
       if (heats.heats[iterator].player) {
         constraints.student = heats.heats[iterator].player;
       }
-      console.log(heats.heats.length, iterator);
+      // console.log(heats.heats.length, iterator);
       StudentStats.saveData(constraints, function(err, response) {
         if (err) {
           callback(err, null);
@@ -222,7 +222,7 @@ var models = {
       } else if (_.isEmpty(data2)) {
         callback(null, 0);
       } else {
-        console.log(data2);
+        // console.log(data2);
         callback(null, data2[0].matchid);
       }
     });

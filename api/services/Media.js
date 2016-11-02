@@ -138,7 +138,7 @@ var models = {
           "year":data.year,
           "mediatype":data.mediatype
         };
-        console.log(constraints);
+        // console.log(constraints);
       async.parallel([
         function(callback) {
           Media.count(constraints).exec(function(err, number) {
@@ -146,7 +146,7 @@ var models = {
               console.log(err);
               callback(err, null);
             } else if (number && number !== "") {
-              console.log(number);
+              // console.log(number);
               newreturns.total = number;
               newreturns.totalpages = Math.ceil(number / 12);
               callback(null, newreturns);

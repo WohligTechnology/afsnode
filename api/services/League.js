@@ -110,7 +110,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log(response);
+          // console.log(response);
           runThroughTeam(team, ++iterator);
         }
       });
@@ -217,7 +217,7 @@ var models = {
       } else if (_.isEmpty(data2)) {
         callback(null, 0);
       } else {
-        console.log(data2);
+        // console.log(data2);
         callback(null, data2[0].matchid);
       }
     });

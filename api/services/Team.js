@@ -64,7 +64,7 @@ var models = {
         category: data.category
       };
     }
-    console.log(matchObj);
+    // console.log(matchObj);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -114,7 +114,7 @@ var models = {
     // teamconstraints.agegroup = data.agegroup;
     teamconstraints.gender = data.gender;
     teamconstraints.year = data.year;
-    console.log(teamconstraints);
+    // console.log(teamconstraints);
     Team.find(teamconstraints).limit(20).exec(function(err, response) {
       if (err) {
         callback(err, null);

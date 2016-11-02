@@ -360,7 +360,7 @@ var models = {
     if (!data.agegroup || data.agegroup == "All") {
       delete matchObj["agegroup.name"];
     }
-    console.log(matchObj);
+    // console.log(matchObj);
     StudentSport.aggregate([{
       $lookup: {
         from: "students",
@@ -740,7 +740,7 @@ var models = {
             callback(err, null);
           } else {
             newreturns.data = data;
-            console.log(data.length);
+            // console.log(data.length);
             callback(null, data);
           }
         });
@@ -788,7 +788,7 @@ var models = {
             callback(err, null);
           } else {
             newreturns.data = data;
-            console.log(data.length);
+            // console.log(data.length);
             callback(null, data);
           }
         });
@@ -828,12 +828,12 @@ var models = {
         }
       }]
     };
-    console.log(checkid);
+    // console.log(checkid);
     if (checkid == NaN) {
       console.log('test');
       delete orObj["$or"][0];
     }
-    console.log(orObj);
+    // console.log(orObj);
     data.pagenumber = parseInt(data.pagenumber);
     data.pagesize = parseInt(data.pagesize);
     // async.parallel([

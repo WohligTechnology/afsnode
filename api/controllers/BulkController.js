@@ -8,7 +8,6 @@ module.exports = {
           console.log(err);
         }
         if (data) {
-          console.log(iterator);
 
           runThroughSport(++iterator);
         }
@@ -43,7 +42,7 @@ module.exports = {
           console.log(err);
         }
         if (data) {
-          console.log(iterator);
+          // console.log(iterator);
 
           runThroughSport(++iterator);
         }

@@ -114,7 +114,6 @@ module.exports = {
           var heat ={};
           heat.matchid = parseInt(results[num]["MATCH ID"]);
           heat.video = results[num].VIDEO;
-          console.log(heat);
           Heat.findOneAndUpdate({
               matchid: heat.matchid
           },{

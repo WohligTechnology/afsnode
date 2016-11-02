@@ -148,7 +148,7 @@ module.exports = {
         var knockout ={};
         knockout.matchid = parseInt(results[num]["MATCH ID"]);
         knockout.video = results[num].VIDEO;
-        console.log(knockout);
+        // console.log(knockout);
         Knockout.findOneAndUpdate({
             matchid: knockout.matchid
         },{
@@ -172,7 +172,7 @@ module.exports = {
         });
       }
       function saveAll(num) {
-        console.log(results.length," <= ",num);
+        // console.log(results.length," <= ",num);
         if(results.length <= num){
           res.json({
             value:true,

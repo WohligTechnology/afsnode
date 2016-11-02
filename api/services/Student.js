@@ -359,7 +359,7 @@ var models = {
     if (!data.middlename || data.middlename === "") {
       delete matchObj.middlename;
     }
-    console.log(matchObj);
+    // console.log(matchObj);
     Student.findOne(matchObj).populate("school", "_id name").lean().exec(function(err, data2) {
       if (err) {
         console.log(err);

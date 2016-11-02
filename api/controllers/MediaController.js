@@ -87,7 +87,7 @@ module.exports = {
             });
           } else {
             results = _.cloneDeep(result);
-            console.log(results);
+            // console.log(results);
             saveAll(0);
           }
         });

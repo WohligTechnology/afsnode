@@ -72,7 +72,7 @@ var models = {
   saveData: function(data, callback) {
     var studentsport = this(data);
     if (data._id) {
-      console.log(data);
+      // console.log(data);
       this.findOneAndUpdate({
         _id: data._id
       }, data, function(err, data2) {
@@ -122,7 +122,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          console.log(data2);
+          // console.log(data2);
           callback(null, data2);
         }
       });
@@ -312,13 +312,13 @@ var models = {
     if (data.gender) {
       studentconstraints.$match['student.gender'] = data.gender;
     }
-    console.log(studentconstraints);
-    console.log({
-      $match: {
-        'sportslist._id': objectid(data.sport),
-        'year': data.year
-      }
-    });
+    // console.log(studentconstraints);
+    // console.log({
+    //   $match: {
+    //     'sportslist._id': objectid(data.sport),
+    //     'year': data.year
+    //   }
+    // });
     StudentSport.aggregate([{
       $match: {
         'sportslist._id': objectid(data.sport),
@@ -389,7 +389,7 @@ var models = {
     if (data.gender) {
       studentconstraints.$match['student.gender'] = data.gender;
     }
-    console.log(studentconstraints);
+    // console.log(studentconstraints);
     console.log({
       'sportslist._id': objectid(data.sport),
       'year': data.year
@@ -507,7 +507,7 @@ var models = {
       if (err) {
 
       } else {
-        console.log(data.length);
+        // console.log(data.length);
         async.each(data, function(j, callback1) {
 
           StudentSport.saveDataObjectId(j, function(err, updated) {
