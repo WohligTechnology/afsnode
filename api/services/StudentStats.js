@@ -261,6 +261,143 @@ var models = {
       }
     });
   },
+  getTeamStatByFilters: function(data, callback) {
+    var constraints = {};
+    var sportsconstraints = {};
+    if (data.team) {
+      constraints.team = data.team;
+    }
+    // console.log(data);
+    if (data.category) {
+      // console.log("here");
+      sportsconstraints['sport.firstcategory.name'] = {
+        '$regex': new RegExp(data.category, "i")
+      };
+    }
+    if (data.sport) {
+      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+
+    }
+    if(data.year){
+      sportsconstraints['sport.year'] = data.year;
+    }
+    // console.log("herea",sportsconstraints);
+    StudentStats.aggregate([{
+      $match: {
+        team: objectid(constraints.team)
+      }
+    }, {
+      $lookup: {
+        from: 'sports',
+        localField: 'sport',
+        foreignField: '_id',
+        as: 'sport'
+      }
+    }, {
+      $unwind: "$sport"
+    },{
+      $group:{
+        _id:{
+          knockout : "$knockout",
+          heat : "$heat",
+          league : "$league"
+        },
+        "stat":{$first:"$_id"},
+        year : {$first:"$year"},
+      sport : {$first:"$sport"},
+      student : {$first:"$student"},
+      school : {$first:"$school"},
+      team : {$first:"$team"},
+      drawFormat : {$first:"$drawFormat"},
+      }
+    },{
+      $project:{
+        "_id":"$stat",
+        year:1,
+      sport:1,
+      student:1,
+      school:1,
+      team:1,
+      drawFormat:1,
+      knockout:"$_id.knockout",
+      heat:"$_id.heat",
+      league:"$_id.league"
+      }
+    }, {
+      $match:sportsconstraints
+    },{
+      $sort:{
+        '_id':-1,
+        "sport":1
+      }
+    }]).exec(function(err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        StudentStats.populate(data, [{
+          path: 'student',
+          select: "name"
+        }, {
+          path: 'school',
+          select: "name"
+        }, {
+          path: "team",
+          select: "name"
+        }, {
+          path: 'knockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
+          }]
+        }], function(err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            if(response.length > 0){
+              callback(null, response);
+
+
+            }else{
+              callback(response,null);
+
+            }
+          }
+
+        });
+      }
+    });
+  },
   getSchoolStatByFilters: function(data, callback) {
     var studentconstraints = {};
     var sportsconstraints = {};
@@ -316,6 +453,34 @@ var models = {
     },
     {
       $match:sportsconstraints
+    },{
+      $group:{
+        _id:{
+          knockout : "$knockout",
+          heat : "$heat",
+          league : "$league"
+        },
+        "stat":{$first:"$_id"},
+        year : {$first:"$year"},
+      sport : {$first:"$sport"},
+      student : {$first:"$student"},
+      school : {$first:"$school"},
+      team : {$first:"$team"},
+      drawFormat : {$first:"$drawFormat"},
+      }
+    },{
+      $project:{
+        "_id":"$stat",
+        year:1,
+      sport:1,
+      student:1,
+      school:1,
+      team:1,
+      drawFormat:1,
+      knockout:"$_id.knockout",
+      heat:"$_id.heat",
+      league:"$_id.league"
+      }
     },{
       $sort:{
         '_id':-1,
