@@ -9,10 +9,10 @@ var Grid = require('gridfs-stream');
 var fs = require("fs");
 var lwip = require("lwip");
 var MaxImageSize = 1200;
-
+var googl = require('goo.gl');
 var gfs = Grid(sails.mongoose.connections[0].db, sails.mongoose);
 gfs.mongo = sails.mongoose.mongo;
-
+googl.setKey('AIzaSyBPiG1XV_s2783oykx9_-ktij9lrO89PtQ');
 module.exports = {
     GlobalCallback: function(err, data, res) {
         if (err) {
@@ -26,6 +26,16 @@ module.exports = {
                 value: true
             });
         }
+    },
+    shortURL:function (data,callback) {
+      googl.shorten(data.url)
+    .then(function (shortUrl) {
+        callback(null,shortUrl);
+    })
+    .catch(function (err) {
+        callback(err.message,null);
+    });
+
     },
     uploadFile: function(filename, callback) {
 

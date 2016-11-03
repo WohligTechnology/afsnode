@@ -46,6 +46,28 @@ module.exports = {
             }
         });
     },
+    shortURL: function (req,res) {
+      if(req.body){
+        Config.shortURL(req.body,function (err,data) {
+          if(err){
+            res.json({
+              value:false,
+              data:err
+            });
+          }else{
+            res.json({
+              value : true,
+              url:data
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:"Input Inadequate"
+        });
+      }
+    },
     countForDashboard: function(req, res) {
         var respObj = {};
         if (req.body && req.body.year) {
