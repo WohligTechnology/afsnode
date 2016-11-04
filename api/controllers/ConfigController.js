@@ -68,6 +68,28 @@ module.exports = {
         });
       }
     },
+    sendMessage: function (req,res) {
+      if(req.body){
+        Config.sendMessage(req.body,function (err,data) {
+          if(err){
+            res.json({
+              value:false,
+              data:err
+            });
+          }else{
+            res.json({
+              value : true,
+              data:data
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data:"Input Inadequate"
+        });
+      }
+    },
     countForDashboard: function(req, res) {
         var respObj = {};
         if (req.body && req.body.year) {
