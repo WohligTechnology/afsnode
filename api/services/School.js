@@ -658,7 +658,7 @@ var models = {
     async.parallel([
       function(callback) {
         var constraints = {};
-        data.year = "2015";
+        // data.year = "2015";
         constraints['totalPoints' + data.year] = {
           $ne: 0
         };
@@ -745,7 +745,7 @@ var models = {
         }, {
           $sort: sortconstraints
         }, {
-          $limit: 20
+          $limit:20
         }]).exec(function(err, data) {
           if (err) {
             callback(err, null);
@@ -774,6 +774,107 @@ var models = {
         callback(null, newreturns);
       }
     });
+  },
+  getAllSchoolRank: function(data, callback) {
+
+        var constraints = {};
+        // data.year = "2015";
+        constraints['totalPoints' + data.year] = {
+          $ne: 0
+        };
+        var sortconstraints = {};
+        sortconstraints['school.totalPoints' + data.year] = -1;
+        School.aggregate([ {
+          $lookup: {
+            from: 'medals',
+            localField: '_id',
+            foreignField: 'school',
+            as: 'medals'
+          }
+        }, {
+          $unwind: '$medals'
+        }, {
+          $match: {
+            "medals.year": data.year
+          }
+        }, {
+          $group: {
+            _id: {
+              school: "$_id",
+              "medal": "$medals.medal"
+            },
+            "count": {
+              $sum: 1
+            }
+          }
+        }, {
+          $project: {
+            "_id": "$_id.school",
+            "gold": {
+              $cond: {
+                if: {
+                  $eq: ["$_id.medal", 1]
+                },
+                then: "$count",
+                else: 0
+              }
+            },
+            "silver": {
+              $cond: {
+                if: {
+                  $eq: ["$_id.medal", 2]
+                },
+                then: "$count",
+                else: 0
+              }
+            },
+            "bronze": {
+              $cond: {
+                if: {
+                  $eq: ["$_id.medal", 3]
+                },
+                then: "$count",
+                else: 0
+              }
+            }
+          }
+        }, {
+          $group: {
+            "_id": "$_id",
+            "gold": {
+              $max: "$gold"
+            },
+            "silver": {
+              $max: "$silver"
+            },
+            "bronze": {
+              $max: "$bronze"
+            }
+          }
+        }, {
+          $lookup: {
+            from: 'schools',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'school'
+          }
+        }, {
+          "$unwind": "$school"
+        }, {
+          $sort: sortconstraints
+        }]).exec(function(err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
+            // console.log(data.length);
+            if(data.length > 0 ){
+              callback(null, data);
+            }else {
+              callback( data,null);
+            }
+          }
+        });
+
   },
   getSchoolRank: function(data, callback) {
     var constraints = {};
