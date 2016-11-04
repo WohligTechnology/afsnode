@@ -112,6 +112,35 @@ module.exports = {
       });
     }
   },
+  getSportRoundKnockout: function(req, res) {
+    if (req.body) {
+      if (req.body.sport) {
+        Knockout.getSportRoundKnockout(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Input inadequate"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   deleteData: function(req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
@@ -141,44 +170,46 @@ module.exports = {
       });
     }
   },
-  updateVideoURL: function (req,res) {
+  updateVideoURL: function(req, res) {
     req.file("file").upload(function(err, uploadedFiles) {
       var results = [];
+
       function saveMe(num) {
-        var knockout ={};
+        var knockout = {};
         knockout.matchid = parseInt(results[num]["MATCH ID"]);
         knockout.video = results[num].VIDEO;
         // console.log(knockout);
         Knockout.findOneAndUpdate({
-            matchid: knockout.matchid
-        },{
-            $set:{
-              video : knockout.video
-            }
-        },{
-          new:true
-        },function (err,data) {
+          matchid: knockout.matchid
+        }, {
+          $set: {
+            video: knockout.video
+          }
+        }, {
+          new: true
+        }, function(err, data) {
           console.log(err);
-          if(err){
+          if (err) {
             res.json({
-              value:false,
-              data:err
+              value: false,
+              data: err
             });
-          }else{
+          } else {
             // console.log("new"data);
             saveAll(++num);
           }
 
         });
       }
+
       function saveAll(num) {
         // console.log(results.length," <= ",num);
-        if(results.length <= num){
+        if (results.length <= num) {
           res.json({
-            value:true,
-            data:"Everything Done"
+            value: true,
+            data: "Everything Done"
           });
-        }else{
+        } else {
           saveMe(num);
         }
       }
@@ -193,8 +224,8 @@ module.exports = {
         }, function(err, result) {
           if (err) {
             res.json({
-              value:false,
-              error:err
+              value: false,
+              error: err
             });
           } else {
             results = _.cloneDeep(result);
@@ -205,7 +236,7 @@ module.exports = {
       }
     });
   },
-  exportKnockout : function (req,res) {
+  exportKnockout: function(req, res) {
     var checkObj = {};
     checkObj = {
       'sport': req.query.sport
@@ -214,42 +245,42 @@ module.exports = {
       roundno: -1,
       order: 1
     }).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name').exec(function(err, data2) {
-        var excelData = [];
-        var row = {};
-        _.each(data2,function (key) {
-          row = {};
-          row = {
-            "MATCH ID":key.matchid,
-            "PARTICIPANT TYPE":key.participantType,
-            "ROUND NAME" : key.round,
-            "ORDER":key.order
-          };
-          if(key.sport){
-            row.SPORT = key.sport.sportslist.name + ' '+((key.sport.firstcategory.name)?(key.sport.firstcategory.name):'')+' '+key.sport.agegroup.name+' ' +key.sport.gender + ' ';
-          }
-          if(key[key.participantType+ '1']){
-            row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
-            row['RESULT 1'] = key['result'+key.participantType + '1'];
-          }else{
-            row['PARTICIPANT 1'] = '';
-            row['RESULT 1'] = '';
-          }
-          if(key[key.participantType+ '2']){
-            row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
-            row['RESULT 2'] = key['result'+key.participantType + '2'];
-          }else{
-            row['PARTICIPANT 2'] = '';
-            row['RESULT 2'] = '';
-          }
-          row.SCORE =  key.score;
-          row.VIDEO = key.video;
-          excelData.push(row);
-        });
-        if(data2.length > 0){
-          Config.generateExcel("Knockout "+data2[0].sport.sportslist.name + ' '+((data2[0].sport.firstcategory.name)?(data2[0].sport.firstcategory.name):'')+' '+data2[0].sport.agegroup.name+' ' +data2[0].sport.gender + ' ',excelData,res);
-        }else{
-          Config.generateExcel("Knockout ",excelData,res);
+      var excelData = [];
+      var row = {};
+      _.each(data2, function(key) {
+        row = {};
+        row = {
+          "MATCH ID": key.matchid,
+          "PARTICIPANT TYPE": key.participantType,
+          "ROUND NAME": key.round,
+          "ORDER": key.order
+        };
+        if (key.sport) {
+          row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
+        if (key[key.participantType + '1']) {
+          row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
+          row['RESULT 1'] = key['result' + key.participantType + '1'];
+        } else {
+          row['PARTICIPANT 1'] = '';
+          row['RESULT 1'] = '';
+        }
+        if (key[key.participantType + '2']) {
+          row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
+          row['RESULT 2'] = key['result' + key.participantType + '2'];
+        } else {
+          row['PARTICIPANT 2'] = '';
+          row['RESULT 2'] = '';
+        }
+        row.SCORE = key.score;
+        row.VIDEO = key.video;
+        excelData.push(row);
+      });
+      if (data2.length > 0) {
+        Config.generateExcel("Knockout " + data2[0].sport.sportslist.name + ' ' + ((data2[0].sport.firstcategory.name) ? (data2[0].sport.firstcategory.name) : '') + ' ' + data2[0].sport.agegroup.name + ' ' + data2[0].sport.gender + ' ', excelData, res);
+      } else {
+        Config.generateExcel("Knockout ", excelData, res);
+      }
     });
   },
   deleteKnockoutCompletely: function(req, res) {

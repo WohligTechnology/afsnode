@@ -570,6 +570,41 @@ var models = {
         callback(null, response);
       }
     }).populate('player1').populate('player2').populate('sport').populate('team1').populate('team2');
+  },
+  getSportRoundKnockout: function (data,callback) {
+    var asyncReturns = {};
+    async.parallel([
+      function (callback) {
+        Sport.getOne({
+          _id:data.sport
+        },function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            asyncReturns.sport = data;
+            callback(null,data);
+          }
+        });
+      },
+      function (callback) {
+        Medal.find({
+          sport:data.sport
+        }).lean().exec(function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            asyncReturns.medals = data;
+            callback(null,data);
+          }
+        });
+      }
+    ],function (err,data) {
+      if (err) {
+        callback(err,null);
+      } else {
+        callback(null,asyncReturns);
+      }
+    });
   }
 };
 module.exports = _.assign(module.exports, models);
