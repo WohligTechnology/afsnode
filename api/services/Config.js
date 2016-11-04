@@ -29,6 +29,7 @@ module.exports = {
     }
   },
   shortURL: function(data, callback) {
+    // console.log(data.sfaid, data.url);
     googl.shorten(data.url)
       .then(function(shortUrl) {
         callback(null, shortUrl);
