@@ -621,12 +621,47 @@ var models = {
         }).sort({
           roundno:1,
           order:1
-        }).populate('player1', "name profilePic school").populate('player1.school',"name").populate('player2', "name profilePic school").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name school.name school.logo').lean().exec(function (err,data) {
+        }).lean().exec(function (err,data) {
           if(err){
             callback(err,null);
           }else{
-            asyncReturns.knockouts = data;
-            callback(null,data);
+            Knockout.populate(data,[{
+              path:'player1',
+              select:"name profilePic school",
+              populate:{
+                path:'school',
+                select:'name'
+              }
+            },{
+              path:'player2',
+              select:"name profilePic school",
+              populate:{
+                path:'school',
+                select:'name'
+              }
+            },{
+              path:'team1',
+              select:"name school",
+              populate:{
+                path:'school',
+                select:'name logo'
+              }
+            },{
+              path:'team2',
+              select:"name school",
+              populate:{
+                path:'school',
+                select:'name logo'
+              }
+            }],function (err,response) {
+              if (err) {
+                callback(err,null);
+              } else {
+                asyncReturns.knockouts = response;
+                callback(null,response);
+              }
+            });
+
           }
         });
       }
