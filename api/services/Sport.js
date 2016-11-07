@@ -244,6 +244,27 @@ var models = {
       }
     });
   },
+  getOneSportForResult : function (data,callback) {
+    var constraints = {};
+    constraints['sportslist._id'] = data.sport;
+    constraints['agegroup.name'] = data.agegroup;
+    if(data.category){
+    constraints['firstcategory.name'] = data.category;
+    }
+    constraints.year = data.year;
+    constraints.gender = data.gender;
+    console.log(constraints);
+    Sport.findOne(constraints,function (err,data) {
+      console.log(data);
+      if(err){
+        callback(err,null);
+      }else if(data){
+        callback(null,data);
+      }else{
+        callback({},null);
+      }
+    });
+  },
   filterCategoryForFrontend: function(data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)

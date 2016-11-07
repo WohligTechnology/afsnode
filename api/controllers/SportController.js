@@ -129,6 +129,35 @@ module.exports = {
       });
     }
   },
+  getOneSportForResult: function(req, res) {
+    if (req.body) {
+      if (req.body.sport && req.body.sport != "") {
+        Sport.getOneSportForResult(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid Id"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
   getSportforTeam: function(req, res) {
     if (req.body) {
       Sport.getSportforTeam(req.body, function(err, respo) {
