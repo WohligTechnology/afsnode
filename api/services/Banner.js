@@ -57,6 +57,17 @@ var models = {
             }
         });
     },
+    getAllEnabledBanner: function(data, callback) {
+        Banner.find({
+          status:true
+        }, {}, {}, function(err, deleted) {
+            if (err) {
+                callback(err, null);
+            } else {
+                callback(null, deleted);
+            }
+        });
+    },
     deleteData: function(data, callback) {
         Banner.findOneAndRemove({
             _id: data._id
