@@ -312,7 +312,8 @@ var models = {
   getMedalsBySport: function(data, callback) {
     Medal.aggregate([{
       $match:{
-        year:data.year
+        year:data.year,
+        isAddedFromTeam:false
       }
     },{
       $lookup: {
@@ -338,7 +339,8 @@ var models = {
             then: {
               student:"$player",
               team:"$team",
-              school:'$school'
+              school:'$school',
+              participantType:"$participantType"
             },
             else: {}
           }
@@ -351,7 +353,8 @@ var models = {
             then: {
               student:"$player",
               team:"$team",
-              school:'$school'
+              school:'$school',
+              participantType:"$participantType"
             },
             else: {}
           }
@@ -364,7 +367,8 @@ var models = {
             then: {
               student:"$player",
               team:"$team",
-              school:'$school'
+              school:'$school',
+              participantType:"$participantType"
             },
             else: {}
           }
@@ -400,6 +404,10 @@ var models = {
       $unwind:"$Gold"
     },{
       $unwind:"$Silver"
+    },{
+      $sort:{
+        _id:1
+      }
     }
   ]).exec(function(err, data) {
       if(err){
@@ -415,13 +423,13 @@ var models = {
           }else{
             School.populate(response,[{
               path:'Gold.school',
-              select:'name'
+              select:'name logo'
             },{
               path:'Silver.school',
-              select:'name'
+              select:'name logo'
             },{
               path:'Bronze.school',
-              select:'name'
+              select:'name logo'
             }],function (err,response) {
               if(err){
                 callback(err,null);
