@@ -313,6 +313,93 @@ var models = {
         callback([], null);
       }
     });
+  },
+  getSportRoundHeat: function (data,callback) {
+    var asyncReturns = {};
+    async.parallel([
+      function (callback) {
+        Sport.getOne({
+          _id:data.sport
+        },function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            asyncReturns.sport = data;
+            callback(null,data);
+          }
+        });
+      },
+      function (callback) {
+        Medal.find({
+          sport:data.sport
+        }).sort({
+          medal:1
+        }).lean().exec(function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            Medal.populate(data,[{
+              path:"player",
+              select:"name profilePic"
+            },{
+              path:"team",
+              select:"name"
+            },{
+              path:"school",
+              select:"name logo"
+            }],function (err,response) {
+              if(err){
+                callback(err,null);
+              }else{
+                asyncReturns.medals = response;
+                callback(null,response);
+              }
+            });
+
+          }
+        });
+      },function (callback) {
+        Heat.find({
+          sport:data.sport
+        }).sort({
+          order:1
+        }).lean().exec(function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            Heat.populate(data,[{
+              path:'heats.player',
+              select:"name profilePic school",
+              populate:{
+                path:'school',
+                select:'name'
+              }
+            },{
+              path:'heats.team',
+              select:"name school",
+              populate:{
+                path:'school',
+                select:'name logo'
+              }
+            }],function (err,response) {
+              if (err) {
+                callback(err,null);
+              } else {
+                asyncReturns.heats = response;
+                callback(null,response);
+              }
+            });
+
+          }
+        });
+      }
+    ],function (err,data) {
+      if (err) {
+        callback(err,null);
+      } else {
+        callback(null,asyncReturns);
+      }
+    });
   }
 };
 module.exports = _.assign(module.exports, models);

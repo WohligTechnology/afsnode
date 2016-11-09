@@ -107,6 +107,35 @@ module.exports = {
             });
         }
     },
+    getSportRoundHeat: function(req, res) {
+      if (req.body) {
+        if (req.body.sport) {
+          Heat.getSportRoundHeat(req.body, function(err, respo) {
+            if (err) {
+              res.json({
+                value: false,
+                data: err
+              });
+            } else {
+              res.json({
+                value: true,
+                data: respo
+              });
+            }
+          });
+        } else {
+          res.json({
+            value: false,
+            data: "Input inadequate"
+          });
+        }
+      } else {
+        res.json({
+          value: false,
+          data: "Invalid call"
+        });
+      }
+    },
     updateVideoURL: function (req,res) {
       req.file("file").upload(function(err, uploadedFiles) {
         var results = [];
