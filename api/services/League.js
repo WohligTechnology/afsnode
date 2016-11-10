@@ -68,6 +68,9 @@ var schema = new Schema({
     type: String,
     default: ""
   },
+  video:{
+    type:String
+  }
 });
 module.exports = sails.mongoose.model('League', schema);
 var models = {
@@ -355,6 +358,107 @@ var models = {
         callback2(exit, exitup, returns);
       } else {
         callback([], null);
+      }
+    });
+  },
+  getSportRoundLeague: function (data,callback) {
+    var asyncReturns = {};
+    async.parallel([
+      function (callback) {
+        Sport.getOne({
+          _id:data.sport
+        },function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            asyncReturns.sport = data;
+            callback(null,data);
+          }
+        });
+      },
+      function (callback) {
+        Medal.find({
+          sport:data.sport
+        }).sort({
+          medal:1
+        }).lean().exec(function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            Medal.populate(data,[{
+              path:"player",
+              select:"name profilePic"
+            },{
+              path:"team",
+              select:"name"
+            },{
+              path:"school",
+              select:"name logo"
+            }],function (err,response) {
+              if(err){
+                callback(err,null);
+              }else{
+                asyncReturns.medals = response;
+                callback(null,response);
+              }
+            });
+
+          }
+        });
+      },function (callback) {
+        League.find({
+          sport:data.sport
+        }).sort({
+          order:1
+        }).lean().exec(function (err,data) {
+          if(err){
+            callback(err,null);
+          }else{
+            League.populate(data,[{
+              path:'player1',
+              select:"name profilePic school",
+              populate:{
+                path:'school',
+                select:'name'
+              }
+            },{
+              path:'player2',
+              select:"name profilePic school",
+              populate:{
+                path:'school',
+                select:'name'
+              }
+            },{
+              path:'team1',
+              select:"name school",
+              populate:{
+                path:'school',
+                select:'name logo'
+              }
+            },{
+              path:'team2',
+              select:"name school",
+              populate:{
+                path:'school',
+                select:'name logo'
+              }
+            }],function (err,response) {
+              if (err) {
+                callback(err,null);
+              } else {
+                asyncReturns.leagues = response;
+                callback(null,response);
+              }
+            });
+
+          }
+        });
+      }
+    ],function (err,data) {
+      if (err) {
+        callback(err,null);
+      } else {
+        callback(null,asyncReturns);
       }
     });
   }
