@@ -290,7 +290,6 @@ module.exports = {
         _.each(response, function(key) {
           row = {};
           row.CATEGORY= "";
-          console.log(key);
           row = {
             "SFAID": key.sfaid,
             "YEAR": key.year
