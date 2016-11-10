@@ -312,6 +312,54 @@ var models = {
       }
     });
   },
+  filterCategoryForFrontendGender: function(data, callback) {
+    var matchObj = {
+      "sportslist._id": objectid(data.sportList),
+      "gender":data.gender
+    };
+    // console.log(matchObj);
+    Sport.aggregate([{
+      $match: matchObj
+    }, {
+      $group: {
+        _id: null,
+        firstcategory: {
+          $addToSet: {
+
+            _id: '$firstcategory._id',
+            name: '$firstcategory.name'
+          }
+        }
+      }
+    }, {
+      $project: {
+        "firstcategory": {
+          "$setDifference": ["$firstcategory", [{}]]
+        }
+      }
+    }]).exec(function(err, data2) {
+      // console.log("darta1", data2);
+      // console.log(data2);
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else {
+        if(data2.length > 0){
+          if (data2[0].firstcategory.length > 0) {
+            callback(null, data2[0].firstcategory);
+
+          } else {
+            callback([], null);
+            //
+          }
+        }else{
+          callback([], null);
+
+        }
+
+      }
+    });
+  },
   filterAgegroupForFrontend: function(data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
