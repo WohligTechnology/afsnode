@@ -122,7 +122,9 @@ var models = {
     }
   },
   getAll: function(data, callback) {
-    SwissLeague.find({}, {}, {}, function(err, deleted) {
+    SwissLeague.find({
+      sport: data.sport
+    }, {}, {}, function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
