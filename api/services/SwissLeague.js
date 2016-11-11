@@ -67,6 +67,28 @@ var models = {
   saveData: function(data, callback) {
     var swisses = {};
     var swissleague = this(data);
+    function updatePlayersAndCallback() {
+      var constraints = {};
+      constraints.student = swisses.player1;
+      constraints.year = swisses.year;
+      constraints.sport = swisses.sport;
+      constraints.drawFormat = "Swiss League";
+      constraints.knockout = swisses._id;
+      StudentStats.saveData(constraints, function(err, response) {
+        if (err) {
+          callback(err, null);
+        } else {
+          constraints.student = swisses.player2;
+          StudentStats.saveData(constraints, function(err, resp) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, resp);
+            }
+          });
+        }
+      });
+    }
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -78,7 +100,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          callback(null, data2);
+          updatePlayersAndCallback();
         }
       });
     } else {
@@ -92,7 +114,7 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              callback(null, data3);
+              updatePlayersAndCallback();
             }
           });
         }
@@ -115,7 +137,17 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        StudentStats.remove({
+          drawFormat:"Swiss League",
+          heat:data._id
+        }, function(err, deleted) {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null,deleted);
+
+          }
+        });
       }
     });
   },
