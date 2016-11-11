@@ -65,6 +65,7 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('SwissLeague', schema);
 var models = {
   saveData: function(data, callback) {
+    var swisses = {};
     var swissleague = this(data);
     if (data._id) {
       this.findOneAndUpdate({
