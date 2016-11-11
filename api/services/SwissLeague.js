@@ -49,6 +49,9 @@ var schema = new Schema({
   point2: {
     type: Number,
   },
+  matchorder:{
+    type: Number
+  },
   no1: {
     type: Number,
   },
@@ -66,7 +69,11 @@ var models = {
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, {
+        $set: data
+      }, {
+        new: true
+      }, function(err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -74,15 +81,12 @@ var models = {
         }
       });
     } else {
-      SwissLeague.find({
-        "name": data.name
-      }).exec(function(err, data2) {
+
+      SwissLeague.getLastSwissLeague({}, function(err, response) {
         if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (data2 && data2[0]) {
-          callback(null, data2);
+          callback(null, err);
         } else {
+          swissleague.matchid = parseInt(response) + 1;
           swissleague.save(function(err, data3) {
             if (err) {
               callback(err, null);
@@ -111,6 +115,24 @@ var models = {
         callback(err, null);
       } else {
         callback(null, deleted);
+      }
+    });
+  },
+  getLastSwissLeague: function(data, callback) {
+    SwissLeague.find({}, {
+      _id: 0,
+      matchid: 1
+    }).sort({
+      matchid: -1
+    }).limit(1).lean().exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 0);
+      } else {
+        // console.log(data2);
+        callback(null, data2[0].matchid);
       }
     });
   },
