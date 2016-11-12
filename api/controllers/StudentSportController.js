@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing StudentSports
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+ var objectid = require("mongodb").ObjectId;
 module.exports = {
   saveData: function(req, res) {
     if (req.body) {
@@ -93,6 +94,105 @@ module.exports = {
         data: "Invalid call"
       });
     }
+  },
+  exportSport: function(req, res) {
+    console.log(req.query.sport);
+    StudentSport.aggregate([{
+      $match: {
+        year: req.query.year ,
+        'sportslist._id':objectid(req.query.sport)
+      }
+    }, {
+      $group: {
+        _id: "$student",
+        sports: {
+          $addToSet: {
+            "name": "$sportslist.name",
+            "agegroup": "$agegroup.name",
+            "firstcategory": "$firstcategory.name",
+            "secondcategory": "$secondcategory.name"
+          }
+        }
+      }
+    }]).exec(function(err, response) {
+      Student.populate(response, [{
+        path: "_id",
+        populate: {
+          path: "school",
+          select: "sfaid name"
+        }
+      }], function(err, resp) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          if(resp.length > 0){
+            var excelData = [];
+            _.each(resp, function(key) {
+              var row = {};
+              if (key._id) {
+                row = {
+                  // "_id":key._id._id,
+                  "SFAID": key._id.sfaid,
+                  "NAME": key._id.name,
+                  "GENDER": key._id.gender,
+                  "CONTACT": key._id.contact
+                };
+                if (key._id.school) {
+                  row["SCHOOL NAME "] = key._id.school.name;
+                }
+                if (key._id.dob) {
+                  row.DOB = (new Date(key._id.dob).getDate() +1) + '/' + (new Date(key._id.dob).getMonth() + 1) + '/' + (key._id.dob).getFullYear();
+
+                }
+
+              }
+
+              row.SPORTS = "";
+              row.CATEGORY = "";
+              row['SUB CATEGORY'] = "";
+              row['AGE GROUP'] = "";
+              _.each(key.sports, function(sport) {
+                if (sport.name) {
+                  row.SPORTS += sport.name + ", ";
+                } else {
+                  row.SPORTS += "N.A." + ", ";
+                }
+                if (sport.firstcategory) {
+                  row.CATEGORY += sport.firstcategory + ", ";
+                } else {
+                  row.CATEGORY += "N.A." + ", ";
+                }
+                if (sport.secondcategory) {
+                  row['SUB CATEGORY'] += sport.secondcategory + ", ";
+                } else {
+                  row['SUB CATEGORY'] += "N.A." + ", ";
+                }
+                if (sport.agegroup) {
+                  row['AGE GROUP'] += sport.agegroup + ", ";
+                } else {
+                  row['AGE GROUP'] += "N.A." + ", ";
+                }
+
+              });
+              excelData.push(row);
+            });
+            excelData = _.sortBy(excelData, function(key) {
+              return key.SFAID;
+            });
+            Config.generateExcel( resp[0].sports[0].name+" "+req.query.year,excelData,res);
+          }else{
+            res.json({
+              value:false,
+              error:'No Data Found'
+            });
+          }
+
+        }
+      });
+    });
   },
   getSportsPopulated: function(req, res) {
     if (req.body) {
