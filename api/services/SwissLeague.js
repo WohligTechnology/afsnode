@@ -73,13 +73,16 @@ var models = {
       constraints.year = swisses.year;
       constraints.sport = swisses.sport;
       constraints.drawFormat = "Swiss League";
-      constraints.knockout = swisses._id;
+      constraints.swissleague = swisses._id;
+      console.log(constraints);
       StudentStats.saveData(constraints, function(err, response) {
+        console.log(err,response);
         if (err) {
           callback(err, null);
         } else {
           constraints.student = swisses.player2;
           StudentStats.saveData(constraints, function(err, resp) {
+            console.log(err,resp);
             if (err) {
               callback(err, null);
             } else {
@@ -100,6 +103,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
+          swisses = data2;
           updatePlayersAndCallback();
         }
       });
@@ -114,6 +118,7 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
+              swisses = data3;
               updatePlayersAndCallback();
             }
           });
@@ -130,7 +135,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    });
+    }).populate('player1','name').populate('player2','name');
   },
   deleteData: function(data, callback) {
     SwissLeague.findOneAndRemove({
@@ -141,7 +146,7 @@ var models = {
       } else {
         StudentStats.remove({
           drawFormat:"Swiss League",
-          heat:data._id
+          swissleague:data._id
         }, function(err, deleted) {
           if (err) {
             callback(err, null);
@@ -180,7 +185,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    });
+    }).populate('player1').populate('player2').populate('sport');
   },
   findForDrop: function(data, callback) {
     var returns = [];
