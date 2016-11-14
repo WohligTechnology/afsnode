@@ -74,6 +74,7 @@ module.exports = {
     getDrawUpdatedSports: function(req, res) {
         if (req.body) {
             StudentStats.getDrawUpdatedSports(req.body, function(err, respo) {
+              console.log(err,respo);
                 if (err) {
                     res.json({
                         value: false,

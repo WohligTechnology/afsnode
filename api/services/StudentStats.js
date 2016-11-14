@@ -579,55 +579,51 @@ var models = {
     });
   },
   getDrawUpdatedSports :  function (data,callback) {
+    console.log('darew',data);
     StudentStats.aggregate([{
       $match:{
         year:"2015"
       }
     },{
-      $group:{
-        '_id':'$sport'
-      }
-    },{
       $lookup:{
         from:'sports',
-       localField: '_id',
+       localField: 'sport',
        foreignField: '_id',
-       as: '_id'
+       as: 'sport'
       }
     },{
-      $unwind:'$_id'
+      $unwind:'$sport'
+    },
+    {
+      $match:{
+        'sport.sportslist._id': objectid(data.sport)
+      }
     },{
       $group:{
-        _id:'$_id.sportslist._id',
+        _id:'$sport._id',
         sport:{
-          $addToSet:{
-            'gender':'$_id.gender',
-          'minPlayers':'$_id.minPlayers',
-          'maxPlayers':'$_id.maxPlayers',
-          'sportslist':'$_id.sportslist',
-          'agegroup':'$_id.agegroup',
-          'firstcategory':'$_id.firstcategory',
-          'secondcategory':'$_id.secondcategory',
-          'thirdcategory':'$_id.thirdcategory',
-          'drawFormat':'$_id.drawFormat'
-          }
+          $first:'$sport'
         }
       }
-    }]).exec(function (err,data) {
+    }]).exec(function (err,response) {
       if(err){
         callback(err,null);
-      }else if(data.length > 0){
-        SportsList.populate(data,{
-          path:'_id'
-        },function (err,response) {
+      }else if(response.length > 0){
+            callback(null,response);
+      }else{
+        console.log(data);
+        SportRule.findOne({
+          sportid:data.sport
+        }).select({
+          yearBeforeContent:1
+        }).exec(function (err,data) {
+          console.log(err,data);
           if(err){
             callback(err,null);
           }else{
-            callback(null,response);
+            callback(data,null);
           }
         });
-      }else{
-        callback(err,null);
       }
     });
   },
