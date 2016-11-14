@@ -578,6 +578,59 @@ var models = {
       }
     });
   },
+  getDrawUpdatedSports :  function (data,callback) {
+    StudentStats.aggregate([{
+      $match:{
+        year:"2015"
+      }
+    },{
+      $group:{
+        '_id':'$sport'
+      }
+    },{
+      $lookup:{
+        from:'sports',
+       localField: '_id',
+       foreignField: '_id',
+       as: '_id'
+      }
+    },{
+      $unwind:'$_id'
+    },{
+      $group:{
+        _id:'$_id.sportslist._id',
+        sport:{
+          $addToSet:{
+            'gender':'$_id.gender',
+          'minPlayers':'$_id.minPlayers',
+          'maxPlayers':'$_id.maxPlayers',
+          'sportslist':'$_id.sportslist',
+          'agegroup':'$_id.agegroup',
+          'firstcategory':'$_id.firstcategory',
+          'secondcategory':'$_id.secondcategory',
+          'thirdcategory':'$_id.thirdcategory',
+          'drawFormat':'$_id.drawFormat'
+          }
+        }
+      }
+    }]).exec(function (err,data) {
+      if(err){
+        callback(err,null);
+      }else if(data.length > 0){
+        SportsList.populate(data,{
+          path:'_id'
+        },function (err,response) {
+          if(err){
+            callback(err,null);
+          }else{
+            callback(null,response);
+          }
+        });
+      }else{
+        callback(err,null);
+      }
+    });
+  },
   deleteData: function(data, callback) {
     StudentStats.findOneAndRemove({
       _id: data._id

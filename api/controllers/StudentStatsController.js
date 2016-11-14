@@ -71,6 +71,28 @@ module.exports = {
             });
         }
     },
+    getDrawUpdatedSports: function(req, res) {
+        if (req.body) {
+            StudentStats.getDrawUpdatedSports(req.body, function(err, respo) {
+                if (err) {
+                    res.json({
+                        value: false,
+                        data: err
+                    });
+                } else {
+                    res.json({
+                        value: true,
+                        data: respo
+                    });
+                }
+            });
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     getTeamStatByFilters: function(req, res) {
         if (req.body) {
             StudentStats.getTeamStatByFilters(req.body, function(err, respo) {
