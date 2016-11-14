@@ -132,9 +132,7 @@ var models = {
       data.pagenumber = parseInt(data.pagenumber);
         var check = new RegExp(data.folder, "i");
         constraints = {
-          'folder': {
-            '$regex': check
-          },
+          'folder': data.folder,
           "year":data.year,
           "mediatype":data.mediatype
         };
