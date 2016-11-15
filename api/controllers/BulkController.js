@@ -33,6 +33,9 @@ module.exports = {
 
     });
   },
+  getServerTime:function (req,res) {
+    res.json(moment());
+  },
   sport: function(req, res) {
     var sports = [];
 
