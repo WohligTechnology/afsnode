@@ -46,6 +46,36 @@ module.exports = {
             }
         });
     },
+    backupDatabase: function (req, res) {
+       var q = req.ip.search("127.0.0.1");
+       if (q >= 0) {
+           var jagz = _.map(mongoose.models, function (Model, key) {
+               var name = Model.collection.collectionName;
+               return {
+                   key: key,
+                   name: name,
+               };
+           });
+           var isBackup = fs.existsSync("./backup");
+           if (!isBackup) {
+               fs.mkdirSync("./backup");
+           }
+           var mom = moment();
+           var folderName = "./backup/" + mom.format("ddd-Do-MMM-YYYY-HH-mm-SSSSS");
+           var retVal = [];
+           fs.mkdirSync(folderName);
+           async.eachSeries(jagz, function (obj, callback) {
+               exec("mongoexport --db " + database + " --collection " + obj.name + " --out " + folderName + "/" + obj.name + ".json", function (data1, data2, data3) {
+                   retVal.push(data3 + " VALUES OF " + obj.name + " MODEL NAME " + obj.key);
+                   callback();
+               });
+           }, function () {
+               res.json(retVal);
+           });
+       } else {
+           res.callback("Access Denied for Database Backup");
+       }
+   },
     shortURL: function (req,res) {
       if(req.body){
         Config.shortURL(req.body,function (err,data) {

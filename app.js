@@ -37,8 +37,13 @@ process.chdir(__dirname);
         return;
     }
     sails.mongoose = require('mongoose');
+    global["database"] = "sfa";
+    global["mongoose"] =  require('mongoose');
+    global["fs"] =  require('fs');
+    global["exec"] = require('child_process').exec;
+    global["moment"] = require("moment");
     // sails.mongoose = require('mongoose-populate-virtuals')(require('mongoose'));
-    sails.mongoose.connect('mongodb://localhost:27017/sfa', function(err, data) {
+    sails.mongoose.connect('mongodb://localhost:27017/'+database, function(err, data) {
         if (err) {
             console.log(err);
         } else {
