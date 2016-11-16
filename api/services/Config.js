@@ -136,6 +136,7 @@ module.exports = {
     });
   },
   readUploaded: function(filename, width, height, style, res) {
+    res.setHeader('Cache-Control', 'public, max-age=31557600');
     var readstream = gfs.createReadStream({
       filename: filename
     });
