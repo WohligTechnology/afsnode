@@ -136,7 +136,10 @@ module.exports = {
     });
   },
   readUploaded: function(filename, width, height, style, res) {
-    res.setHeader('Cache-Control', 'public, max-age=31557600');
+    res.set({
+        'Cache-Control': 'public, max-age=31557600',
+        'ETag': '12345'
+    });
     var readstream = gfs.createReadStream({
       filename: filename
     });
