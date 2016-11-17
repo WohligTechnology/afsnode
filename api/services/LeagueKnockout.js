@@ -226,7 +226,9 @@ var models = {
     });
   },
   getAll: function(data, callback) {
-    LeagueKnockout.find({}, {}, {}, function(err, deleted) {
+    LeagueKnockout.find({
+      sport: data.sport
+    }, {}, {}, function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {

@@ -41,6 +41,10 @@ var schema = new Schema({
   swissleague: {
     type: Schema.Types.ObjectId,
     ref: 'SwissLeague'
+  },
+  leagueknockout: {
+    type: Schema.Types.ObjectId,
+    ref: 'LeagueKnockout'
   }
 });
 module.exports = sails.mongoose.model('StudentStats', schema);
@@ -81,6 +85,8 @@ var models = {
             }else if(data.drawFormat  == "League"){
               isexistent.league = data.league;
             }else if(data.drawFormat == 'Swiss League'){
+              isexistent.swissleague = data.swissleague;
+            }else if(data.drawFormat == 'League cum Knockout'){
               isexistent.swissleague = data.swissleague;
             }
             StudentStats.findOneAndUpdate(isexistent, {
