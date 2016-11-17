@@ -8,6 +8,10 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
   matchid: Number,
+  roundno: {
+    type: Number,
+    default: 0
+  },
   order: Number,
   sport: {
     type: Schema.Types.ObjectId,
