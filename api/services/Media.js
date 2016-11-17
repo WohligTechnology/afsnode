@@ -208,7 +208,9 @@ var models = {
             });
           },
           function(callback) {
-            Media.find(checkObj).sort({}).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+            Media.find(checkObj).sort({
+              _id:-1
+            }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
               if (err) {
                 console.log(err);
                 callback(err, null);
