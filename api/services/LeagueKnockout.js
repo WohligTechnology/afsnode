@@ -8,10 +8,7 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
   matchid: Number,
-  roundno: {
-    type: Number,
-    default: 0
-  },
+  roundno: Number,
   leagueknockoutround: {
     type: String
   },
@@ -19,6 +16,7 @@ var schema = new Schema({
     type:String
   },
   order: Number,
+  leagueknockoutorder: Number,
   sport: {
     type: Schema.Types.ObjectId,
     ref: "Sport",
@@ -238,7 +236,11 @@ var models = {
   getAll: function(data, callback) {
     LeagueKnockout.find({
       sport: data.sport
-    }, {}, {}, function(err, deleted) {
+    }).sort({
+      leagueknockoutorder:-1,
+      roundno:1,
+      order:1
+    }).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').exec( function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -308,7 +310,7 @@ var models = {
         callback(err, null);
       } else {
         StudentStats.remove({
-          drawFormat:"LeagueKnockout",
+          drawFormat:"League cum Knockout",
           leagueknockout:data._id
         }, function(err, deleted) {
           if (err) {

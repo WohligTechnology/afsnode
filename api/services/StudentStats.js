@@ -87,7 +87,7 @@ var models = {
             }else if(data.drawFormat == 'Swiss League'){
               isexistent.swissleague = data.swissleague;
             }else if(data.drawFormat == 'League cum Knockout'){
-              isexistent.swissleague = data.swissleague;
+              isexistent.leagueknockout = data.leagueknockout;
             }
             StudentStats.findOneAndUpdate(isexistent, {
               $setOnInsert: data
