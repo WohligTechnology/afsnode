@@ -621,10 +621,9 @@ var models = {
     });
   },
   getDrawUpdatedSports :  function (data,callback) {
-    console.log('darew',data);
     StudentStats.aggregate([{
       $match:{
-        year:"2015"
+        year:"2016"
       }
     },{
       $lookup:{
