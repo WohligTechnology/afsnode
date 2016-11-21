@@ -12,6 +12,12 @@ var schema = new Schema({
     type: Number,
     default: 0
   },
+  leagueknockoutround: {
+    type: String
+  },
+  round:{
+    type:String
+  },
   order: Number,
   sport: {
     type: Schema.Types.ObjectId,
