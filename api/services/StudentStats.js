@@ -179,7 +179,6 @@ var models = {
     }
     if (data.sport) {
       sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
-
     }
     if(data.year){
       sportsconstraints['sport.year'] = data.year;
@@ -271,6 +270,43 @@ var models = {
               path:'school',
               select:'name logo'
             }
+          }]
+        },{
+          path:'league',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate:[{
+              path: 'school',
+              select: 'name'
+            },{
+              path:'players',
+              select:'name'
+            }]
           }]
         }], function(err, response) {
           if (err) {
