@@ -114,6 +114,39 @@ var models = {
       }
     });
   },
+  forFormSearch : function (data,callback) {
+    var studentconstraints = {};
+    if (data.sfaid) {
+      studentconstraints = {
+          'sfaid': data.sfaid
+        };
+    } else {
+      data.search = new RegExp(data.search, "i");
+      studentconstraints = {
+          'name': {
+            '$regex': data.search
+          }
+        };
+    }
+    Student.find(studentconstraints).sort({
+      id:1,
+      name:1
+    }).limit(20).select({
+      name:1,
+      sfaid:1,
+      profilePic:1
+    })
+    .lean()
+    .exec(function (err,data) {
+      if(err){
+        callback(err,null);
+      }else if(data.length > 0){
+        callback(null,data);
+      }else{
+        callback([],null);
+      }
+    });
+  },
   updateProfilePicture: function(data, callback) {
     Student.findOneAndUpdate({
       sfaid: parseInt(data.sfaid)
