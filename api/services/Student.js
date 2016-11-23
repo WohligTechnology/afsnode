@@ -128,6 +128,9 @@ var models = {
           }
         };
     }
+    if(data.school){
+      studentconstraints.school = data.school;
+    }
     Student.find(studentconstraints).sort({
       id:1,
       name:1
