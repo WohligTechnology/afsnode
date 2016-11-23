@@ -34,6 +34,7 @@ var schema = new Schema({
     type: String,
     default: ""
   },
+  status:Boolean,
   blog: Schema.Types.Mixed,
   medals: Schema.Types.Mixed,
   sfaAwards: Schema.Types.Mixed,
@@ -326,7 +327,9 @@ var models = {
     data.status = true;
     this.findOneAndUpdate({
       _id: data._id
-    }, data, function(err, data2) {
+    }, data,{
+      new:true
+    }, function(err, data2) {
       if (err) {
         callback(err, false);
       } else {
@@ -699,7 +702,7 @@ var models = {
   },
   makeEmptyPayment: function(data, callback) {
     Student.update({
-      
+
     }, {
       $set: {
         payment: ""
