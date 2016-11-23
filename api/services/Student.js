@@ -699,7 +699,7 @@ var models = {
   },
   makeEmptyPayment: function(data, callback) {
     Student.update({
-      payment: "Unpaid"
+      
     }, {
       $set: {
         payment: ""
