@@ -195,7 +195,8 @@ var models = {
       limit: 10
     }).select({
       name:1,
-      logo:1
+      logo:1,
+      sfaid:1
     }).lean().exec(function(err, data) {
       if (err) {
         callback(err, null);
