@@ -13,7 +13,7 @@ var MaxImageSize = 50000;
 var googl = require('goo.gl');
 var gfs = Grid(sails.mongoose.connections[0].db, sails.mongoose);
 gfs.mongo = sails.mongoose.mongo;
-googl.setKey('AIzaSyBPiG1XV_s2783oykx9_-ktij9lrO89PtQ');
+googl.setKey('AIzaSyC4MYhf_6td6ObRVE8rV85ze35oH0mmfr0');
 module.exports = {
   GlobalCallback: function(err, data, res) {
     if (err) {

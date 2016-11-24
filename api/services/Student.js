@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var objectid = require("mongodb").ObjectId;
-var websiteURL = "http://wohlig.co.in/sfa/#/";
+var websiteURL = "http://sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -251,8 +251,6 @@ var models = {
       if (students.length <= index) {
         callback(null, "done");
       } else {
-        // messageConfig = {};
-        // messageConfig.template = "Hi "+students[index].firstname +", your sfaid is "+students[index].sfaid+"";
         contacts = [];
         if (students[index].contact === undefined || students[index].contact === '') {
           contacts = [];
@@ -263,9 +261,6 @@ var models = {
         _.remove(contacts, function(key) {
           return key.substring(0, 3) === "222";
         });
-        if (students[index].sfaid === 231 || students[index].sfaid === 49) {
-          console.log(contacts);
-        }
         // removing landlines end
         if (contacts.length > 0) {
           Config.shortURL({
@@ -274,17 +269,16 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              console.log(students[index].sfaid+" "+contacts[0]+" => "+shortURL);
               messageConfig = {};
-              messageConfig.template = "Hi "+students[index].firstname +", your sfaid is "+students[index].sfaid+". Check out your profile here:"+shortURL;
+              messageConfig.template = "Dear "+students[index].firstname +", Welcome to Sports For All (SFA), your SFA ID is "+students[index].sfaid+". Kindly check your participation details on our website. Click the link to your PROFILE PAGE "+shortURL+" In case of any queries call us on 7045684365/66/67 SFA will keep you updated on the match schedules via SMS.";
               messageConfig.contact = contacts[0];
               Config.sendMessage(messageConfig,function (err,data) {
                 if(err){
-                  console.log("ERROR "+err);
+
                 }else{
-                  console.log("SUCCESS "+data);
+
                 }
-                console.log(messageConfig.contact,messageConfig.template);
+                console.log(students[index].sfaid,messageConfig.contact,messageConfig.template);
 
                 sendAlert(++index);
               });
@@ -295,7 +289,9 @@ var models = {
         }
       }
     }
-    Student.find().sort({
+    Student.find({
+      year:"2016"
+    }).sort({
       sfaid: 1
     }).select({
       name: 1,
