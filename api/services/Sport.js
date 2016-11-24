@@ -318,6 +318,9 @@ var models = {
       "gender":data.gender
     };
     // console.log(matchObj);
+    if(data.agegroup){
+      matchObj["agegroup.name"]=data.agegroup;
+    }
     Sport.aggregate([{
       $match: matchObj
     }, {
@@ -375,6 +378,10 @@ var models = {
       $project: {
         "_id":0,
         "name": "$_id"
+      }
+    },{
+      $sort:{
+        name:1
       }
     }
   ]).exec(function(err, data2) {
