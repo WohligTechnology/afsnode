@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var objectid = require("mongodb").ObjectId;
-var websiteURL = "http://sfanow.in/#/";
+var websiteURL = "http://www.sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
