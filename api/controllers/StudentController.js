@@ -72,7 +72,7 @@ module.exports = {
         }
     },
     sendMessageToAll: function(req, res) {
-            Student.sendMessageToAll(req.query, function(err, respo) {
+            Student.sendMessageToAll(req.body, function(err, respo) {
                 if (err) {
                     res.json({
                         value: false,

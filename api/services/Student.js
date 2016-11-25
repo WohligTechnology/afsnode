@@ -290,7 +290,10 @@ var models = {
       }
     }
     Student.find({
-      year:"2016"
+      year:"2016",
+      sfaid:{
+        $gte:data.sfaid
+      }
     }).sort({
       sfaid: 1
     }).select({
