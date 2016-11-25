@@ -35,6 +35,7 @@ module.exports = {
         callback(null, shortUrl);
       })
       .catch(function(err) {
+        console.log(err);
         callback(err.message, null);
       });
 
