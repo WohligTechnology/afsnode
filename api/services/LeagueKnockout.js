@@ -238,7 +238,7 @@ var models = {
       sport: data.sport
     }).sort({
       leagueknockoutorder:-1,
-      roundno:1,
+      roundno:-1,
       order:1
     }).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').exec( function(err, deleted) {
       if (err) {
