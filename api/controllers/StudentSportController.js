@@ -197,7 +197,7 @@ module.exports = {
   getSportsPopulated: function(req, res) {
     if (req.body) {
 
-        if(req.body.year){
+        if(req.body.year && req.body.student && objectid.isValid(req.body.student)){
       StudentSport.getSportsPopulated(req.body, function(err, respo) {
         if (err) {
           res.json({
@@ -211,7 +211,6 @@ module.exports = {
           });
         }
       });
-
     }else{
       res.json({
         value: false,
