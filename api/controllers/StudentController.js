@@ -72,19 +72,33 @@ module.exports = {
         }
     },
     sendMessageToAll: function(req, res) {
-            Student.sendMessageToAll(req.body, function(err, respo) {
-                if (err) {
-                    res.json({
-                        value: false,
-                        data: err
-                    });
-                } else {
-                    res.json({
-                        value: true,
-                        data: respo
-                    });
-                }
-            });
+            if(req.body){
+              if(req.body.sfaid){
+                Student.sendMessageToAll(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+              }else{
+                res.json({
+                  value:false,
+                  data:"invalid request"
+                });
+              }
+            }else{
+              res.json({
+                value:false,
+                data:"invalid request"
+              });
+            }
 
     },
     countContingentStrength: function(req, res) {
