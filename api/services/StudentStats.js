@@ -646,6 +646,10 @@ var models = {
           $first:'$sport'
         }
       }
+    },{
+      $sort:{
+        'sport.agegroup.name':1
+      }
     }]).exec(function (err,response) {
       if(err){
         callback(err,null);
