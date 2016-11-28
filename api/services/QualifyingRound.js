@@ -49,6 +49,31 @@ var schema = new Schema({
 module.exports = sails.mongoose.model('QualifyingRound', schema);
 var models = {
   saveData: function(data, callback) {
+    var quals = {};
+    function updatePlayersAndCallback() {
+      var constraints = {};
+      constraints.student = quals.player1;
+      constraints.year = quals.year;
+      constraints.sport = quals.sport;
+      constraints.drawFormat = "Qualifying Round";
+      constraints.qualifyinground = quals._id;
+      StudentStats.saveData(constraints, function(err, response) {
+        console.log(err,response);
+        if (err) {
+          callback(err, null);
+        } else {
+          constraints.student = quals.player2;
+          StudentStats.saveData(constraints, function(err, resp) {
+            console.log(err,resp);
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, resp);
+            }
+          });
+        }
+      });
+    }
     var qualifyinground = this(data);
     if (data._id) {
       this.findOneAndUpdate({
@@ -57,7 +82,8 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          callback(null, data2);
+          quals = data2;
+          updatePlayersAndCallback();
         }
       });
     } else {
@@ -74,7 +100,8 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              callback(null, data3);
+              quals = data3;
+              updatePlayersAndCallback();
             }
           });
         }
@@ -95,9 +122,9 @@ var models = {
       _id: data._id
     }, function(err, deleted) {
       if (err) {
-        callback(err, null)
+        callback(err, null);
       } else {
-        callback(null, deleted)
+        callback(null, deleted);
       }
     });
   },
