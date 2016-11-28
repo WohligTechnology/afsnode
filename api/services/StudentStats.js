@@ -45,6 +45,10 @@ var schema = new Schema({
   leagueknockout: {
     type: Schema.Types.ObjectId,
     ref: 'LeagueKnockout'
+  },
+  qualifyinground: {
+    type: Schema.Types.ObjectId,
+    ref: 'QualifyingRound'
   }
 });
 module.exports = sails.mongoose.model('StudentStats', schema);
@@ -88,6 +92,8 @@ var models = {
               isexistent.swissleague = data.swissleague;
             }else if(data.drawFormat == 'League cum Knockout'){
               isexistent.leagueknockout = data.leagueknockout;
+            }else if(data.drawFormat == 'Qualifying Round'){
+              isexistent.qualifyinground = data.qualifyinground;
             }
             StudentStats.findOneAndUpdate(isexistent, {
               $setOnInsert: data
