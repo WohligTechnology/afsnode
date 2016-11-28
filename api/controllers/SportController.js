@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing Sports
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+  var objectid = require("mongodb").ObjectId;
 module.exports = {
   saveData: function(req, res) {
     if (req.body) {
@@ -448,19 +449,26 @@ module.exports = {
   },
   filterCategoryForFrontendGender: function(req, res) {
     if (req.body) {
-      Sport.filterCategoryForFrontendGender(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
+      if(req.body.sportList && objectid.isValid(req.body.sportList)){
+        Sport.filterCategoryForFrontendGender(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      }else{
+        res.json({
+          value:false,
+          data: 'Invalid call'
+        });
+      }
     } else {
       res.json({
         value: false,
