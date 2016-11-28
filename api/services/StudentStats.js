@@ -649,7 +649,8 @@ var models = {
     },{
       $sort:{
         'sport.agegroup.name':1,
-        'sport.gender':1
+        'sport.gender':1,
+        'sport.firstcategory.name':1
       }
     }]).exec(function (err,response) {
       if(err){
