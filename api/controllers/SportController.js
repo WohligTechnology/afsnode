@@ -4,7 +4,7 @@
  * @description :: Server-side logic for managing Sports
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-  var objectid = require("mongodb").ObjectId;
+var objectid = require("mongodb").ObjectId;
 module.exports = {
   saveData: function(req, res) {
     if (req.body) {
@@ -449,7 +449,7 @@ module.exports = {
   },
   filterCategoryForFrontendGender: function(req, res) {
     if (req.body) {
-      if(req.body.sportList && objectid.isValid(req.body.sportList)){
+      if (req.body.sportList && objectid.isValid(req.body.sportList)) {
         Sport.filterCategoryForFrontendGender(req.body, function(err, respo) {
           if (err) {
             res.json({
@@ -463,9 +463,9 @@ module.exports = {
             });
           }
         });
-      }else{
+      } else {
         res.json({
-          value:false,
+          value: false,
           data: 'Invalid call'
         });
       }
@@ -478,19 +478,26 @@ module.exports = {
   },
   filterAgegroupForFrontend: function(req, res) {
     if (req.body) {
-      Sport.filterAgegroupForFrontend(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
+      if (req.body.sportList && objectid.isValid(req.body.sportList)) {
+        Sport.filterAgegroupForFrontend(req.body, function(err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: 'Not Object Id'
+        });
+      }
     } else {
       res.json({
         value: false,
@@ -521,25 +528,25 @@ module.exports = {
             "SUB-CATEGORY": "",
             "FORMAT": key.drawFormat,
           };
-          if(key.sportslist){
-            row["SPORT NAME"]= key.sportslist.name;
+          if (key.sportslist) {
+            row["SPORT NAME"] = key.sportslist.name;
 
           }
-          if(key.firstcategory){
-            row.CATEGORY= key.firstcategory.name;
+          if (key.firstcategory) {
+            row.CATEGORY = key.firstcategory.name;
 
           }
-          if(key.secondcategory){
-            row["SUB-CATEGORY"]= key.secondcategory.name;
+          if (key.secondcategory) {
+            row["SUB-CATEGORY"] = key.secondcategory.name;
 
           }
-          if(key.agegroup){
-            row["AGE GROUP"]= key.agegroup.name;
+          if (key.agegroup) {
+            row["AGE GROUP"] = key.agegroup.name;
 
           }
           excelData.push(row);
         });
-        Config.generateExcel("Sports",excelData,res);
+        Config.generateExcel("Sports", excelData, res);
       }
     });
   }
