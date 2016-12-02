@@ -544,7 +544,7 @@ var models = {
       constraints.sport = teamstudents.sport;
       constraints.medal = teamstudents.medal;
       constraints.player = teamstudents.team.players[singl];
-      constraints.team = teamstudents.team._id;
+      // constraints.team = teamstudents.team._id;
       // console.log("constraints", constraints);
       // medal = new Medal(constraints);
       Medal.findOneAndRemove(constraints, function(err, deleted) {
