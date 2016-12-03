@@ -87,15 +87,11 @@ var models = {
         }
       });
     } else {
-      QualifyingRound.find({
-        "name": data.name
-      }).exec(function(err, data2) {
+      QualifyingRound.getLastQualifyingRound({}, function(err, response) {
         if (err) {
-          console.log(err);
-          callback(err, null);
-        } else if (data2 && data2[0]) {
-          callback(null, data2);
+          callback(null, err);
         } else {
+          qualifyinground.matchid = parseInt(response) + 1;
           qualifyinground.save(function(err, data3) {
             if (err) {
               callback(err, null);
@@ -124,7 +120,35 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        StudentStats.remove({
+          drawFormat:"Qualifying Round",
+          qualifyinground:data._id
+        }, function(err, deleted) {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null,deleted);
+
+          }
+        });
+      }
+    });
+  },
+  getLastQualifyingRound: function(data, callback) {
+    QualifyingRound.find({}, {
+      _id: 0,
+      matchid: 1
+    }).sort({
+      matchid: -1
+    }).limit(1).lean().exec(function(err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 0);
+      } else {
+        // console.log(data2);
+        callback(null, data2[0].matchid);
       }
     });
   },
@@ -137,7 +161,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    });
+    }).populate('player1').populate('player2').populate('sport');
   },
   findForDrop: function(data, callback) {
     var returns = [];
