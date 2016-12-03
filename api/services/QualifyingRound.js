@@ -17,6 +17,7 @@ var schema = new Schema({
     type: String,
     default: "Qualifying Round"
   },
+  order:Number,
   participantType: {
     type: String,
     default:"player"
