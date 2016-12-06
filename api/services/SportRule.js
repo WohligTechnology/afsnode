@@ -107,6 +107,19 @@ var models = {
       }
     });
   },
+  getOneBySportId: function(data, callback) {
+    SportRule.findOne({
+      sportid:data.sport
+    }).select({
+      yearBeforeContent:1
+    }).exec(function(err, deleted) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, deleted);
+      }
+    });
+  },
   getOneByName: function(data, callback) {
     var check = new RegExp(data.name, "i");
     // console.log(check);

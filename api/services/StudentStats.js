@@ -332,6 +332,27 @@ var models = {
       }
     });
   },
+  removeThisStat : function (data,callback) {
+
+    var constraints = {};
+
+    if(data.team){
+      constraints['team'] = data.team;
+    }
+    if(data.student){
+      constraints['student']= data.student;
+    }
+    if(data.knockout){
+      constraints['knockout']= data.knockout;
+    }
+    StudentStats.remove(constraints,function (err,data) {
+      if (err) {
+        callback(err,null);
+      } else {
+      callback(null,data);
+      }
+    });
+  },
   getTeamStatByFilters: function(data, callback) {
     var constraints = {};
     var sportsconstraints = {};

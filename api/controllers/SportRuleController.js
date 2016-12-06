@@ -107,9 +107,38 @@ module.exports = {
             });
         }
     },
+    getOneBySportId: function(req, res) {
+        if (req.body) {
+            if (req.body.sport && req.body.sport != "") {
+                SportRule.getOneBySportId(req.body, function(err, respo) {
+                    if (err) {
+                        res.json({
+                            value: false,
+                            data: err
+                        });
+                    } else {
+                        res.json({
+                            value: true,
+                            data: respo
+                        });
+                    }
+                });
+            } else {
+                res.json({
+                    value: false,
+                    data: "Invalid Id"
+                });
+            }
+        } else {
+            res.json({
+                value: false,
+                data: "Invalid call"
+            });
+        }
+    },
     getOneByName: function(req, res) {
         if (req.body) {
-          
+
                 SportRule.getOneByName(req.body, function(err, respo) {
                     if (err) {
                         res.json({
