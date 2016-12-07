@@ -543,40 +543,68 @@ var models = {
     }
     async.parallel([
         function(callback) {
-          Student.count(checkObj).exec(function(err, number) {
-            if (err) {
-              console.log(err);
-              callback(err, null);
-            } else if (number && number !== "") {
-              newreturns.total = number;
-              newreturns.totalpages = Math.ceil(number / 8);
-              callback(null, newreturns);
-            } else {
-              callback(null, newreturns);
+          StudentSport.aggregate([{
+            $match:{
+                'school._id':objectid(data.school),
+                year:data.year
+            }
+          },{
+            $group:{
+              _id:'$student'
+            }
+          }]).exec(function (err,data) {
+            if(err){
+              callback(err,null);
+            }else{
+              console.log(data);
+              newreturns.total = data.length;
+              newreturns.totalpages = Math.ceil(data.length / 8);
+            callback(null,data);
             }
           });
+          // Student.count(checkObj).exec(function(err, number) {
+          //   if (err) {
+          //     console.log(err);
+          //     callback(err, null);
+          //   } else if (number && number !== "") {
+          //     newreturns.total = number;
+          //     newreturns.totalpages = Math.ceil(number / 8);
+          //     callback(null, newreturns);
+          //   } else {
+          //     callback(null, newreturns);
+          //   }
+          // });
         },
 
         function(callback) {
-          Student.find(checkObj).sort({
-            sfaid: 1
-          }).skip(8 * (data.pagenumber - 1)).limit(8).exec(function(err, data2) {
-            if (err) {
-              console.log(err);
-              callback(err, null);
-            } else if (data2 && data2.length > 0) {
-              newreturns.data = data2;
-              callback(null, newreturns);
-            } else {
-              callback(null, newreturns);
+          StudentSport.getContingentStrength(data,function (err,data) {
+            if(err){
+              callback(err,data);
+            }else{
+              newreturns.data = data;
+              callback(null,data);
             }
           });
+          // Student.find(checkObj).sort({
+          //   sfaid: 1
+          // }).skip(8 * (data.pagenumber - 1)).limit(8).exec(function(err, data2) {
+          //   if (err) {
+          //     console.log(err);
+          //     callback(err, null);
+          //   } else if (data2 && data2.length > 0) {
+          //     newreturns.data = data2;
+          //     callback(null, newreturns);
+          //   } else {
+          //     callback(null, newreturns);
+          //   }
+          // });
         },
         function(callback) {
-          Student.countContingentStrength(checkObj, function(err, data) {
+          Student.countContingentStrength(data, function(err, data) {
             if (err) {
               callback(err, null);
             } else {
+              console.log(data);
               newreturns.gender = data[0];
               callback(null, data);
             }

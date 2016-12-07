@@ -244,6 +244,55 @@ var models = {
         }
       });
   },
+  getContingentStrength : function (data,callback) {
+    console.log(data);
+    StudentSport.aggregate([{
+      $match:{
+          'school._id':objectid(data.school),
+          year:data.year
+      }
+    },{
+      $group:{
+        _id:null,
+        student:{
+          $addToSet:'$student'
+        }
+      }
+    },{
+      $unwind:'$student'
+    },{
+      $lookup:{
+        from: 'students',
+        localField: 'student',
+        foreignField: '_id',
+        as: 'student'
+      }
+    },{
+      $unwind:"$student"
+    },{
+      $project:{
+        _id:"$student._id",
+        name:"$student.name",
+        profilePic:"$student.profilePic",
+        sfaid:"$student.sfaid",
+        gender:"$student.gender",
+      }
+    },{
+      $sort:{
+        sfaid:1
+      }
+    },{
+      $skip:8*(data.pagenumber - 1)
+    },{
+      $limit:8
+    }]).exec(function (err,data) {
+      if(err){
+        callback(err,null);
+      }else{
+        callback(null,data);
+      }
+    });
+  },
   getAll: function(data, callback) {
     StudentSport.find({}, {}, {}, function(err, deleted) {
       if (err) {

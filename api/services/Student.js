@@ -399,20 +399,42 @@ var models = {
       });
   },
   countContingentStrength: function(data, callback) {
-    var checkObj = {};
-    console.log(data);
-    if (data.school) {
-      checkObj.school = objectid(data.school);
-    }
-    if (data.year && data.year !== '2015') {
-      checkObj.year = data.year;
-    }
+    // var checkObj = {};
+    // console.log(data);
+    // if (data.school) {
+    //   checkObj.school = objectid(data.school);
+    // }
+    // if (data.year && data.year !== '2015') {
+    //   checkObj.year = data.year;
+    // }
     // console.log(checkObj);
-    Student.aggregate([{
-      $match: checkObj
+    // console.log(data);
+    StudentSport.aggregate([{
+      $match:{
+          'school._id':objectid(data.school),
+          year:data.year
+      }
+    },{
+      $group:{
+        _id:null,
+        student:{
+          $addToSet:'$student'
+        }
+      }
+    },{
+      $unwind:'$student'
+    },{
+      $lookup:{
+        from: 'students',
+        localField: 'student',
+        foreignField: '_id',
+        as: 'student'
+      }
+    },{
+      $unwind:"$student"
     }, {
       $group: {
-        _id: "$gender",
+        _id: "$student.gender",
         count: {
           $sum: 1
         }
