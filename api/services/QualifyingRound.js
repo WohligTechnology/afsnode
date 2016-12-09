@@ -22,7 +22,7 @@ var schema = new Schema({
     type: String,
     default:"player"
   },
-  player1:{
+  player:{
     type:Schema.Types.ObjectId,
     ref:'Student'
   },
@@ -53,7 +53,7 @@ var models = {
     var quals = {};
     function updatePlayersAndCallback() {
       var constraints = {};
-      constraints.student = quals.player1;
+      constraints.student = quals.player;
       constraints.year = quals.year;
       constraints.sport = quals.sport;
       constraints.drawFormat = "Qualifying Round";
@@ -63,15 +63,7 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          constraints.student = quals.player2;
-          StudentStats.saveData(constraints, function(err, resp) {
-            console.log(err,resp);
-            if (err) {
-              callback(err, null);
-            } else {
-              callback(null, resp);
-            }
-          });
+              callback(null, response);
         }
       });
     }
@@ -162,7 +154,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('player1').populate('player2').populate('sport');
+    }).populate('player').populate('sport');
   },
   findForDrop: function(data, callback) {
     var returns = [];
