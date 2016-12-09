@@ -98,7 +98,7 @@ var models = {
     }
   },
   getAll: function(data, callback) {
-    QualifyingRound.find({}, {}, {}, function(err, deleted) {
+    QualifyingRound.find().populate('player').exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
