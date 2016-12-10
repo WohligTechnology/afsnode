@@ -556,7 +556,6 @@ var models = {
             if(err){
               callback(err,null);
             }else{
-              console.log(data);
               newreturns.total = data.length;
               newreturns.totalpages = Math.ceil(data.length / 8);
             callback(null,data);
@@ -604,7 +603,6 @@ var models = {
             if (err) {
               callback(err, null);
             } else {
-              console.log(data);
               newreturns.gender = data[0];
               callback(null, data);
             }

@@ -245,7 +245,6 @@ var models = {
       });
   },
   getContingentStrength : function (data,callback) {
-    console.log(data);
     StudentSport.aggregate([{
       $match:{
           'school._id':objectid(data.school),
