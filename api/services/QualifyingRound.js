@@ -98,11 +98,24 @@ var models = {
     }
   },
   getAll: function(data, callback) {
-    QualifyingRound.find().populate('player').exec(function(err, deleted) {
+    QualifyingRound.find({
+      sport:data.sport
+    }).exec(function(err, deleted) {
       if (err) {
         callback(err, null);
       } else {
-        callback(null, deleted);
+        QualifyingRound.populate(deleted,{
+          path:'player',
+          populate:{
+            path:'school'
+          }
+        },function (err,response) {
+          if(err){
+            callback(err,null);
+          }else{
+            callback(null,response);
+          }
+        });
       }
     });
   },
