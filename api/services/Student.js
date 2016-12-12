@@ -507,12 +507,12 @@ var models = {
     var newreturns = {};
     newreturns.data = [];
 
-    var check = new RegExp(data.search, "i");
+
     var constraints = {};
     if (data.search) {
       constraints = {
         name: {
-          '$regex': check
+          '$regex': new RegExp(data.search, "i")
         },
         deleteStatus: false
       };
