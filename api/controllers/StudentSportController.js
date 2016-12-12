@@ -256,6 +256,7 @@ module.exports = {
   },
   getSchoolSportByGender: function(req, res) {
     if (req.body) {
+        if(req.body.year && req.body._id && objectid.isValid(req.body._id)){
       StudentSport.getSchoolSportByGender(req.body, function(err, respo) {
         if (err) {
           res.json({
@@ -269,6 +270,12 @@ module.exports = {
           });
         }
       });
+    }else{
+      res.json({
+        value: false,
+        data: "Input inadequate"
+      });
+    }
     } else {
       res.json({
         value: false,

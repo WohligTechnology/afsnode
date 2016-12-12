@@ -121,7 +121,7 @@ var models = {
       studentconstraints = {
           'sfaid': data.sfaid
         };
-    } else {
+    } else if(data.search) {
       data.search = new RegExp(data.search, "i");
       studentconstraints = {
           'name': {
