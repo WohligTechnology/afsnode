@@ -281,14 +281,14 @@ var models = {
           path:'league',
           populate: [{
             path: 'player1',
-            select: "name school",
+            select: "name profilePic school",
             populate: {
               path: 'school',
               select: 'name'
             }
           }, {
             path: 'player2',
-            select: "name school",
+            select: "name profilePic school",
             populate: {
               path: 'school',
               select: 'name'
@@ -313,6 +313,16 @@ var models = {
               path:'players',
               select:'name'
             }]
+          }]
+        },{
+          path:'qualifyinground',
+          populate:[{
+            path: 'player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
+            }
           }]
         }], function(err, response) {
           if (err) {
