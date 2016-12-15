@@ -244,7 +244,7 @@ module.exports = {
     Knockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name').exec(function(err, data2) {
+    }).populate('player1', "name sfaid").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function(err, data2) {
       var excelData = [];
       var row = {};
       _.each(data2, function(key) {
@@ -259,16 +259,20 @@ module.exports = {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
         if (key[key.participantType + '1']) {
+          row['SFAID 1'] = key[key.participantType + '1'].sfaid;
           row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
           row['RESULT 1'] = key['result' + key.participantType + '1'];
         } else {
+          row['SFAID 1'] = '';
           row['PARTICIPANT 1'] = '';
           row['RESULT 1'] = '';
         }
         if (key[key.participantType + '2']) {
+          row['SFAID 2'] = key[key.participantType + '2'].sfaid;
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
           row['RESULT 2'] = key['result' + key.participantType + '2'];
         } else {
+          row['SFAID 2'] = '';
           row['PARTICIPANT 2'] = '';
           row['RESULT 2'] = '';
         }

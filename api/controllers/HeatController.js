@@ -207,7 +207,7 @@ module.exports = {
       Heat.find(checkObj).sort({
         roundno: -1,
         order: 1
-      }).populate('sport').populate('heats.player','name firstname').populate('heats.team','name').exec(function(err, data2) {
+      }).populate('sport').populate('heats.player','name firstname sfaid').populate('heats.team','name sfaid').exec(function(err, data2) {
           var excelData = [];
           var row = {};
           _.each(data2,function (key) {
@@ -226,7 +226,7 @@ module.exports = {
             if(key.heats.length > 0){
               _.each(key.heats, function (it) {
                 if(it[key.participantType]){
-                  row['PARTICIPANTS'] += it[key.participantType].name + ', ';
+                  row['PARTICIPANTS'] += it[key.participantType].sfaid+". "+ it[key.participantType].name + ', ';
                   row['RESULTS'] += it.result + ', ';
 
                 }else{
