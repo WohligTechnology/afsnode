@@ -386,5 +386,17 @@ module.exports = {
         data: "Please provide parameters"
       });
     }
-  }
+  },
+  getStudentMedal: function (req, res) {
+        if (req.body) {
+            Medal.getStudentMedal(req.body, res.callback);
+        } else {
+            res.json({
+                value: false,
+                data: {
+                    message: "Invalid Request"
+                }
+            })
+        }
+    }
 };

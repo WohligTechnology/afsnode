@@ -338,8 +338,22 @@ module.exports = {
             res.json({
                 value: false,
                 data: "Invalid call"
-            });
+            }); 
         }
+    },
+
+
+  generatePdf: function (req, res) {
+        // if (req.body) {
+           Student.getCertificate(req.body, res.callback,res);
+
+           
+        // } else {
+        //     res.json({
+        //         value: false,
+        //         data: "Invalid Request"
+        //     });
+        // }
     },
     // deleteAll: function(req, res) {
     //     if (req.body) {

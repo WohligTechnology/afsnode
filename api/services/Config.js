@@ -4,7 +4,7 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
-
+var pdf = require('html-pdf');
 var Grid = require('gridfs-stream');
 var fs = require("fs");
 var request = require("request");
@@ -14,8 +14,10 @@ var googl = require('goo.gl');
 var gfs = Grid(sails.mongoose.connections[0].db, sails.mongoose);
 gfs.mongo = sails.mongoose.mongo;
 googl.setKey('AIzaSyBsf3__9AdF5wAeaPMEQhzVcfyYJf_yyFs');
+
+var pdf = require('html-pdf');
 module.exports = {
-  GlobalCallback: function(err, data, res) {
+  GlobalCallback: function (err, data, res) {
     if (err) {
       res.json({
         error: err,
@@ -28,19 +30,19 @@ module.exports = {
       });
     }
   },
-  shortURL: function(data, callback) {
+  shortURL: function (data, callback) {
     // console.log(data.sfaid, data.url);
     googl.shorten(data.url)
-      .then(function(shortUrl) {
+      .then(function (shortUrl) {
         callback(null, shortUrl);
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log(err);
         callback(err.message, null);
       });
 
   },
-  uploadFile: function(filename, callback) {
+  uploadFile: function (filename, callback) {
 
     var id = sails.mongoose.Types.ObjectId();
     var extension = filename.split(".").pop();
@@ -60,7 +62,7 @@ module.exports = {
         filename: newFilename,
         metadata: metaValue
       });
-      writestream2.on('finish', function() {
+      writestream2.on('finish', function () {
         callback(null, {
           name: newFilename
         });
@@ -70,7 +72,7 @@ module.exports = {
     }
 
     if (extension == "png" || extension == "jpg" || extension == "gif") {
-      lwip.open(filename, extension, function(err, image) {
+      lwip.open(filename, extension, function (err, image) {
         var upImage = {
           width: image.width(),
           height: image.height(),
@@ -79,13 +81,13 @@ module.exports = {
 
         if (upImage.width > upImage.height) {
           if (upImage.width > MaxImageSize) {
-            image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function(err, image2) {
+            image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function (err, image2) {
               upImage = {
                 width: image2.width(),
                 height: image2.height(),
                 ratio: image2.width() / image2.height()
               };
-              image2.writeFile(filename, function(err) {
+              image2.writeFile(filename, function (err) {
                 writer2(upImage);
               });
             });
@@ -94,13 +96,13 @@ module.exports = {
           }
         } else {
           if (upImage.height > MaxImageSize) {
-            image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function(err, image2) {
+            image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function (err, image2) {
               upImage = {
                 width: image2.width(),
                 height: image2.height(),
                 ratio: image2.width() / image2.height()
               };
-              image2.writeFile(filename, function(err) {
+              image2.writeFile(filename, function (err) {
                 writer2(upImage);
               });
             });
@@ -113,17 +115,17 @@ module.exports = {
       imageStream.pipe(writestream);
     }
 
-    writestream.on('finish', function() {
+    writestream.on('finish', function () {
       callback(null, {
         name: newFilename
       });
       fs.unlink(filename);
     });
   },
-  sendMessage: function(data, callback) {
+  sendMessage: function (data, callback) {
     request.get({
       url: "http://api-alerts.solutionsinfini.com/v3/?method=sms&api_key=A585fda4adf7602034258066781832097&to=" + data.contact + "&sender=SFANOW&message=" + data.template + "&format=json"
-    }, function(err, http, body) {
+    }, function (err, http, body) {
       if (err) {
         callback(err, null);
       } else {
@@ -136,15 +138,15 @@ module.exports = {
       }
     });
   },
-  readUploaded: function(filename, width, height, style, res) {
+  readUploaded: function (filename, width, height, style, res) {
     res.set({
-        'Cache-Control': 'public, max-age=31557600',
-        'Expires': new Date(Date.now() + 345600000).toUTCString()
+      'Cache-Control': 'public, max-age=31557600',
+      'Expires': new Date(Date.now() + 345600000).toUTCString()
     });
     var readstream = gfs.createReadStream({
       filename: filename
     });
-    readstream.on('error', function(err) {
+    readstream.on('error', function (err) {
       res.json({
         value: false,
         error: err
@@ -156,7 +158,7 @@ module.exports = {
         filename: gridFSFilename,
         metadata: metaValue
       });
-      writestream2.on('finish', function() {
+      writestream2.on('finish', function () {
         fs.unlink(filename);
       });
       fs.createReadStream(filename).pipe(res);
@@ -167,7 +169,7 @@ module.exports = {
       var readstream2 = gfs.createReadStream({
         filename: filename2
       });
-      readstream2.on('error', function(err) {
+      readstream2.on('error', function (err) {
         res.json({
           value: false,
           error: err
@@ -198,7 +200,7 @@ module.exports = {
       var newNameExtire = newName + "." + extension;
       gfs.exist({
         filename: newNameExtire
-      }, function(err, found) {
+      }, function (err, found) {
         if (err) {
           res.json({
             value: false,
@@ -210,8 +212,8 @@ module.exports = {
         } else {
           var imageStream = fs.createWriteStream('./.tmp/uploads/' + filename);
           readstream.pipe(imageStream);
-          imageStream.on("finish", function() {
-            lwip.open('./.tmp/uploads/' + filename, function(err, image) {
+          imageStream.on("finish", function () {
+            lwip.open('./.tmp/uploads/' + filename, function (err, image) {
               ImageWidth = image.width();
               ImageHeight = image.height();
               var newWidth = 0;
@@ -248,8 +250,8 @@ module.exports = {
                 newWidth = height * (ImageWidth / ImageHeight);
                 newHeight = height;
               }
-              image.resize(parseInt(newWidth), parseInt(newHeight), function(err, image2) {
-                image2.writeFile('./.tmp/uploads/' + filename, function(err) {
+              image.resize(parseInt(newWidth), parseInt(newHeight), function (err, image2) {
+                image2.writeFile('./.tmp/uploads/' + filename, function (err) {
                   writer2('./.tmp/uploads/' + filename, newNameExtire, {
                     width: newWidth,
                     height: newHeight
@@ -266,17 +268,17 @@ module.exports = {
     }
     //error handling, e.g. file does not exist
   },
-  generateExcel: function(nameParam, excelData, res) {
+  generateExcel: function (nameParam, excelData, res) {
     var name = _.kebabCase(nameParam + "-" + new Date());
     var xls = sails.json2xls(excelData);
     var folder = "./.tmp/";
     var path = name + ".xlsx";
     var finalPath = folder + path;
-    sails.fs.writeFile(finalPath, xls, 'binary', function(err) {
+    sails.fs.writeFile(finalPath, xls, 'binary', function (err) {
       if (err) {
         res.callback(err, null);
       } else {
-        fs.readFile(finalPath, function(err, excel) {
+        fs.readFile(finalPath, function (err, excel) {
           if (err) {
             res.callback(err, null);
           } else {
@@ -289,5 +291,54 @@ module.exports = {
       }
     });
 
+  },
+
+
+  generatePdf: function (page, obj, callback) {
+    console.log("IN CONFIG GENERATE PDF");
+    sails.hooks.views.render(page, obj, function (err, html) {
+      if (err) {
+        console.log("IN SAILS ERR");
+        callback(err);
+      } else {
+        var options = {
+          "header": {
+          },
+          format: 'A4'
+
+        };
+        // console.log("OBJECT",obj);
+        // console.log(options.base);  
+        var id = mongoose.Types.ObjectId();
+        var newFilename = id + ".pdf";
+        var writestream = gfs.createWriteStream({
+          filename: newFilename
+        });
+        writestream.on('finish', function () {
+
+          var data = {
+            name: newFilename
+          };
+          
+          callback(data);
+
+        });
+        pdf.create(html, options).toStream(function (err, stream) {
+          if (err) {
+            console.log("ERROR", err);
+            callback(err);
+          } else {
+            console.log("In Config To generate PDF");
+            stream.pipe(writestream);
+
+          //  console.log("WRITESTREAM", writestream);
+
+          }
+
+        });
+      }
+
+    });
   }
+
 };

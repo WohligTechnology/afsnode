@@ -35,7 +35,30 @@ var schema = new Schema({
 });
 module.exports = sails.mongoose.model('Medal', schema);
 var models = {
-  saveData: function(data, callback) {
+  getStudentMedal: function (data, callback) {
+    Medal.find({
+      "player": objectid(data._id)
+    }).populate("player", "name").populate("sport", "sportslist.name").exec(function (err, found) {
+
+      if (err) {
+        // console.log(err);
+        callback(err, null);
+      } else {
+
+        if (found) {
+          callback(null, found);
+        } else {
+          callback(null, {
+            message: "No Data Found"
+          });
+
+        }
+      }
+
+    })
+  },
+
+  saveData: function (data, callback) {
     var teamstudents = {};
 
     function updateSingleStudent(tuple) {
@@ -48,7 +71,7 @@ var models = {
         _id: tuple.player
       }, incConst, {
 
-      }, function(err, data) {
+      }, function (err, data) {
         if (err) {
           callback(err, null);
         } else {
@@ -57,7 +80,7 @@ var models = {
             _id: tuple.school
           }, incConst, {
 
-          }, function(err, data) {
+          }, function (err, data) {
             if (err) {
               callback(err, null);
             } else {
@@ -85,7 +108,7 @@ var models = {
       incConst.$inc = {};
       incConst.$inc['totalPoints' + constraints.year] = constraints.points;
       medal = new Medal(constraints);
-      medal.save(function(err, added) {
+      medal.save(function (err, added) {
         if (err) {
           callback(err, null);
         } else {
@@ -94,7 +117,7 @@ var models = {
             _id: constraints.player
           }, incConst, {
 
-          }, function(err, resp) {
+          }, function (err, resp) {
             if (err) {
               callback(err, null);
             } else {
@@ -121,12 +144,12 @@ var models = {
       incConst.$inc['totalPoints' + tuple.year] = tuple.points;
       Medal.populate(tuple, {
         path: 'team'
-      }, function(err, expanded) {
+      }, function (err, expanded) {
         School.update({
           _id: tuple.school
         }, incConst, {
 
-        }, function(err, data) {
+        }, function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -143,7 +166,7 @@ var models = {
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -156,7 +179,7 @@ var models = {
         path: 'player'
       }, {
         path: 'team'
-      }], function(err, expanded) {
+      }], function (err, expanded) {
         if (err) {
           callback(err, null);
         } else {
@@ -172,7 +195,7 @@ var models = {
           data[data.participantType] = data[data.participantType]._id;
           // console.log(data);
           medal = new Medal(data);
-          medal.save(function(err, data3) {
+          medal.save(function (err, data3) {
             if (err) {
               callback(err, null);
             } else {
@@ -199,7 +222,7 @@ var models = {
       });
     }
   },
-  countOneSchoolMedal: function(data, callback) {
+  countOneSchoolMedal: function (data, callback) {
     // console.log(data);
     Medal.aggregate([{
       $match: {
@@ -218,32 +241,32 @@ var models = {
       $sort: {
         "_id": 1
       }
-    }]).exec(function(err, data) {
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
         if (data.length > 0) {
           var medalRepresentation = {};
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 1;
             })) {
-            medalRepresentation.gold = _.find(data, function(key) {
+            medalRepresentation.gold = _.find(data, function (key) {
               return key._id == 1;
             }).count;
           }
 
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 2;
             })) {
-            medalRepresentation.silver = _.find(data, function(key) {
+            medalRepresentation.silver = _.find(data, function (key) {
               return key._id == 2;
             }).count;
           }
 
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 3;
             })) {
-            medalRepresentation.bronze = _.find(data, function(key) {
+            medalRepresentation.bronze = _.find(data, function (key) {
               return key._id == 3;
             }).count;
           }
@@ -255,7 +278,7 @@ var models = {
       }
     });
   },
-  countOneStudentMedal: function(data, callback) {
+  countOneStudentMedal: function (data, callback) {
     Medal.aggregate([{
       $match: {
         player: objectid(data.student),
@@ -272,32 +295,32 @@ var models = {
       $sort: {
         "_id": 1
       }
-    }]).exec(function(err, data) {
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
         if (data.length > 0) {
           var medalRepresentation = {};
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 1;
             })) {
-            medalRepresentation.gold = _.find(data, function(key) {
+            medalRepresentation.gold = _.find(data, function (key) {
               return key._id == 1;
             }).count;
           }
 
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 2;
             })) {
-            medalRepresentation.silver = _.find(data, function(key) {
+            medalRepresentation.silver = _.find(data, function (key) {
               return key._id == 2;
             }).count;
           }
 
-          if (_.find(data, function(key) {
+          if (_.find(data, function (key) {
               return key._id == 3;
             })) {
-            medalRepresentation.bronze = _.find(data, function(key) {
+            medalRepresentation.bronze = _.find(data, function (key) {
               return key._id == 3;
             }).count;
           }
@@ -309,87 +332,87 @@ var models = {
       }
     });
   },
-  getMedalsBySport: function(data, callback) {
+  getMedalsBySport: function (data, callback) {
     Medal.aggregate([{
-      $match:{
-        year:data.year,
-        isAddedFromTeam:false
+      $match: {
+        year: data.year,
+        isAddedFromTeam: false
       }
-    },{
+    }, {
       $lookup: {
         from: 'sports',
         localField: 'sport',
         foreignField: '_id',
         as: 'sport'
       }
-    },{
-      $unwind:'$sport'
+    }, {
+      $unwind: '$sport'
     }, {
       $match: {
         'sport.sportslist._id': objectid(data.sport)
       }
-    },{
-      $project:{
-        sport:'$sport._id',
-        Gold:{
-          $cond:{
+    }, {
+      $project: {
+        sport: '$sport._id',
+        Gold: {
+          $cond: {
             if: {
               $eq: ["$medal", 1]
             },
             then: {
-              student:"$player",
-              team:"$team",
-              school:'$school',
-              participantType:"$participantType"
+              student: "$player",
+              team: "$team",
+              school: '$school',
+              participantType: "$participantType"
             },
             else: {}
           }
         },
-        Silver:{
-          $cond:{
+        Silver: {
+          $cond: {
             if: {
               $eq: ["$medal", 2]
             },
             then: {
-              student:"$player",
-              team:"$team",
-              school:'$school',
-              participantType:"$participantType"
+              student: "$player",
+              team: "$team",
+              school: '$school',
+              participantType: "$participantType"
             },
             else: {}
           }
         },
-        Bronze:{
-          $cond:{
+        Bronze: {
+          $cond: {
             if: {
               $eq: ["$medal", 3]
             },
             then: {
-              student:"$player",
-              team:"$team",
-              school:'$school',
-              participantType:"$participantType"
+              student: "$player",
+              team: "$team",
+              school: '$school',
+              participantType: "$participantType"
             },
             else: {}
           }
         }
       }
-    },{
-      $group:{
-        _id:"$sport",
-        Gold:{
-          $addToSet:"$Gold"
+    }, {
+      $group: {
+        _id: "$sport",
+        Gold: {
+          $addToSet: "$Gold"
         },
-        Silver:{
-          $addToSet:"$Silver"
+        Silver: {
+          $addToSet: "$Silver"
         },
-        Bronze:{
-          $addToSet:"$Bronze"
+        Bronze: {
+          $addToSet: "$Bronze"
         }
       }
-    },{
+    }, {
       $project: {
-        _id:"$_id",
+        _id: "$_id",
         "Gold": {
           "$setDifference": ["$Gold", [{}]]
         },
@@ -400,68 +423,67 @@ var models = {
           "$setDifference": ["$Bronze", [{}]]
         }
       }
-    },{
-      $unwind:"$Gold"
-    },{
-      $unwind:"$Silver"
-    },{
-      $sort:{
-        _id:1
+    }, {
+      $unwind: "$Gold"
+    }, {
+      $unwind: "$Silver"
+    }, {
+      $sort: {
+        _id: 1
       }
-    }
-  ]).exec(function(err, data) {
-      if(err){
-        callback(err,null);
-      }else if(data.length === 0){
-        callback("Not Found",null);
-      }else{
-        Sport.populate(data,[{
-          path:'_id'
-        }],function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
-            School.populate(response,[{
-              path:'Gold.school',
-              select:'name logo'
-            },{
-              path:'Silver.school',
-              select:'name logo'
-            },{
-              path:'Bronze.school',
-              select:'name logo'
-            }],function (err,response) {
-              if(err){
-                callback(err,null);
-              }else{
+    }]).exec(function (err, data) {
+      if (err) {
+        callback(err, null);
+      } else if (data.length === 0) {
+        callback("Not Found", null);
+      } else {
+        Sport.populate(data, [{
+          path: '_id'
+        }], function (err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            School.populate(response, [{
+              path: 'Gold.school',
+              select: 'name logo'
+            }, {
+              path: 'Silver.school',
+              select: 'name logo'
+            }, {
+              path: 'Bronze.school',
+              select: 'name logo'
+            }], function (err, response) {
+              if (err) {
+                callback(err, null);
+              } else {
                 // callback(null,response2);
-                Student.populate(response,[{
-                  path:'Gold.student',
-                  select:'name profilePic'
-                },{
-                  path:'Silver.student',
-                  select:'name profilePic'
-                },{
-                  path:'Bronze.student',
-                  select:'name profilePic'
-                }],function (err,response) {
-                  if(err){
-                    callback(err,null);
-                  }else{
-                    Team.populate(response,[{
-                      path:'Gold.team',
-                      select:'name'
-                    },{
-                      path:'Silver.team',
-                      select:'name'
-                    },{
-                      path:'Bronze.team',
-                      select:'name'
-                    }],function (err,response) {
-                      if(err){
-                        callback(err,null);
-                      }else{
-                        callback(null,response);
+                Student.populate(response, [{
+                  path: 'Gold.student',
+                  select: 'name profilePic'
+                }, {
+                  path: 'Silver.student',
+                  select: 'name profilePic'
+                }, {
+                  path: 'Bronze.student',
+                  select: 'name profilePic'
+                }], function (err, response) {
+                  if (err) {
+                    callback(err, null);
+                  } else {
+                    Team.populate(response, [{
+                      path: 'Gold.team',
+                      select: 'name'
+                    }, {
+                      path: 'Silver.team',
+                      select: 'name'
+                    }, {
+                      path: 'Bronze.team',
+                      select: 'name'
+                    }], function (err, response) {
+                      if (err) {
+                        callback(err, null);
+                      } else {
+                        callback(null, response);
                       }
                     });
                   }
@@ -474,8 +496,8 @@ var models = {
       }
     });
   },
-  getAll: function(data, callback) {
-    Medal.find({}, {}, {}, function(err, deleted) {
+  getAll: function (data, callback) {
+    Medal.find({}, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -483,10 +505,10 @@ var models = {
       }
     });
   },
-  getAllBySport: function(data, callback) {
+  getAllBySport: function (data, callback) {
     Medal.find({
       sport: data.sport
-    }, {}, {}, function(err, deleted) {
+    }, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -494,7 +516,7 @@ var models = {
       }
     }).populate('player').populate('team').populate('sport').populate('school');
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     var teamstudents = {};
 
     function updateStudent(tuple) {
@@ -505,7 +527,7 @@ var models = {
         _id: tuple.player
       }, incConst, {
 
-      }, function(err, data) {
+      }, function (err, data) {
         if (err) {
           callback(err, null);
         } else {
@@ -514,7 +536,7 @@ var models = {
             _id: tuple.school
           }, incConst, {
 
-          }, function(err, data) {
+          }, function (err, data) {
             if (err) {
               callback(err, null);
             } else {
@@ -523,7 +545,7 @@ var models = {
               // console.log(data);
               Medal.findOneAndRemove({
                 _id: tuple._id
-              }, function(err, deleted) {
+              }, function (err, deleted) {
                 if (err) {
                   callback(err, null);
                 } else {
@@ -547,7 +569,7 @@ var models = {
       // constraints.team = teamstudents.team._id;
       // console.log("constraints", constraints);
       // medal = new Medal(constraints);
-      Medal.findOneAndRemove(constraints, function(err, deleted) {
+      Medal.findOneAndRemove(constraints, function (err, deleted) {
         if (err) {
           callback(err, null);
         } else {
@@ -560,7 +582,7 @@ var models = {
             _id: constraints.player
           }, incConst, {
 
-          }, function(err, resp) {
+          }, function (err, resp) {
             if (err) {
               callback(err, null);
             } else {
@@ -577,7 +599,7 @@ var models = {
         // runThroughHeats(++iterator);
         Medal.findOneAndRemove({
           _id: teamstudents._id
-        }, function(err, deleted) {
+        }, function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
@@ -595,12 +617,12 @@ var models = {
       incConst.$inc['totalPoints' + tuple.year] = (-1) * tuple.points;
       Medal.populate(tuple, {
         path: 'team'
-      }, function(err, expanded) {
+      }, function (err, expanded) {
         School.update({
           _id: tuple.school
         }, incConst, {
 
-        }, function(err, data) {
+        }, function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -615,7 +637,7 @@ var models = {
     }
     Medal.findOne({
       _id: data._id
-    }, function(err, found) {
+    }, function (err, found) {
       if (err) {
         callback(err, null);
       } else {
@@ -645,8 +667,8 @@ var models = {
     //     }
     // });
   },
-  deleteAllMedal: function(data, callback) {
-    Medal.remove({}, function(err, data) {
+  deleteAllMedal: function (data, callback) {
+    Medal.remove({}, function (err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -654,10 +676,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     Medal.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -665,7 +687,7 @@ var models = {
       }
     });
   },
-  findLimited: function(data, callback) {
+  findLimited: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -679,8 +701,8 @@ var models = {
     };
 
     async.parallel([
-        function(callback) {
-          Medal.count(checkObj).exec(function(err, number) {
+        function (callback) {
+          Medal.count(checkObj).exec(function (err, number) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -693,8 +715,8 @@ var models = {
             }
           });
         },
-        function(callback) {
-          Medal.find(checkObj).sort({}).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+        function (callback) {
+          Medal.find(checkObj).sort({}).skip(20 * (data.pagenumber - 1)).limit(20).exec(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -707,7 +729,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -718,7 +740,7 @@ var models = {
         }
       });
   },
-  findForDrop: function(data, callback) {
+  findForDrop: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -733,7 +755,7 @@ var models = {
       name: {
         '$regex': check
       }
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -742,9 +764,9 @@ var models = {
         exit++;
         if (data.medal.length !== 0) {
           var nedata;
-          nedata = _.remove(found, function(n) {
+          nedata = _.remove(found, function (n) {
             var flag = false;
-            _.each(data.medal, function(n1) {
+            _.each(data.medal, function (n1) {
               if (n1.name == n.name) {
                 flag = true;
               }
@@ -759,7 +781,7 @@ var models = {
       }
     });
   },
-  deleteAllPointData: function(data, callback) {
+  deleteAllPointData: function (data, callback) {
     Student.update({}, {
       $set: {
         totalPoints2015: 0,
@@ -768,7 +790,7 @@ var models = {
       }
     }, {
       multi: true
-    }, function(err, updated) {
+    }, function (err, updated) {
       if (err) {
         callback(err, null);
       } else {
@@ -782,7 +804,7 @@ var models = {
           }
         }, {
           multi: true
-        }, function(err, updated) {
+        }, function (err, updated) {
           if (err) {
             callback(err, null);
           } else {
