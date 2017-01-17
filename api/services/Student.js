@@ -7,7 +7,7 @@
 var objectid = require("mongodb").ObjectId;
 var websiteURL = "http://www.sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
-var adminUrl ="http://127.0.0.1:1337/";
+var adminUrl = "http://127.0.0.1:1337/";
 var schema = new Schema({
   year: String,
   sfaid: Number,
@@ -766,164 +766,6 @@ var models = {
     // }
 
     var sportArray = [];
-    //   console.log("NAME OF BODY ", data2.sports[0].name);
-    //   _.forEach(data2.sports, function (aa) {
-    //     console.log("HERE", aa.name);
-    //     sportArray.push(aa.name);
-    //   });
-    //   //ORANGE
-    //   if (data2.sports[0].name == "Football") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cffootball.jpg";
-    //     data2.sportname = "Football";
-    //   }
-
-    //  else if (data2.sports[0].name == "Basketball") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfbasketball.jpg";
-    //     data2.sportname = "Basketball";
-    //   }
-    //  else if (data2.sports[0].name == "Handball") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfhandball.jpg";
-    //     data2.sportname = "Handball";
-    //   }
-    //  else if (data2.sports[0].name == "Hockey") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfhockey.jpg";
-    //     data2.sportname = "Hockey";
-    //   }
-
-    //  else if (data2.sports[0].name == "Kho Kho") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfkhokho.jpg";
-    //     data2.sportname = "Kho Kho";
-    //   }
-    //  else if (data2.sports[0].name == "Throwball") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfthrowball.jpg";
-    //     data2.sportname = "Throwball";
-    //   }
-    //  else if (data2.sports[0].name == "Volleyball") {
-    //     data2.color = "f-20 cl-orange";
-    //     data2.image = "cfvolleyball.jpg";
-    //     data2.sportname = "Volleyball";
-    //   }
-
-    //   //BLUE
-    //  else if (data2.sports[0].name == "Swimming") {
-    //     data2.color = "f-20 cl-blue";
-    //     data2.image = "cfswimming.jpg";
-    //     data2.sportname = "Swimming";
-    //   }
-
-    //  else if (data2.sports[0].name == " Water Polo") {
-    //     data2.color = "f-20 cl-blue";
-    //     data2.image = "cfwaterpolo.jpg";
-    //     data2.sportname = " Water Polo";
-    //   }
-
-    //   //GREEN
-    //  else if (data2.sports[0].name == "Athletics") {
-    //     data2.color = "f-20 cl-green";
-    //     data2.image = "cfathletics.jpg";
-    //     data2.sportname = "Athletics";
-    //   }
-    //  else if (data2.sports[0].name == "Carrom") {
-    //     data2.color = "f-20 cl-green";
-    //     data2.image = "cfcarrom.jpg";
-    //     data2.sportname = "Carrom";
-    //   }
-
-    //  else if (data2.sports[0].name == "Chess") {
-    //     data2.color = "f-20 cl-green";
-    //     data2.image = "cfchess.jpg";
-    //     data2.sportname = "Chess";
-    //   }
-
-    //   //PINK
-    //  else if (data2.sports[0].name == "Archery") {
-    //     data2.color = "f-20 cl-pink";
-    //     data2.image = "cfarchery.jpg";
-    //     data2.sportname = "Archery";
-    //   }
-    //  else if (data2.sports[0].name == "Shooting") {
-    //     data2.color = "f-20 cl-pink";
-    //     data2.image = "cfshooting.jpg";
-    //     data2.sportname = "Shooting";
-    //   }
-    //   // PURPLE
-    //  else if (data2.sports[0].name == "Boxing") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfboxing.jpg";
-    //     data2.sportname = "Boxing";
-    //   }
-    //  else if (data2.sports[0].name == "Fencing") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cffencing.jpg";
-    //     data2.sportname = "Fencing";
-    //   }
-    //  else if (data2.sports[0].name == "Judo") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfjudo.jpg";
-    //     data2.sportname = "Judo";
-    //   }
-    //  else if (data2.sports[0].name == "Karate") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfkarate.jpg";
-    //     data2.sportname = "Karate";
-    //   }
-
-    //  else if (data2.sports[0].name == "Sport MMA") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfmma.jpg";
-    //     data2.sportname = "Sport MMA";
-    //   }
-
-    //  else if (data2.sports[0].name == "Taekwondo") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfteakwando.jpg";
-    //     data2.sportname = "Taekwondo";
-    //   }
-
-
-    //  else if (data2.sports[0].name == "Taekwondo") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfteakwando.jpg";
-    //     data2.sportname = "Taekwondo";
-    //   }
-
-    //   //YELLOW
-    //  else if (data2.sports[0].name == "Badminton") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfbadminton.jpg";
-    //     data2.sportname = "Badminton";
-    //   }
-
-    //  else if (data2.sports[0].name == "Squash") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cfsquash.jpg";
-    //     data2.sportname = "Squash";
-    //   }
-    //  else if (data2.sports[0].name == "Table Tennis") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cftabletennis.jpg";
-    //     data2.sportname = "Table Tennis";
-    //   }
-    //  else if (data2.sports[0].name == "Table Tennis") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cftabletennis.jpg";
-    //     data2.sportname = "Table Tennis";
-    //   }
-    //  else if (data2.sports[0].name == "Tennis") {
-    //     data2.color = "f-20 cl-purple";
-    //     data2.image = "cftennis.jpg";
-    //     data2.sportname = "Tennis";
-    //   }
-
-    // _.each(data.sports,function(m){
-    //     console.log("DATA",m)
-    // });
     var datainscope = data2.medal;
     var yesarr = [];
     _.each(data2.medal, function (n) {
@@ -974,17 +816,17 @@ var models = {
     //    var ABC = _.sortBy(data2.sports);
     console.log("ABC", datainscope);
 
-   
-var pdfArray =[];
+
+    var pdfArray = [];
     async.eachSeries(datainscope, function (j, callbackAs) {
 
- 
+
       //   console.log("AYSN eachSeries",j);
 
       if (j.isMedal == true) {
 
-       console.log("in IF", j.medal);
-       data2.medal = j.medal;
+        console.log("in IF", j.medal);
+        data2.medal = j.medal;
         console.log(j.sport);
 
         _.each(data2.sports, function (k) {
@@ -992,7 +834,7 @@ var pdfArray =[];
           // console.log("kk",k);
           if (j.sport == k) {
             console.log("Parti", k);
-   //ORANGE
+            //ORANGE
 
             if (k == "Football") {
               data2.color = "f-20 cl-orange";
@@ -1022,8 +864,7 @@ var pdfArray =[];
               data2.color = "f-20 cl-orange";
               data2.image = "cfvolleyball.jpg";
               data2.sportname = "Volleyball";
-            }
-            else if (k == "Kabaddi") {
+            } else if (k == "Kabaddi") {
               data2.color = "f-20 cl-orange";
               data2.image = "cfkabbadi.jpg";
               data2.sportname = "Kabaddi";
@@ -1098,27 +939,60 @@ var pdfArray =[];
 
             //YELLOW
             else if (k == "Badminton") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cfbadminton.jpg";
               data2.sportname = "Badminton";
             } else if (k == "Squash") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cfsquash.jpg";
               data2.sportname = "Squash";
             } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-purple";
-              data2.image = "cftabletennis.jpg";
-              data2.sportname = "Table Tennis";
-            } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cftabletennis.jpg";
               data2.sportname = "Table Tennis";
             } else if (k == "Tennis") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cftennis.jpg";
               data2.sportname = "Tennis";
             }
 
+           
+
+            if (data2.dob == undefined) {
+console.log("IN UNDEIFNED");
+              Config.generatePdf("pdf/certificatemedalWithoutAge", $scope, function (callback) {
+                console.log("IN CERTI API");
+                // console.log(callback.name);
+                var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
+                console.log("URL", urlPdf);
+
+                pdfArray.push(urlPdf);
+
+                // res.json({
+                //   url:urlPdf
+                // });
+
+                // console.log("After callback.name");
+                // res.send(callback);
+              });
+            } else {
+console.log("IN DEIFNED");
+
+       if(data2.gender=="Male" ){
+              data2.group="Boys"; 
+            }else {
+              data2.group="Girls"; 
+            }
+            var ageGroup = data2.ageGroup ;
+            var gender = data2.group;
+            console.log("GENDER",gender);
+
+            console.log("AGEGROUP",ageGroup);
+            var detail = ageGroup +  " " + gender;
+              console.log("DETAILS",detail);
+            
+            data2.AGE = detail;
+            console.log("AFTER",data2.AGE);
 
             Config.generatePdf("pdf/certificatemedal", $scope, function (callback) {
               console.log("IN CERTI API");
@@ -1127,25 +1001,27 @@ var pdfArray =[];
               console.log("URL", urlPdf);
 
               pdfArray.push(urlPdf);
-            
+
               // res.json({
               //   url:urlPdf
               // });
-            
+
               // console.log("After callback.name");
               // res.send(callback);
             });
+            }
+
 
           }
         });
-  } else {
+      } else {
         console.log("in ELse", j);
         _.each(data2.sports, function (k) {
-         // console.log("kk",k);
+          // console.log("kk",k);
           if (j.sport == k) {
             console.log("Parti ELSE", k);
             //ORANGE
-              // console.log("MEDAL",j.medal);
+            // console.log("MEDAL",j.medal);
             if (k == "Football") {
               data2.color = "f-20 cl-orange";
               data2.image = "cffootball.jpg";
@@ -1174,8 +1050,7 @@ var pdfArray =[];
               data2.color = "f-20 cl-orange";
               data2.image = "cfvolleyball.jpg";
               data2.sportname = "Volleyball";
-            }
-            else if (k == "Kabaddi") {
+            } else if (k == "Kabaddi") {
               data2.color = "f-20 cl-orange";
               data2.image = "cfkabbadi.jpg";
               data2.sportname = "Kabaddi";
@@ -1250,66 +1125,92 @@ var pdfArray =[];
 
             //YELLOW
             else if (k == "Badminton") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cfbadminton.jpg";
               data2.sportname = "Badminton";
             } else if (k == "Squash") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cfsquash.jpg";
               data2.sportname = "Squash";
             } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-purple";
-              data2.image = "cftabletennis.jpg";
-              data2.sportname = "Table Tennis";
-            } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cftabletennis.jpg";
               data2.sportname = "Table Tennis";
             } else if (k == "Tennis") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-yellow";
               data2.image = "cftennis.jpg";
               data2.sportname = "Tennis";
             }
 
+            if (data2.dob == undefined) {
 
+              Config.generatePdf("pdf/certificateWithoutAge", $scope, function (callback) {
+                console.log("IN CERTI API");
+                // console.log(callback.name);
+                var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
+                console.log("URL", urlPdf);
+                pdfArray.push(urlPdf);
+                // res.json({
+                //   url:urlPdf
+                // });
+                console.log("After callback.name");
+                // res.send(callback);
+              });
+            } else {
+                if(data2.gender=="Male" ){
+              data2.group="Boys"; 
+            }else {
+              data2.group="Girls"; 
+            }
+            var ageGroup = data2.ageGroup ;
+            var gender = data2.group;
+            console.log("GENDER",gender);
 
-            Config.generatePdf("pdf/certificate", $scope, function (callback) {
-              console.log("IN CERTI API");
-              // console.log(callback.name);
-              var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
-              console.log("URL", urlPdf);
-            pdfArray.push(urlPdf);
+            console.log("AGEGROUP",ageGroup);
+            var detail = ageGroup +  " " + gender;
+              console.log("DETAILS",detail);
+            
+            data2.AGE = detail;
+            console.log("AFTER",data2.AGE);
+              Config.generatePdf("pdf/certificate", $scope, function (callback) {
+                console.log("IN CERTI API");
+                // console.log(callback.name);
+                var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
+                console.log("URL", urlPdf);
+                pdfArray.push(urlPdf);
+                // res.json({
+                //   url:urlPdf
+                // });
+                console.log("After callback.name");
+                // res.send(callback);
+              });
 
-              // res.json({
-              //   url:urlPdf
-              // });
-              console.log("After callback.name");
-              // res.send(callback);
-            });
+            }
 
 
           }
         });
       }
 
-setTimeout(function(){ callbackAs(); }, 5000);
- 
-         
-      
-      i++;
-    },function(err){
+      setTimeout(function () {
+        callbackAs();
+      }, 5000);
 
-      if(err)
-      {
-        console.log("Error",err);
-      }else{
-      
-        console.log("Array of Pdf link",pdfArray);
-        callback(null,pdfArray);
+
+
+      i++;
+    }, function (err) {
+
+      if (err) {
+        console.log("Error", err);
+      } else {
+
+        console.log("Array of Pdf link", pdfArray);
+        callback(null, pdfArray);
       }
     });
 
-    
+
 
   },
 

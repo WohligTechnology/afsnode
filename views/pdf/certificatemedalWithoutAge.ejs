@@ -74,11 +74,12 @@
 }
 .border-btm input{
 
-        border-bottom: 2px solid #cdcccc !important;
+                border-bottom: 2px solid #cdcccc !important;
         border: none;
         color: #686662;
         font-size: 9px;
         text-transform: capitalize;
+
 
 }
 
@@ -202,7 +203,7 @@ input:focus{
       width: 90%;
 }
 .border-bg{
- background: url(file:///home/wohlig/Documents/htdocs/afsnode/views/pdf/assets/bg-line.png)no-repeat;
+  background: url(file:///home/wohlig/Documents/htdocs/afsnode/views/pdf/assets/bg-line.png)no-repeat;
   border: none;
   background-position-y: 21px;
   height: 30px;
@@ -236,7 +237,7 @@ input:focus{
               <div class="sf-relative">
                 <label class="lb-f color-blue font-avenir f-26s" style="color:#232d69;font-size: 23px;line-height: 12px;">of</label>
                 <input type="text" class="form-control mr-r w60 text-center font-av" value="<%= data.school.name%>" style="width: 83%;
-    margin-left: 19px;color:#686662">
+    margin-left: 18px;color:#686662">
               </div>
 
           </div>
@@ -245,13 +246,13 @@ input:focus{
 <tr>
   <td class="text-center">
     <div class="form-group border-btm text-center m-auto-20">
-      <div class="display-inline" style="line-height: 32px;vertical-align: top;">
+      <div class="display-inline">
         <label class="color-blue font-avenir" style="color:#232d69;font-size: 13px;">SFA ID</label>
 
       </div>
       <div class="display-inline">
 
-        <input type="text" class="form-control  text-center font-av" value="<%= data.sfaid %>" style="color:#686662;font-size:16px; ">
+        <input type="text" class="form-control  text-center font-av" value="<%= data.sfaid %>" style="color:#686662">
 
       </div>
     </div>
@@ -262,12 +263,11 @@ input:focus{
     <div class="form-group text-center m-auto-20 ">
         <div class="fr-sec" >
             <div class="display-inline">
-            <label class="color-blue font-avenir f-20" style="color:#232d69;">For securing </label>
+            <label class="color-blue font-avenir f-20" style="color:#232d69">For securing a</label>
           </div>
-        <span class="form-control text-center f-20"  style="color:#686662 " >   a <%= data.medal %></span>
-        <!--  <div class="display-inline border-none">
-            <input type="text" class="form-control text-center" style="color:#686662; "  value="<%= data.medal %>">
-          </div>-->
+          <div class="display-inline border-none">
+          <span class="form-control text-center f-20"  style="color:#686662 " >   a <%= data.medal %></span>
+   </div>
             <label class="color-blue f-20" style="color:#232d69">in</label> <label class="<%=data.color%>" ><%=data.sportname%></label>
             <!-- <label class="f-20 cl-blue" ng-if="item == '2'">{{item.name}}</label> -->
         </div>
@@ -275,13 +275,13 @@ input:focus{
     </div>
   </td>
 </tr>
-<tr>
+<!--<tr>
   <td class="text-center">
     <div class="form-group border-btm">
-            <input type="text" class="form-control  text-center font-av" value="<%= data.AGE %> " style="color:#686662;width: 50%;font-size:16px;">
+            <input type="text" class="form-control  text-center font-av" value="<%= data.AGE %>" style="color:#686662;width: 50%;">
     </div>
   </td>
-</tr>
+</tr>-->
 <tr>
   <td>
     <div class="footer-img">
