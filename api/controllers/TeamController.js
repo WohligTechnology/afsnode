@@ -287,6 +287,8 @@ module.exports = {
       } else {
         var excelData = [];
         var row = {};
+
+//        console.log("response",response);
         _.each(response, function(key) {
           row = {};
           row.CATEGORY= "";
@@ -320,7 +322,7 @@ module.exports = {
             row["TOTAL PLAYERS"]= key.players.length;
             row["ALL PLAYERS ( ALONG WITH THE CAPTAIN )"]="";
             _.each(key.players,function (key) {
-              row["ALL PLAYERS ( ALONG WITH THE CAPTAIN )"] += key.firstname +", ";
+              row["ALL PLAYERS ( ALONG WITH THE CAPTAIN )"] += key.name +", ";
             });
           }
           excelData.push(row);

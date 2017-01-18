@@ -245,7 +245,7 @@ module.exports = {
     Knockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).deepPopulate('player1.school player2.school', "name sfaid school").populate('player1', "name sfaid school").populate('player2', "name sfaid school").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').populate('player1.school', 'name').exec(function (err, data2) {
+    }).deepPopulate('player1.school player2.school team1.school team2.school', "name sfaid school").populate('player1', "name sfaid school").populate('player2', "name sfaid school").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').populate('player1.school', 'name').exec(function (err, data2) {
       console.log("DATA2", data2);
       console.log("data", data2[0].player1);
       console.log("data", data2[0].player2);
@@ -262,7 +262,7 @@ module.exports = {
         if (key.sport) {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
-        if (key[key.participantType + '1']) {
+        if (key[key.participantType + '1'] && key[key.participantType + '1'].school) {
           row['SFAID 1'] = key[key.participantType + '1'].sfaid;
           row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
 
@@ -275,7 +275,7 @@ module.exports = {
           row['SCHOOL 1'] = '';
            row['RESULT 1'] = '';
         }
-        if (key[key.participantType + '2']) {
+        if (key[key.participantType + '2']&& key[key.participantType + '2'].school) {
           row['SFAID 2'] = key[key.participantType + '2'].sfaid;
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
           // console.log("DAATTAAA-->2 ", key[key.participantType + '2'].school.name);
@@ -307,7 +307,7 @@ module.exports = {
     Knockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).deepPopulate('player1.school player2.school', "name sfaid school").populate('player1', "name sfaid ").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function (err, data2) {
+    }).deepPopulate('player1.school player2.school team1.school team2.school', "name sfaid school").populate('player1', "name sfaid ").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function (err, data2) {
 
       console.log("DATA2", data2);
       console.log("data", data2[0].player1);
@@ -326,7 +326,7 @@ module.exports = {
         if (key.sport) {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
-        if (key[key.participantType + '1']) {
+        if (key[key.participantType + '1']&& key[key.participantType + '1'].school) {
           row['SFAID 1'] = key[key.participantType + '1'].sfaid;
           row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
           row['SCHOOL 1'] = key[key.participantType + '1'].school.name;
@@ -339,7 +339,7 @@ module.exports = {
 
           row['RESULT 1'] = '';
         }
-        if (key[key.participantType + '2']) {
+        if (key[key.participantType + '2']&& key[key.participantType + '2'].school) {
           row['SFAID 2'] = key[key.participantType + '2'].sfaid;
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
           row['SCHOOL 2'] = key[key.participantType + '2'].school.name;

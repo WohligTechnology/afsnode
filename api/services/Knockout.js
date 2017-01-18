@@ -5,7 +5,7 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 var mongoose = require('mongoose');
-var deepPopulate =require('mongoose-deep-populate')(mongoose);
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 // deepPopulate.initialize(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
@@ -95,26 +95,37 @@ var schema = new Schema({
 });
 schema.plugin(deepPopulate, {
   populate: {
-    'player1':{
-      select:'name _id sfaid school'
+    'player1': {
+      select: 'name _id sfaid school'
     },
-    'player1.school':{
+    'player1.school': {
       select: 'name _id '
     },
-    'player2':{
-      select:'name _id sfaid school'
+    'player2': {
+      select: 'name _id sfaid school'
     },
-    'player2.school':{
+    'player2.school': {
       select: 'name _id '
-    }    
-    
+    },
+    'team1': {
+      select: 'name _id sfaid school'
+    },
+    'team1.school': {
+      select: 'name _id '
+    },
+    'team2': {
+      select: 'name _id sfaid school'
+    },
+    'team2.school': {
+      select: 'name _id '
+    }
   }
 });
 
 module.exports = sails.mongoose.model('Knockout', schema);
 
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     function saveme(details, num, status) {
       var constraints = {};
       constraints.year = details.year;
@@ -129,7 +140,7 @@ var models = {
         constraints.team = details.team2._id;
 
       }
-      StudentStats.saveData(constraints, function(err, response) {
+      StudentStats.saveData(constraints, function (err, response) {
         if (err) {
           callback(err, null);
         } else {
@@ -170,12 +181,12 @@ var models = {
         constraints.sport = details.sport;
         constraints.drawFormat = "Knockout";
         constraints.knockout = details._id;
-        StudentStats.saveData(constraints, function(err, response) {
+        StudentStats.saveData(constraints, function (err, response) {
           if (err) {
             callback(err, null);
           } else {
             constraints.student = details[details.participantType + "2"];
-            StudentStats.saveData(constraints, function(err, resp) {
+            StudentStats.saveData(constraints, function (err, resp) {
               if (err) {
                 callback(err, null);
               } else {
@@ -189,7 +200,7 @@ var models = {
           path: 'team1'
         }, {
           path: 'team2'
-        }], function(err, response) {
+        }], function (err, response) {
           if (err) {
             callback(err, null);
           } else {
@@ -203,7 +214,7 @@ var models = {
       // console.log(nextRound);
       delete nextRound.matchid;
       var upsertData = {};
-      Knockout.getLastKnockout({}, function(err, response) {
+      Knockout.getLastKnockout({}, function (err, response) {
         if (err) {
           callback(err, null);
         } else {
@@ -223,7 +234,7 @@ var models = {
           }, {
             upsert: true,
             new: true
-          }, function(err, data3) {
+          }, function (err, data3) {
             if (err) {
               console.log("err");
               callback(err, null);
@@ -241,7 +252,7 @@ var models = {
         _id: data._id
       }, data, {
         new: true
-      }, function(err, data2) {
+      }, function (err, data2) {
         if (err) {
           console.log("err");
           callback(err, null);
@@ -249,11 +260,11 @@ var models = {
           if (data2 === null) {
             callback(null, data2);
           } else if (data.resultteam1 || data.resultteam2 || data.resultplayer1 || data.resultplayer2) {
-            if(data2.round.toUpperCase() == 'Final'.toUpperCase()){
-              callback(null,data2);
-            }else if(data2.round.toUpperCase() == 'Third Place'.toUpperCase()){
+            if (data2.round.toUpperCase() == 'Final'.toUpperCase()) {
+              callback(null, data2);
+            } else if (data2.round.toUpperCase() == 'Third Place'.toUpperCase()) {
               updateParticipantsAndCallback(data2);
-            }else{
+            } else {
               var nomatch = false;
               var nextRound = data2.toObject();
               delete nextRound._id;
@@ -288,7 +299,7 @@ var models = {
                 if (data2.participantType == 'player') {
                   Student.find({
                     name: "No Match "
-                  }).exec(function(err, response) {
+                  }).exec(function (err, response) {
                     if (err) {
                       callback(err, null);
                     } else {
@@ -310,7 +321,7 @@ var models = {
                 } else {
                   Team.find({
                     name: "No Match "
-                  }).exec(function(err, response) {
+                  }).exec(function (err, response) {
                     if (err) {
                       callback(err, null);
                     } else {
@@ -348,12 +359,12 @@ var models = {
         }
       });
     } else {
-      Knockout.getLastKnockout({}, function(err, response) {
+      Knockout.getLastKnockout({}, function (err, response) {
         if (err) {
           callback(null, err);
         } else {
           knockout.matchid = parseInt(response) + 1;
-          knockout.save(function(err, data2) {
+          knockout.save(function (err, data2) {
             if (err) {
               callback(err, null);
             } else {
@@ -365,8 +376,8 @@ var models = {
 
     }
   },
-  getAll: function(data, callback) {
-    Knockout.find({}, {}, {}, function(err, deleted) {
+  getAll: function (data, callback) {
+    Knockout.find({}, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -374,7 +385,7 @@ var models = {
       }
     }).populate("Student");
   },
-  findLimited: function(data, callback) {
+  findLimited: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -384,8 +395,8 @@ var models = {
     };
 
     async.parallel([
-        function(callback) {
-          Knockout.count(checkObj).exec(function(err, number) {
+        function (callback) {
+          Knockout.count(checkObj).exec(function (err, number) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -398,11 +409,11 @@ var models = {
             }
           });
         },
-        function(callback) {
+        function (callback) {
           Knockout.find(checkObj).sort({
             roundno: 1,
             order: 1
-          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name').exec(function(err, data2) {
+          }).skip(20 * (data.pagenumber - 1)).limit(20).populate('player1', "name ").populate('player2', "name").populate('sport').populate("agegroup", "name").populate('team1', 'name').populate('team2', 'name').exec(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -415,7 +426,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -426,7 +437,7 @@ var models = {
         }
       });
   },
-  getLastOrder: function(data, callback) {
+  getLastOrder: function (data, callback) {
     Knockout.find({
       year: data.year,
       sport: data.sport,
@@ -438,7 +449,7 @@ var models = {
       order: 1
     }).sort({
       order: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -449,13 +460,13 @@ var models = {
       }
     });
   },
-  getLastKnockout: function(data, callback) {
+  getLastKnockout: function (data, callback) {
     Knockout.find({}, {
       _id: 0,
       matchid: 1
     }).sort({
       matchid: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -467,10 +478,10 @@ var models = {
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     Knockout.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -478,7 +489,7 @@ var models = {
       }
     });
   },
-  deleteKnockoutCompletely: function(data, callback) {
+  deleteKnockoutCompletely: function (data, callback) {
     Knockout.find({
       $or: [{
         _id: data._id
@@ -487,50 +498,50 @@ var models = {
       }, {
         parent2: data._id
       }]
-    }).exec(function (err,results) {
-      if(err){
-        callback(err,null);
-      }else{
+    }).exec(function (err, results) {
+      if (err) {
+        callback(err, null);
+      } else {
         var knockouts = [];
-        _.each(results,function (key) {
+        _.each(results, function (key) {
           knockouts.push(key._id);
         });
         StudentStats.remove({
-              drawFormat: "Knockout",
-              knockout: {
-                $in : knockouts
-              }
-            }, function(err, response) {
+          drawFormat: "Knockout",
+          knockout: {
+            $in: knockouts
+          }
+        }, function (err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            Knockout.remove({
+              $or: [{
+                _id: data._id
+              }, {
+                parent1: data._id
+              }, {
+                parent2: data._id
+              }]
+            }, function (err, deleted) {
               if (err) {
-                callback(err,null);
-              }else{
-                Knockout.remove({
-                  $or: [{
-                    _id: data._id
-                  }, {
-                    parent1: data._id
-                  }, {
-                    parent2: data._id
-                  }]
-                }, function(err, deleted) {
-                  if (err) {
-                    callback(err, null);
-                  } else {
-                    callback(null,deleted);
+                callback(err, null);
+              } else {
+                callback(null, deleted);
 
-                  }
-                });
               }
             });
+          }
+        });
         // callback(null,results);
       }
     });
 
   },
-  getOneKnockoutTree: function(data, callback) {
+  getOneKnockoutTree: function (data, callback) {
     Knockout.findOne({
       _id: data._id
-    }, function(err, response) {
+    }, function (err, response) {
       if (err) {
         callback(err, null);
       } else {
@@ -569,7 +580,7 @@ var models = {
             }]
           }]
         }];
-        Knockout.populate(response, populatequery, function(err, data2) {
+        Knockout.populate(response, populatequery, function (err, data2) {
           if (err) {
             callback(err, null);
           } else {
@@ -582,10 +593,10 @@ var models = {
       }
     }).populate('player1', "name").populate('player2', "name").populate('resultplayer', "name");
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     Knockout.findOne({
       _id: data._id
-    }, function(err, response) {
+    }, function (err, response) {
       if (err) {
         callback(err, null);
       } else {
@@ -593,105 +604,106 @@ var models = {
       }
     }).populate('player1').populate('player2').populate('sport').populate('team1').populate('team2');
   },
-  getSportRoundKnockout: function (data,callback) {
+  getSportRoundKnockout: function (data, callback) {
     var asyncReturns = {};
     async.parallel([
       function (callback) {
         Sport.getOne({
-          _id:data.sport
-        },function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
+          _id: data.sport
+        }, function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
             asyncReturns.sport = data;
-            callback(null,data);
+            callback(null, data);
           }
         });
       },
       function (callback) {
         Medal.find({
-          sport:data.sport
+          sport: data.sport
         }).sort({
-          medal:1
-        }).lean().exec(function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
-            Medal.populate(data,[{
-              path:"player",
-              select:"name profilePic"
-            },{
-              path:"team",
-              select:"name"
-            },{
-              path:"school",
-              select:"name logo"
-            }],function (err,response) {
-              if(err){
-                callback(err,null);
-              }else{
+          medal: 1
+        }).lean().exec(function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
+            Medal.populate(data, [{
+              path: "player",
+              select: "name profilePic"
+            }, {
+              path: "team",
+              select: "name"
+            }, {
+              path: "school",
+              select: "name logo"
+            }], function (err, response) {
+              if (err) {
+                callback(err, null);
+              } else {
                 asyncReturns.medals = response;
-                callback(null,response);
+                callback(null, response);
               }
             });
 
           }
         });
-      },function (callback) {
+      },
+      function (callback) {
         Knockout.find({
-          sport:data.sport
+          sport: data.sport
         }).sort({
-          roundno:1,
-          order:1
-        }).lean().exec(function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
-            Knockout.populate(data,[{
-              path:'player1',
-              select:"name profilePic school",
-              populate:{
-                path:'school',
-                select:'name'
+          roundno: 1,
+          order: 1
+        }).lean().exec(function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
+            Knockout.populate(data, [{
+              path: 'player1',
+              select: "name profilePic school",
+              populate: {
+                path: 'school',
+                select: 'name'
               }
-            },{
-              path:'player2',
-              select:"name profilePic school",
-              populate:{
-                path:'school',
-                select:'name'
+            }, {
+              path: 'player2',
+              select: "name profilePic school",
+              populate: {
+                path: 'school',
+                select: 'name'
               }
-            },{
-              path:'team1',
-              select:"name school",
-              populate:{
-                path:'school',
-                select:'name logo'
+            }, {
+              path: 'team1',
+              select: "name school",
+              populate: {
+                path: 'school',
+                select: 'name logo'
               }
-            },{
-              path:'team2',
-              select:"name school",
-              populate:{
-                path:'school',
-                select:'name logo'
+            }, {
+              path: 'team2',
+              select: "name school",
+              populate: {
+                path: 'school',
+                select: 'name logo'
               }
-            }],function (err,response) {
+            }], function (err, response) {
               if (err) {
-                callback(err,null);
+                callback(err, null);
               } else {
                 asyncReturns.knockouts = response;
-                callback(null,response);
+                callback(null, response);
               }
             });
 
           }
         });
       }
-    ],function (err,data) {
+    ], function (err, data) {
       if (err) {
-        callback(err,null);
+        callback(err, null);
       } else {
-        callback(null,asyncReturns);
+        callback(null, asyncReturns);
       }
     });
   }
