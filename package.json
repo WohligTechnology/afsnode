@@ -32,6 +32,7 @@
     "mongo-xlsx": "^1.0.12",
     "mongodb": "2.1.7",
     "mongoose": "^4.6.3",
+    "mongoose-deep-populate": "^3.0.0",
     "mongoose-populate-virtuals": "^1.0.3",
     "rc": "1.0.1",
     "request": "^2.73.0",

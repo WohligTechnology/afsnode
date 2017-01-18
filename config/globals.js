@@ -59,5 +59,8 @@ module.exports.globals = {
   *                                                                           *
   ****************************************************************************/
 
+
 	// models: true
 };
+
+//global["deepPopulate"] = require('mongoose-deep-populate')(mongoose);

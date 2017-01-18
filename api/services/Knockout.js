@@ -4,6 +4,9 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+var mongoose = require('mongoose');
+var deepPopulate =require('mongoose-deep-populate')(mongoose);
+// deepPopulate.initialize(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -90,7 +93,26 @@ var schema = new Schema({
     ref: 'Knockout'
   }
 });
+schema.plugin(deepPopulate, {
+  populate: {
+    'player1':{
+      select:'name _id sfaid school'
+    },
+    'player1.school':{
+      select: 'name _id '
+    },
+    'player2':{
+      select:'name _id sfaid school'
+    },
+    'player2.school':{
+      select: 'name _id '
+    }    
+    
+  }
+});
+
 module.exports = sails.mongoose.model('Knockout', schema);
+
 var models = {
   saveData: function(data, callback) {
     function saveme(details, num, status) {

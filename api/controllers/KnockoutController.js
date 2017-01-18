@@ -5,9 +5,9 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 module.exports = {
-  saveData: function(req, res) {
+  saveData: function (req, res) {
     if (req.body) {
-      Knockout.saveData(req.body, function(err, respo) {
+      Knockout.saveData(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -27,32 +27,9 @@ module.exports = {
       });
     }
   },
-  getLastOrder: function(req, res) {
+  getLastOrder: function (req, res) {
     if (req.body) {
-      Knockout.getLastOrder(req.body, function(err, respo) {
-        if (err) {
-          console.log("in err");
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  getLastKnockout: function(req, res) {
-    if (req.body) {
-      Knockout.getLastKnockout(req.body, function(err, respo) {
+      Knockout.getLastOrder(req.body, function (err, respo) {
         if (err) {
           console.log("in err");
           res.json({
@@ -73,7 +50,30 @@ module.exports = {
       });
     }
   },
-  getLimited: function(req, res) {
+  getLastKnockout: function (req, res) {
+    if (req.body) {
+      Knockout.getLastKnockout(req.body, function (err, respo) {
+        if (err) {
+          console.log("in err");
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  getLimited: function (req, res) {
     if (req.body) {
       if (req.body.pagenumber) {
         Knockout.findLimited(req.body, res.callback);
@@ -90,9 +90,9 @@ module.exports = {
       });
     }
   },
-  getAll: function(req, res) {
+  getAll: function (req, res) {
     if (req.body) {
-      Knockout.getAll(req.body, function(err, respo) {
+      Knockout.getAll(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -112,10 +112,10 @@ module.exports = {
       });
     }
   },
-  getSportRoundKnockout: function(req, res) {
+  getSportRoundKnockout: function (req, res) {
     if (req.body) {
       if (req.body.sport) {
-        Knockout.getSportRoundKnockout(req.body, function(err, respo) {
+        Knockout.getSportRoundKnockout(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -141,10 +141,10 @@ module.exports = {
       });
     }
   },
-  deleteData: function(req, res) {
+  deleteData: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Knockout.deleteData(req.body, function(err, respo) {
+        Knockout.deleteData(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -170,8 +170,8 @@ module.exports = {
       });
     }
   },
-  updateVideoURL: function(req, res) {
-    req.file("file").upload(function(err, uploadedFiles) {
+  updateVideoURL: function (req, res) {
+    req.file("file").upload(function (err, uploadedFiles) {
       var results = [];
 
       function saveMe(num) {
@@ -187,7 +187,7 @@ module.exports = {
           }
         }, {
           new: true
-        }, function(err, data) {
+        }, function (err, data) {
           console.log(err);
           if (err) {
             res.json({
@@ -221,7 +221,7 @@ module.exports = {
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
-        }, function(err, result) {
+        }, function (err, result) {
           if (err) {
             res.json({
               value: false,
@@ -236,7 +236,8 @@ module.exports = {
       }
     });
   },
-  exportKnockout: function(req, res) {
+
+  exportKnockout2: function (req, res) {
     var checkObj = {};
     checkObj = {
       'sport': req.query.sport
@@ -244,10 +245,13 @@ module.exports = {
     Knockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).populate('player1', "name sfaid").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function(err, data2) {
+    }).deepPopulate('player1.school player2.school', "name sfaid school").populate('player1', "name sfaid school").populate('player2', "name sfaid school").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').populate('player1.school', 'name').exec(function (err, data2) {
+      console.log("DATA2", data2);
+      console.log("data", data2[0].player1);
+      console.log("data", data2[0].player2);
       var excelData = [];
       var row = {};
-      _.each(data2, function(key) {
+      _.each(data2, function (key) {
         row = {};
         row = {
           "MATCH ID": key.matchid,
@@ -261,19 +265,27 @@ module.exports = {
         if (key[key.participantType + '1']) {
           row['SFAID 1'] = key[key.participantType + '1'].sfaid;
           row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
+
+            // console.log("DAATTAAA-->1", key[key.participantType + '1'].school.name);
+          row['SCHOOL 1'] = key[key.participantType + '1'].school.name;
           row['RESULT 1'] = key['result' + key.participantType + '1'];
         } else {
           row['SFAID 1'] = '';
           row['PARTICIPANT 1'] = '';
-          row['RESULT 1'] = '';
+          row['SCHOOL 1'] = '';
+           row['RESULT 1'] = '';
         }
         if (key[key.participantType + '2']) {
           row['SFAID 2'] = key[key.participantType + '2'].sfaid;
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
+          // console.log("DAATTAAA-->2 ", key[key.participantType + '2'].school.name);
+
+         row['SCHOOL 2'] = key[key.participantType + '2'].school.name;
           row['RESULT 2'] = key['result' + key.participantType + '2'];
         } else {
           row['SFAID 2'] = '';
           row['PARTICIPANT 2'] = '';
+          row['SCHOOL 2'] = '';
           row['RESULT 2'] = '';
         }
         row.SCORE = key.score;
@@ -287,10 +299,75 @@ module.exports = {
       }
     });
   },
-  deleteKnockoutCompletely: function(req, res) {
+  exportKnockout: function (req, res) {
+    var checkObj = {};
+    checkObj = {
+      'sport': req.query.sport
+    };
+    Knockout.find(checkObj).sort({
+      roundno: -1,
+      order: 1
+    }).deepPopulate('player1.school player2.school', "name sfaid school").populate('player1', "name sfaid ").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function (err, data2) {
+
+      console.log("DATA2", data2);
+      console.log("data", data2[0].player1);
+      console.log("data", data2[0].player2);
+
+      var excelData = [];
+      var row = {};
+      _.each(data2, function (key) {
+        row = {};
+        row = {
+          "MATCH ID": key.matchid,
+          "PARTICIPANT TYPE": key.participantType,
+          "ROUND NAME": key.round,
+          "ORDER": key.order
+        };
+        if (key.sport) {
+          row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
+        }
+        if (key[key.participantType + '1']) {
+          row['SFAID 1'] = key[key.participantType + '1'].sfaid;
+          row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
+          row['SCHOOL 1'] = key[key.participantType + '1'].school.name;
+
+          row['RESULT 1'] = key['result' + key.participantType + '1'];
+        } else {
+          row['SFAID 1'] = '';
+          row['PARTICIPANT 1'] = '';
+          row['SCHOOL 1'] = '';
+
+          row['RESULT 1'] = '';
+        }
+        if (key[key.participantType + '2']) {
+          row['SFAID 2'] = key[key.participantType + '2'].sfaid;
+          row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
+          row['SCHOOL 2'] = key[key.participantType + '2'].school.name;
+          console.log("DAATTAAA-->2 ", key[key.participantType + '2'].school.name);
+
+          row['RESULT 2'] = key['result' + key.participantType + '2'];
+        } else {
+          row['SFAID 2'] = '';
+          row['PARTICIPANT 2'] = '';
+          row['SCHOOL 2'] = '';
+          row['RESULT 2'] = '';
+
+        }
+        row.SCORE = key.score;
+        row.VIDEO = key.video;
+        excelData.push(row);
+      });
+      if (data2.length > 0) {
+        Config.generateExcel("Knockout " + data2[0].sport.sportslist.name + ' ' + ((data2[0].sport.firstcategory.name) ? (data2[0].sport.firstcategory.name) : '') + ' ' + data2[0].sport.agegroup.name + ' ' + data2[0].sport.gender + ' ', excelData, res);
+      } else {
+        Config.generateExcel("Knockout ", excelData, res);
+      }
+    });
+  },
+  deleteKnockoutCompletely: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Knockout.deleteKnockoutCompletely(req.body, function(err, respo) {
+        Knockout.deleteKnockoutCompletely(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -316,10 +393,10 @@ module.exports = {
       });
     }
   },
-  getOne: function(req, res) {
+  getOne: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Knockout.getOne(req.body, function(err, respo) {
+        Knockout.getOne(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -345,10 +422,10 @@ module.exports = {
       });
     }
   },
-  getOneKnockoutTree: function(req, res) {
+  getOneKnockoutTree: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Knockout.getOneKnockoutTree(req.body, function(err, respo) {
+        Knockout.getOneKnockoutTree(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
