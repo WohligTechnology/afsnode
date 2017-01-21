@@ -302,11 +302,11 @@ module.exports = {
         callback(err);
       } else {
         var options = {
-          "header": {
-          },
-          format: 'A4'
 
-        };
+          "height": "11in",         
+  "width": "8.5in",
+
+   };
         // console.log("OBJECT",obj);
         // console.log(options.base);  
         var id = mongoose.Types.ObjectId();

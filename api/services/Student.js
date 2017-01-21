@@ -754,7 +754,7 @@ var models = {
 
 
     var data2 = _.cloneDeep(body);
-    //  data2.color ="f-20 cl-orange";
+    //  data2.color ="f-20 cl-text";
     //  data2.image ="cfboxing.jpg";
     //  data2.sportname="Football";
     $scope.data = data2;
@@ -840,121 +840,121 @@ var models = {
             //ORANGE
 
             if (k == "Football") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cffootball.jpg";
               data2.sportname = "Football";
             } else if (k == "Basketball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfbasketball.jpg";
               data2.sportname = "Basketball";
             } else if (k == "Handball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfhandball.jpg";
               data2.sportname = "Handball";
             } else if (k == "Hockey") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfhockey.jpg";
               data2.sportname = "Hockey";
             } else if (k == "Kho Kho") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkhokho.jpg";
               data2.sportname = "Kho Kho";
             } else if (k == "Throwball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfthrowball.jpg";
               data2.sportname = "Throwball";
             } else if (k == "Volleyball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfvolleyball.jpg";
               data2.sportname = "Volleyball";
             } else if (k == "Kabaddi") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkabbadi.jpg";
               data2.sportname = "Kabaddi";
             }
 
             //BLUE
             else if (k == "Swimming") {
-              data2.color = "f-20 cl-blue";
+              data2.color = "f-20 cl-text";
               data2.image = "cfswimming.jpg";
               data2.sportname = "Swimming";
             } else if (k == " Water Polo") {
-              data2.color = "f-20 cl-blue";
+              data2.color = "f-20 cl-text";
               data2.image = "cfwaterpolo.jpg";
               data2.sportname = " Water Polo";
             }
 
             //GREEN
             else if (k == "Athletics") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfathletics.jpg";
               data2.sportname = "Athletics";
             } else if (k == "Carrom") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfcarrom.jpg";
               data2.sportname = "Carrom";
             } else if (k == "Chess") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfchess.jpg";
               data2.sportname = "Chess";
             }
 
             //PINK
             else if (k == "Archery") {
-              data2.color = "f-20 cl-pink";
+              data2.color = "f-20 cl-text";
               data2.image = "cfarchery.jpg";
               data2.sportname = "Archery";
             } else if (k == "Shooting") {
-              data2.color = "f-20 cl-pink";
+              data2.color = "f-20 cl-text";
               data2.image = "cfshooting.jpg";
               data2.sportname = "Shooting";
             }
             // PURPLE
             else if (k == "Boxing") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfboxing.jpg";
               data2.sportname = "Boxing";
             } else if (k == "Fencing") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cffencing.jpg";
               data2.sportname = "Fencing";
             } else if (k == "Judo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfjudo.jpg";
               data2.sportname = "Judo";
             } else if (k == "Karate") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkarate.jpg";
               data2.sportname = "Karate";
             } else if (k == "Sport MMA") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfmma.jpg";
               data2.sportname = "Sport MMA";
             } else if (k == "Taekwondo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfteakwando.jpg";
               data2.sportname = "Taekwondo";
             } else if (k == "Taekwondo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfteakwando.jpg";
               data2.sportname = "Taekwondo";
             }
 
             //YELLOW
             else if (k == "Badminton") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cfbadminton.jpg";
               data2.sportname = "Badminton";
             } else if (k == "Squash") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cfsquash.jpg";
               data2.sportname = "Squash";
             } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cftabletennis.jpg";
               data2.sportname = "Table Tennis";
             } else if (k == "Tennis") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cftennis.jpg";
               data2.sportname = "Tennis";
             }
@@ -963,7 +963,7 @@ var models = {
 
             if (data2.dob == undefined) {
 console.log("IN UNDEIFNED");
-              Config.generatePdf("pdf/certificatemedalWithoutAge", $scope, function (callback) {
+              Config.generatePdf("pdf/medalwithoutage", $scope, function (callback) {
                 console.log("IN CERTI API");
                 // console.log(callback.name);
                 var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
@@ -997,7 +997,7 @@ console.log("IN DEIFNED");
             data2.AGE = detail;
             console.log("AFTER",data2.AGE);
 
-            Config.generatePdf("pdf/certificatemedal", $scope, function (callback) {
+            Config.generatePdf("pdf/c", $scope, function (callback) {
               console.log("IN CERTI API");
               // console.log(callback.name);
               var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
@@ -1026,128 +1026,128 @@ console.log("IN DEIFNED");
             //ORANGE
             // console.log("MEDAL",j.medal);
             if (k == "Football") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cffootball.jpg";
               data2.sportname = "Football";
             } else if (k == "Basketball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfbasketball.jpg";
               data2.sportname = "Basketball";
             } else if (k == "Handball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfhandball.jpg";
               data2.sportname = "Handball";
             } else if (k == "Hockey") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfhockey.jpg";
               data2.sportname = "Hockey";
             } else if (k == "Kho Kho") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkhokho.jpg";
               data2.sportname = "Kho Kho";
             } else if (k == "Throwball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfthrowball.jpg";
               data2.sportname = "Throwball";
             } else if (k == "Volleyball") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfvolleyball.jpg";
               data2.sportname = "Volleyball";
             } else if (k == "Kabaddi") {
-              data2.color = "f-20 cl-orange";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkabbadi.jpg";
               data2.sportname = "Kabaddi";
             }
 
             //BLUE
             else if (k == "Swimming") {
-              data2.color = "f-20 cl-blue";
+              data2.color = "f-20 cl-text";
               data2.image = "cfswimming.jpg";
               data2.sportname = "Swimming";
             } else if (k == " Water Polo") {
-              data2.color = "f-20 cl-blue";
+              data2.color = "f-20 cl-text";
               data2.image = "cfwaterpolo.jpg";
               data2.sportname = " Water Polo";
             }
 
             //GREEN
             else if (k == "Athletics") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfathletics.jpg";
               data2.sportname = "Athletics";
             } else if (k == "Carrom") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfcarrom.jpg";
               data2.sportname = "Carrom";
             } else if (k == "Chess") {
-              data2.color = "f-20 cl-green";
+              data2.color = "f-20 cl-text";
               data2.image = "cfchess.jpg";
               data2.sportname = "Chess";
             }
 
             //PINK
             else if (k == "Archery") {
-              data2.color = "f-20 cl-pink";
+              data2.color = "f-20 cl-text";
               data2.image = "cfarchery.jpg";
               data2.sportname = "Archery";
             } else if (k == "Shooting") {
-              data2.color = "f-20 cl-pink";
+              data2.color = "f-20 cl-text";
               data2.image = "cfshooting.jpg";
               data2.sportname = "Shooting";
             }
             // PURPLE
             else if (k == "Boxing") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfboxing.jpg";
               data2.sportname = "Boxing";
             } else if (k == "Fencing") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cffencing.jpg";
               data2.sportname = "Fencing";
             } else if (k == "Judo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfjudo.jpg";
               data2.sportname = "Judo";
             } else if (k == "Karate") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfkarate.jpg";
               data2.sportname = "Karate";
             } else if (k == "Sport MMA") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfmma.jpg";
               data2.sportname = "Sport MMA";
             } else if (k == "Taekwondo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfteakwando.jpg";
               data2.sportname = "Taekwondo";
             } else if (k == "Taekwondo") {
-              data2.color = "f-20 cl-purple";
+              data2.color = "f-20 cl-text";
               data2.image = "cfteakwando.jpg";
               data2.sportname = "Taekwondo";
             }
 
             //YELLOW
             else if (k == "Badminton") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cfbadminton.jpg";
               data2.sportname = "Badminton";
             } else if (k == "Squash") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cfsquash.jpg";
               data2.sportname = "Squash";
             } else if (k == "Table Tennis") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cftabletennis.jpg";
               data2.sportname = "Table Tennis";
             } else if (k == "Tennis") {
-              data2.color = "f-20 cl-yellow";
+              data2.color = "f-20 cl-text";
               data2.image = "cftennis.jpg";
               data2.sportname = "Tennis";
             }
 
             if (data2.dob == undefined) {
 
-              Config.generatePdf("pdf/certificateWithoutAge", $scope, function (callback) {
+              Config.generatePdf("pdf/partiwithoutage", $scope, function (callback) {
                 console.log("IN CERTI API");
                 // console.log(callback.name);
                 var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
@@ -1175,7 +1175,7 @@ console.log("IN DEIFNED");
             
             data2.AGE = detail;
             console.log("AFTER",data2.AGE);
-              Config.generatePdf("pdf/certificate", $scope, function (callback) {
+              Config.generatePdf("pdf/parti", $scope, function (callback) {
                 console.log("IN CERTI API");
                 // console.log(callback.name);
                 var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
