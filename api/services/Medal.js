@@ -279,6 +279,7 @@ var models = {
     });
   },
   countOneStudentMedal: function (data, callback) {
+    var yearOFdata =data.year;
     Medal.aggregate([{
       $match: {
         player: objectid(data.student),
@@ -299,8 +300,10 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
+        console.log("DATA IIN MEDAL",data);
         if (data.length > 0) {
           var medalRepresentation = {};
+          medalRepresentation.year =yearOFdata;
           if (_.find(data, function (key) {
               return key._id == 1;
             })) {
@@ -324,7 +327,7 @@ var models = {
               return key._id == 3;
             }).count;
           }
-
+          console.log("call",medalRepresentation);
           callback(null, medalRepresentation);
         } else {
           callback({}, null);
