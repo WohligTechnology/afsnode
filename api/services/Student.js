@@ -6,7 +6,7 @@
  */
 var mongoose = require('mongoose');
 var objectid = require("mongodb").ObjectId;
-var deepPopulate =require('mongoose-deep-populate')(mongoose);
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 // deepPopulate.initialize(mongoose);
 var websiteURL = "http://www.sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
@@ -959,10 +959,10 @@ var models = {
               data2.sportname = "Tennis";
             }
 
-           
+
 
             if (data2.dob == undefined) {
-console.log("IN UNDEIFNED");
+              console.log("IN UNDEIFNED");
               Config.generatePdf("pdf/medalwithoutage", $scope, function (callback) {
                 console.log("IN CERTI API");
                 // console.log(callback.name);
@@ -979,39 +979,39 @@ console.log("IN UNDEIFNED");
                 // res.send(callback);
               });
             } else {
-console.log("IN DEIFNED");
+              console.log("IN DEIFNED");
 
-       if(data2.gender=="Male" ){
-              data2.group="Boys"; 
-            }else {
-              data2.group="Girls"; 
-            }
-            var ageGroup = data2.ageGroup ;
-            var gender = data2.group;
-            console.log("GENDER",gender);
+              if (data2.gender == "Male") {
+                data2.group = "Boys";
+              } else {
+                data2.group = "Girls";
+              }
+              var ageGroup = data2.ageGroup;
+              var gender = data2.group;
+              console.log("GENDER", gender);
 
-            console.log("AGEGROUP",ageGroup);
-            var detail = ageGroup +  " " + gender;
-              console.log("DETAILS",detail);
-            
-            data2.AGE = detail;
-            console.log("AFTER",data2.AGE);
+              console.log("AGEGROUP", ageGroup);
+              var detail = ageGroup + " " + gender;
+              console.log("DETAILS", detail);
 
-            Config.generatePdf("pdf/c", $scope, function (callback) {
-              console.log("IN CERTI API");
-              // console.log(callback.name);
-              var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
-              console.log("URL", urlPdf);
+              data2.AGE = detail;
+              console.log("AFTER", data2.AGE);
 
-              pdfArray.push(urlPdf);
+              Config.generatePdf("pdf/c", $scope, function (callback) {
+                console.log("IN CERTI API");
+                // console.log(callback.name);
+                var urlPdf = adminUrl + "api/upload/Certificate?file=" + callback.name;
+                console.log("URL", urlPdf);
 
-              // res.json({
-              //   url:urlPdf
-              // });
+                pdfArray.push(urlPdf);
 
-              // console.log("After callback.name");
-              // res.send(callback);
-            });
+                // res.json({
+                //   url:urlPdf
+                // });
+
+                // console.log("After callback.name");
+                // res.send(callback);
+              });
             }
 
 
@@ -1019,7 +1019,7 @@ console.log("IN DEIFNED");
         });
       } else {
         console.log("in ELse", j);
-        _.each(data2.sports, function (k) {
+      /*  _.each(data2.sports, function (k) {
           // console.log("kk",k);
           if (j.sport == k) {
             console.log("Parti ELSE", k);
@@ -1160,21 +1160,21 @@ console.log("IN DEIFNED");
                 // res.send(callback);
               });
             } else {
-                if(data2.gender=="Male" ){
-              data2.group="Boys"; 
-            }else {
-              data2.group="Girls"; 
-            }
-            var ageGroup = data2.ageGroup ;
-            var gender = data2.group;
-            console.log("GENDER",gender);
+              if (data2.gender == "Male") {
+                data2.group = "Boys";
+              } else {
+                data2.group = "Girls";
+              }
+              var ageGroup = data2.ageGroup;
+              var gender = data2.group;
+              console.log("GENDER", gender);
 
-            console.log("AGEGROUP",ageGroup);
-            var detail = ageGroup +  " " + gender;
-              console.log("DETAILS",detail);
-            
-            data2.AGE = detail;
-            console.log("AFTER",data2.AGE);
+              console.log("AGEGROUP", ageGroup);
+              var detail = ageGroup + " " + gender;
+              console.log("DETAILS", detail);
+
+              data2.AGE = detail;
+              console.log("AFTER", data2.AGE);
               Config.generatePdf("pdf/parti", $scope, function (callback) {
                 console.log("IN CERTI API");
                 // console.log(callback.name);
@@ -1193,6 +1193,7 @@ console.log("IN DEIFNED");
 
           }
         });
+*/
       }
 
       setTimeout(function () {
