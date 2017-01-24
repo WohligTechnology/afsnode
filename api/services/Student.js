@@ -10,8 +10,8 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 // deepPopulate.initialize(mongoose);
 var websiteURL = "http://www.sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
-var adminUrl = "http://127.0.0.1:1337/";
-// var adminUrl = "https://api.sfanow.in/";
+// var adminUrl = "http://127.0.0.1:1337/";
+var adminUrl = "https://api.sfanow.in/";
 
 var schema = new Schema({
   year: String,
