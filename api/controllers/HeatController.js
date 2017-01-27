@@ -243,7 +243,6 @@ module.exports = {
           _.each(key.heats, function (it) {
             if (it[key.participantType]) {
               row['PARTICIPANTS'] += it[key.participantType].sfaid + ". " + it[key.participantType].name + ', ';
-              row['RESULTS'] += it.result + ', ';
 
               if (it[key.participantType].school) {
 
@@ -253,9 +252,11 @@ module.exports = {
 
               }
 
-              row['TIMING'] += it.timing + ' , ';
               row['LANE NUMBER'] += it.laneno + ' , ';
+              row['TIMING'] += it.timing + ' , ';
 
+
+              row['RESULTS'] += it.result + ', ';
 
               // console.log("IT SCHOOL", it.timing);
             } else {
