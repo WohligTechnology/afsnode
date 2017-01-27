@@ -234,10 +234,12 @@ module.exports = {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
         row['PARTICIPANTS'] = "";
-        row['RESULTS'] = "";
+
         row['SCHOOL'] = "";
-        row['TIMING'] = "";
         row['LANE NUMBER'] = "";
+        1
+        row['TIMING'] = "";
+        row['RESULTS'] = "";
 
         if (key.heats.length > 0) {
           _.each(key.heats, function (it) {
