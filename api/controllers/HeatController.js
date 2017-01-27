@@ -253,11 +253,11 @@ module.exports = {
 
               }
 
-              row['TIMING'] += it.timing  + ' , ';
-              row['LANE NUMBER'] += it.laneno  + ' , ';
+              row['TIMING'] += it.timing + ' , ';
+              row['LANE NUMBER'] += it.laneno + ' , ';
 
 
-              console.log("IT SCHOOL", it.timing);
+              // console.log("IT SCHOOL", it.timing);
             } else {
               row['PARTICIPANTS'] += 'Undeclared' + ', ';
               row['RESULTS'] += 'Undeclared' + ', ';
@@ -279,6 +279,11 @@ module.exports = {
       }
     });
   },
+
+
+
+
+
 
   getLastHeat: function (req, res) {
     if (req.body) {
