@@ -8,10 +8,10 @@ var mongoXlsx = require('mongo-xlsx');
 xlsxj = require("xlsx-to-json");
 
 module.exports = {
-  saveData: function(req, res) {
+  saveData: function (req, res) {
     if (req.body) {
       if (req.body.medal && req.body.medal !== null) {
-        Medal.saveData(req.body, function(err, respo) {
+        Medal.saveData(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -37,8 +37,8 @@ module.exports = {
       });
     }
   },
-  uploadMedal: function(req, res) {
-    req.file("file").upload(function(err, uploadedFiles) {
+  uploadMedal: function (req, res) {
+    req.file("file").upload(function (err, uploadedFiles) {
       var results = [];
 
       function saveMe(num) {
@@ -53,7 +53,7 @@ module.exports = {
         if (results[num].imageorder) {
           media.imageorder = parseInt(results[num].imageorder);
         }
-        Medal.saveData(media, function(err, data) {
+        Medal.saveData(media, function (err, data) {
           if (err) {
             res.json({
               value: false,
@@ -84,7 +84,7 @@ module.exports = {
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
-        }, function(err, result) {
+        }, function (err, result) {
           if (err) {
             res.json({
               value: false,
@@ -99,9 +99,9 @@ module.exports = {
       }
     });
   },
-  getAll: function(req, res) {
+  getAll: function (req, res) {
     if (req.body) {
-      Medal.getAll(req.body, function(err, respo) {
+      Medal.getAll(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -121,143 +121,143 @@ module.exports = {
       });
     }
   },
-  getMedalsBySport: function(req, res) {
-    if (req.body) {
-      if(req.body.sport){
-        Medal.getMedalsBySport(req.body, function(err, respo) {
-          if (err) {
-            res.json({
-              value: false,
-              data: err
-            });
-          } else {
-            res.json({
-              value: true,
-              data: respo
-            });
-          }
-        });
-      }else{
-        res.json({
-          value:false,
-          data:"Input inadequate"
-        });
-      }
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  countOneSchoolMedal: function(req, res) {
-    if (req.body) {
-      if(req.body.school && req.body.year){
-        Medal.countOneSchoolMedal(req.body, function(err, respo) {
-          if (err) {
-            res.json({
-              value: false,
-              data: err
-            });
-          } else {
-            res.json({
-              value: true,
-              data: respo
-            });
-          }
-        });
-      }else{
-        res.json({
-          value:false,
-          data:"Input inadequate"
-        });
-      }
-
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  countOneStudentMedal: function(req, res) {
-    if (req.body) {
-      if(req.body.student && req.body.year){
-        Medal.countOneStudentMedal(req.body, function(err, respo) {
-          if (err) {
-            res.json({
-              value: false,
-              data: err
-            });
-          } else {
-            res.json({
-              value: true,
-              data: respo
-            });
-          }
-        });
-      }else{
-        res.json({
-          value:false,
-          data:"Input inadequate"
-        });
-      }
-
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  deleteAllPointData: function(req, res) {
-    if (req.body) {
-      Medal.deleteAllPointData(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  deleteAllMedal: function(req, res) {
-    if (req.body) {
-      Medal.deleteAllMedal(req.body, function(err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
-    } else {
-      res.json({
-        value: false,
-        data: "Invalid call"
-      });
-    }
-  },
-  getAllBySport: function(req, res) {
+  getMedalsBySport: function (req, res) {
     if (req.body) {
       if (req.body.sport) {
-        Medal.getAllBySport(req.body, function(err, respo) {
+        Medal.getMedalsBySport(req.body, function (err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Input inadequate"
+        });
+      }
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  countOneSchoolMedal: function (req, res) {
+    if (req.body) {
+      if (req.body.school && req.body.year) {
+        Medal.countOneSchoolMedal(req.body, function (err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Input inadequate"
+        });
+      }
+
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  countOneStudentMedal: function (req, res) {
+    if (req.body) {
+      if (req.body.student && req.body.year) {
+        Medal.countOneStudentMedal(req.body, function (err, respo) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            res.json({
+              value: true,
+              data: respo
+            });
+          }
+        });
+      } else {
+        res.json({
+          value: false,
+          data: "Input inadequate"
+        });
+      }
+
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  deleteAllPointData: function (req, res) {
+    if (req.body) {
+      Medal.deleteAllPointData(req.body, function (err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  deleteAllMedal: function (req, res) {
+    if (req.body) {
+      Medal.deleteAllMedal(req.body, function (err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  getAllBySport: function (req, res) {
+    if (req.body) {
+      if (req.body.sport) {
+        Medal.getAllBySport(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -283,7 +283,7 @@ module.exports = {
       });
     }
   },
-  getLimited: function(req, res) {
+  getLimited: function (req, res) {
     if (req.body) {
       if (req.body.pagenumber) {
         Medal.findLimited(req.body, res.callback);
@@ -300,10 +300,10 @@ module.exports = {
       });
     }
   },
-  deleteData: function(req, res) {
+  deleteData: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Medal.deleteData(req.body, function(err, respo) {
+        Medal.deleteData(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -329,10 +329,10 @@ module.exports = {
       });
     }
   },
-  getOne: function(req, res) {
+  getOne: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Medal.getOne(req.body, function(err, respo) {
+        Medal.getOne(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -358,10 +358,10 @@ module.exports = {
       });
     }
   },
-  findForDrop: function(req, res) {
+  findForDrop: function (req, res) {
     if (req.body) {
       if (req.body.firstcategory && Array.isArray(req.body.firstcategory)) {
-        Medal.findForDrop(req.body, function(err, respo) {
+        Medal.findForDrop(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -388,15 +388,15 @@ module.exports = {
     }
   },
   getStudentMedal: function (req, res) {
-        if (req.body) {
-            Medal.getStudentMedal(req.body, res.callback);
-        } else {
-            res.json({
-                value: false,
-                data: {
-                    message: "Invalid Request"
-                }
-            })
+    if (req.body) {
+      Medal.getStudentMedal(req.body, res.callback);
+    } else {
+      res.json({
+        value: false,
+        data: {
+          message: "Invalid Request"
         }
+      })
     }
+  }
 };
