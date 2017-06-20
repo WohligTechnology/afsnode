@@ -4,6 +4,8 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+var mongoose = require('mongoose');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -17,40 +19,49 @@ var schema = new Schema({
     type: String,
     default: "Qualifying Round"
   },
-  order:Number,
+  order: Number,
   participantType: {
     type: String,
-    default:"player"
+    default: "player"
   },
-  player:{
-    type:Schema.Types.ObjectId,
-    ref:'Student'
+  player: {
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
   },
-  score:{
-    type:String
+  score: {
+    type: String
   },
-  result:{
-    type:String
+  result: {
+    type: String
   },
-  video:{
-    type:String,
-    default:""
+  video: {
+    type: String,
+    default: ""
   },
-  position:{
-    type:Number,
-    default:0
+  position: {
+    type: Number,
+    default: 0
   },
-  date:{
+  date: {
     type: Date
   },
-  round:{
-    type:String
+  round: {
+    type: String
   }
 });
+schema.plugin(deepPopulate, {
+  populate: {
+    'player': {
+      select: 'name _id sfaid school'
+    }
+  }
+});
+
 module.exports = sails.mongoose.model('QualifyingRound', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var quals = {};
+
     function updatePlayersAndCallback() {
       var constraints = {};
       constraints.student = quals.player;
@@ -58,12 +69,12 @@ var models = {
       constraints.sport = quals.sport;
       constraints.drawFormat = "Qualifying Round";
       constraints.qualifyinground = quals._id;
-      StudentStats.saveData(constraints, function(err, response) {
-        console.log(err,response);
+      StudentStats.saveData(constraints, function (err, response) {
+        console.log(err, response);
         if (err) {
           callback(err, null);
         } else {
-              callback(null, response);
+          callback(null, response);
         }
       });
     }
@@ -71,7 +82,7 @@ var models = {
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -80,12 +91,12 @@ var models = {
         }
       });
     } else {
-      QualifyingRound.getLastQualifyingRound({}, function(err, response) {
+      QualifyingRound.getLastQualifyingRound({}, function (err, response) {
         if (err) {
           callback(null, err);
         } else {
           qualifyinground.matchid = parseInt(response) + 1;
-          qualifyinground.save(function(err, data3) {
+          qualifyinground.save(function (err, data3) {
             if (err) {
               callback(err, null);
             } else {
@@ -97,56 +108,56 @@ var models = {
       });
     }
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     QualifyingRound.find({
-      sport:data.sport
-    }).exec(function(err, deleted) {
+      sport: data.sport
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
-        QualifyingRound.populate(deleted,{
-          path:'player',
-          populate:{
-            path:'school'
+        QualifyingRound.populate(deleted, {
+          path: 'player',
+          populate: {
+            path: 'school'
           }
-        },function (err,response) {
-          if(err){
-            callback(err,null);
-          }else{
-            callback(null,response);
+        }, function (err, response) {
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(null, response);
           }
         });
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     QualifyingRound.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
         StudentStats.remove({
-          drawFormat:"Qualifying Round",
-          qualifyinground:data._id
-        }, function(err, deleted) {
+          drawFormat: "Qualifying Round",
+          qualifyinground: data._id
+        }, function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
-            callback(null,deleted);
+            callback(null, deleted);
 
           }
         });
       }
     });
   },
-  getLastQualifyingRound: function(data, callback) {
+  getLastQualifyingRound: function (data, callback) {
     QualifyingRound.find({}, {
       _id: 0,
       matchid: 1
     }).sort({
       matchid: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -158,10 +169,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     QualifyingRound.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -169,7 +180,7 @@ var models = {
       }
     }).populate('player').populate('sport');
   },
-  findForDrop: function(data, callback) {
+  findForDrop: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -184,7 +195,7 @@ var models = {
       name: {
         '$regex': check
       }
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -193,9 +204,9 @@ var models = {
         exit++;
         if (data.qualifyinground.length !== 0) {
           var nedata;
-          nedata = _.remove(found, function(n) {
+          nedata = _.remove(found, function (n) {
             var flag = false;
-            _.each(data.qualifyinground, function(n1) {
+            _.each(data.qualifyinground, function (n1) {
               if (n1.name == n.name) {
                 flag = true;
               }
