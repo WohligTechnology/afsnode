@@ -53,12 +53,12 @@ var schema = new Schema({
 });
 module.exports = sails.mongoose.model('StudentStats', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var studentstats = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -76,7 +76,7 @@ var models = {
         };
         StudentStats.populate(data, {
           path: 'student'
-        }, function(err, response) {
+        }, function (err, response) {
           if (err) {
             callback(err, null);
           } else {
@@ -86,13 +86,13 @@ var models = {
               isexistent.knockout = data.knockout;
             } else if (data.drawFormat == "Heats") {
               isexistent.heat = data.heat;
-            }else if(data.drawFormat  == "League"){
+            } else if (data.drawFormat == "League") {
               isexistent.league = data.league;
-            }else if(data.drawFormat == 'Swiss League'){
+            } else if (data.drawFormat == 'Swiss League') {
               isexistent.swissleague = data.swissleague;
-            }else if(data.drawFormat == 'League cum Knockout'){
+            } else if (data.drawFormat == 'League cum Knockout') {
               isexistent.leagueknockout = data.leagueknockout;
-            }else if(data.drawFormat == 'Qualifying Round'){
+            } else if (data.drawFormat == 'Qualifying Round') {
               isexistent.qualifyinground = data.qualifyinground;
             }
             StudentStats.findOneAndUpdate(isexistent, {
@@ -100,7 +100,7 @@ var models = {
             }, {
               upsert: true,
               new: true
-            }, function(err, inserted) {
+            }, function (err, inserted) {
               if (err) {
                 callback(err, null);
               } else {
@@ -112,7 +112,7 @@ var models = {
                   populate: {
                     path: 'school'
                   }
-                }], function(err, response) {
+                }], function (err, response) {
                   if (err) {
                     callback(err, null);
                   } else {
@@ -140,7 +140,7 @@ var models = {
                       }, {
                         upsert: true,
                         new: true
-                      }, function(err, data2) {
+                      }, function (err, data2) {
                         if (err) {
                           callback(err, null);
                         } else {
@@ -161,8 +161,8 @@ var models = {
       }
     }
   },
-  getAll: function(data, callback) {
-    StudentStats.find({}, {}, {}, function(err, deleted) {
+  getAll: function (data, callback) {
+    StudentStats.find({}, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -170,7 +170,7 @@ var models = {
       }
     }).populate('student', 'name').populate('sport').populate('knockout').populate('team');
   },
-  getStudentStatByFilters: function(data, callback) {
+  getStudentStatByFilters: function (data, callback) {
     var constraints = {};
     var sportsconstraints = {};
     if (data.student) {
@@ -184,9 +184,9 @@ var models = {
       };
     }
     if (data.sport) {
-      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+      sportsconstraints["sport.sportslist._id"] = objectid(data.sport);
     }
-    if(data.year){
+    if (data.year) {
       sportsconstraints['sport.year'] = data.year;
     }
     // console.log("herea",sportsconstraints);
@@ -204,13 +204,13 @@ var models = {
     }, {
       $unwind: "$sport"
     }, {
-      $match:sportsconstraints
-    },{
-      $sort:{
-        '_id':-1,
-        "sport":1
+      $match: sportsconstraints
+    }, {
+      $sort: {
+        '_id': -1,
+        "sport": 1
       }
-    }]).exec(function(err, data) {
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -242,43 +242,43 @@ var models = {
           }, {
             path: 'team1',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }, {
             path: 'team2',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }]
-        },{
-          path:'heat',
-          populate:[{
-            path:'heats.player',
-            select:"name profilePic school",
-            populate:{
-              path:'school',
-              select:'name'
+        }, {
+          path: 'heat',
+          populate: [{
+            path: 'heats.player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
             }
-          },{
-            path:'heats.team',
-            select:"name school",
-            populate:{
-              path:'school',
-              select:'name logo'
+          }, {
+            path: 'heats.team',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
             }
           }]
-        },{
-          path:'league',
+        }, {
+          path: 'league',
           populate: [{
             path: 'player1',
             select: "name profilePic school",
@@ -296,27 +296,27 @@ var models = {
           }, {
             path: 'team1',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }, {
             path: 'team2',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }]
-        },{
-          path:'qualifyinground',
-          populate:[{
+        }, {
+          path: 'qualifyinground',
+          populate: [{
             path: 'player',
             select: "name profilePic school",
             populate: {
@@ -324,16 +324,16 @@ var models = {
               select: 'name logo'
             }
           }]
-        }], function(err, response) {
+        }], function (err, response) {
           if (err) {
             callback(err, null);
           } else {
-            if(response.length > 0){
+            if (response.length > 0) {
               callback(null, response);
 
 
-            }else{
-              callback(response,null);
+            } else {
+              callback(response, null);
 
             }
           }
@@ -342,28 +342,28 @@ var models = {
       }
     });
   },
-  removeThisStat : function (data,callback) {
+  removeThisStat: function (data, callback) {
 
     var constraints = {};
 
-    if(data.team){
+    if (data.team) {
       constraints['team'] = data.team;
     }
-    if(data.student){
-      constraints['student']= data.student;
+    if (data.student) {
+      constraints['student'] = data.student;
     }
-    if(data.knockout){
-      constraints['knockout']= data.knockout;
+    if (data.knockout) {
+      constraints['knockout'] = data.knockout;
     }
-    StudentStats.remove(constraints,function (err,data) {
+    StudentStats.remove(constraints, function (err, data) {
       if (err) {
-        callback(err,null);
+        callback(err, null);
       } else {
-      callback(null,data);
+        callback(null, data);
       }
     });
   },
-  getTeamStatByFilters: function(data, callback) {
+  getTeamStatByFilters: function (data, callback) {
     var constraints = {};
     var sportsconstraints = {};
     if (data.team) {
@@ -377,10 +377,10 @@ var models = {
       };
     }
     if (data.sport) {
-      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+      sportsconstraints["sport.sportslist._id"] = objectid(data.sport);
 
     }
-    if(data.year){
+    if (data.year) {
       sportsconstraints['sport.year'] = data.year;
     }
     // console.log("herea",sportsconstraints);
@@ -397,42 +397,56 @@ var models = {
       }
     }, {
       $unwind: "$sport"
-    },{
-      $group:{
-        _id:{
-          knockout : "$knockout",
-          heat : "$heat",
-          league : "$league"
+    }, {
+      $group: {
+        _id: {
+          knockout: "$knockout",
+          heat: "$heat",
+          league: "$leagueknockout"
         },
-        "stat":{$first:"$_id"},
-        year : {$first:"$year"},
-      sport : {$first:"$sport"},
-      student : {$first:"$student"},
-      school : {$first:"$school"},
-      team : {$first:"$team"},
-      drawFormat : {$first:"$drawFormat"},
-      }
-    },{
-      $project:{
-        "_id":"$stat",
-        year:1,
-      sport:1,
-      student:1,
-      school:1,
-      team:1,
-      drawFormat:1,
-      knockout:"$_id.knockout",
-      heat:"$_id.heat",
-      league:"$_id.league"
+        "stat": {
+          $first: "$_id"
+        },
+        year: {
+          $first: "$year"
+        },
+        sport: {
+          $first: "$sport"
+        },
+        student: {
+          $first: "$student"
+        },
+        school: {
+          $first: "$school"
+        },
+        team: {
+          $first: "$team"
+        },
+        drawFormat: {
+          $first: "$drawFormat"
+        },
       }
     }, {
-      $match:sportsconstraints
-    },{
-      $sort:{
-        '_id':-1,
-        "sport":1
+      $project: {
+        "_id": "$stat",
+        year: 1,
+        sport: 1,
+        student: 1,
+        school: 1,
+        team: 1,
+        drawFormat: 1,
+        knockout: "$_id.knockout",
+        heat: "$_id.heat",
+        leagueknockout: "$_id.league"
       }
-    }]).exec(function(err, data) {
+    }, {
+      $match: sportsconstraints
+    }, {
+      $sort: {
+        '_id': -1,
+        "sport": 1
+      }
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -464,34 +478,71 @@ var models = {
           }, {
             path: 'team1',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }, {
             path: 'team2',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }]
-        }], function(err, response) {
+        }, {
+          path: 'leagueknockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }]
+        }], function (err, response) {
           if (err) {
             callback(err, null);
           } else {
-            if(response.length > 0){
+            if (response.length > 0) {
               callback(null, response);
 
 
-            }else{
-              callback(response,null);
+            } else {
+              callback(response, null);
 
             }
           }
@@ -500,7 +551,7 @@ var models = {
       }
     });
   },
-  getSchoolStatByFilters: function(data, callback) {
+  getSchoolStatByFilters: function (data, callback) {
     var studentconstraints = {};
     var sportsconstraints = {};
     if (data.gender) {
@@ -518,77 +569,92 @@ var models = {
       };
     }
     if (data.sport) {
-      sportsconstraints["sport.sportslist._id"]=objectid(data.sport);
+      sportsconstraints["sport.sportslist._id"] = objectid(data.sport);
 
     }
-    if(data.year){
+    if (data.year) {
       sportsconstraints['sport.year'] = data.year;
     }
     // console.log("herea",sportsconstraints);
     StudentStats.aggregate([{
-      $match: {
-        school: objectid(data.school)
+        $match: {
+          school: objectid(data.school)
+        }
+      }, {
+        $lookup: {
+          from: 'students',
+          localField: 'student',
+          foreignField: '_id',
+          as: 'student'
+        }
+      },
+      {
+        $unwind: "$student"
+      },
+      {
+        $match: studentconstraints
+      }, {
+        $lookup: {
+          from: 'sports',
+          localField: 'sport',
+          foreignField: '_id',
+          as: 'sport'
+        }
+      },
+      {
+        $unwind: "$sport"
+      },
+      {
+        $match: sportsconstraints
+      }, {
+        $group: {
+          _id: {
+            knockout: "$knockout",
+            heat: "$heat",
+            league: "$league"
+          },
+          "stat": {
+            $first: "$_id"
+          },
+          year: {
+            $first: "$year"
+          },
+          sport: {
+            $first: "$sport"
+          },
+          student: {
+            $first: "$student"
+          },
+          school: {
+            $first: "$school"
+          },
+          team: {
+            $first: "$team"
+          },
+          drawFormat: {
+            $first: "$drawFormat"
+          },
+        }
+      }, {
+        $project: {
+          "_id": "$stat",
+          year: 1,
+          sport: 1,
+          student: 1,
+          school: 1,
+          team: 1,
+          drawFormat: 1,
+          knockout: "$_id.knockout",
+          heat: "$_id.heat",
+          league: "$_id.league"
+        }
+      }, {
+        $sort: {
+          '_id': -1,
+          "sport": 1
+        }
       }
-    }, {
-      $lookup: {
-        from: 'students',
-        localField: 'student',
-        foreignField: '_id',
-        as: 'student'
-      }
-    },
-    {
-      $unwind: "$student"
-    },
-    {
-      $match : studentconstraints
-    },{
-      $lookup: {
-        from: 'sports',
-        localField: 'sport',
-        foreignField: '_id',
-        as: 'sport'
-      }
-    },
-    {
-      $unwind: "$sport"
-    },
-    {
-      $match:sportsconstraints
-    },{
-      $group:{
-        _id:{
-          knockout : "$knockout",
-          heat : "$heat",
-          league : "$league"
-        },
-        "stat":{$first:"$_id"},
-        year : {$first:"$year"},
-      sport : {$first:"$sport"},
-      student : {$first:"$student"},
-      school : {$first:"$school"},
-      team : {$first:"$team"},
-      drawFormat : {$first:"$drawFormat"},
-      }
-    },{
-      $project:{
-        "_id":"$stat",
-        year:1,
-      sport:1,
-      student:1,
-      school:1,
-      team:1,
-      drawFormat:1,
-      knockout:"$_id.knockout",
-      heat:"$_id.heat",
-      league:"$_id.league"
-      }
-    },{
-      $sort:{
-        '_id':-1,
-        "sport":1
-      }
-    }]).exec(function(err, data) {
+    ]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -598,9 +664,9 @@ var models = {
         }, {
           path: "team",
           select: "name school",
-          populate:{
-            path:'school',
-            select:'name'
+          populate: {
+            path: 'school',
+            select: 'name'
           }
         }, {
           path: 'knockout',
@@ -621,34 +687,34 @@ var models = {
           }, {
             path: 'team1',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }, {
             path: 'team2',
             select: "name school players",
-            populate:[{
+            populate: [{
               path: 'school',
               select: 'name'
-            },{
-              path:'players',
-              select:'name'
+            }, {
+              path: 'players',
+              select: 'name'
             }]
           }]
-        }], function(err, response) {
+        }], function (err, response) {
           if (err) {
             callback(err, null);
           } else {
-            if(response.length > 0){
+            if (response.length > 0) {
               callback(null, response);
 
 
-            }else{
-              callback(response,null);
+            } else {
+              callback(response, null);
 
             }
           }
@@ -657,64 +723,65 @@ var models = {
       }
     });
   },
-  getDrawUpdatedSports :  function (data,callback) {
+  getDrawUpdatedSports: function (data, callback) {
     StudentStats.aggregate([{
-      $match:{
-        year:"2016"
-      }
-    },{
-      $lookup:{
-        from:'sports',
-       localField: 'sport',
-       foreignField: '_id',
-       as: 'sport'
-      }
-    },{
-      $unwind:'$sport'
-    },
-    {
-      $match:{
-        'sport.sportslist._id': objectid(data.sport)
-      }
-    },{
-      $group:{
-        _id:'$sport._id',
-        sport:{
-          $first:'$sport'
+        $match: {
+          year: "2016"
+        }
+      }, {
+        $lookup: {
+          from: 'sports',
+          localField: 'sport',
+          foreignField: '_id',
+          as: 'sport'
+        }
+      }, {
+        $unwind: '$sport'
+      },
+      {
+        $match: {
+          'sport.sportslist._id': objectid(data.sport)
+        }
+      }, {
+        $group: {
+          _id: '$sport._id',
+          sport: {
+            $first: '$sport'
+          }
+        }
+      }, {
+        $sort: {
+          'sport.agegroup.name': 1,
+          'sport.gender': 1,
+          'sport.firstcategory.name': 1
         }
       }
-    },{
-      $sort:{
-        'sport.agegroup.name':1,
-        'sport.gender':1,
-        'sport.firstcategory.name':1
-      }
-    }]).exec(function (err,response) {
-      if(err){
-        callback(err,null);
-      }else if(response.length > 0){
-            callback(null,response);
-      }else{
+    ]).exec(function (err, response) {
+      if (err) {
+        callback(err, null);
+      } else if (response.length > 0) {
+        callback(null, response);
+      } else {
         console.log(data);
         SportRule.findOne({
-          sportid:data.sport
+          sportid: data.sport
         }).select({
-          yearBeforeContent:1
-        }).exec(function (err,data) {
-          console.log(err,data);
-          if(err){
-            callback(err,null);
-          }else{
-            callback(data,null);
+          yearBeforeContent: 1
+        }).exec(function (err, data) {
+          console.log(err, data);
+          if (err) {
+            callback(err, null);
+          } else {
+            callback(data, null);
           }
         });
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     StudentStats.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -722,10 +789,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     StudentStats.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -733,7 +800,7 @@ var models = {
       }
     });
   },
-  findForDrop: function(data, callback) {
+  findForDrop: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -748,7 +815,7 @@ var models = {
       name: {
         '$regex': check
       }
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -757,9 +824,9 @@ var models = {
         exit++;
         if (data.studentstats.length !== 0) {
           var nedata;
-          nedata = _.remove(found, function(n) {
+          nedata = _.remove(found, function (n) {
             var flag = false;
-            _.each(data.studentstats, function(n1) {
+            _.each(data.studentstats, function (n1) {
               if (n1.name == n.name) {
                 flag = true;
               }
