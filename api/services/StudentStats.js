@@ -278,7 +278,7 @@ var models = {
             }
           }]
         }, {
-          path: 'league',
+          path: 'leagueknockout',
           populate: [{
             path: 'player1',
             select: "name profilePic school",
