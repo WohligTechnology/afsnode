@@ -611,7 +611,7 @@ var models = {
           _id: {
             knockout: "$knockout",
             heat: "$heat",
-            league: "$league"
+            league: "$leagueknockout"
           },
           "stat": {
             $first: "$_id"
@@ -646,7 +646,7 @@ var models = {
           drawFormat: 1,
           knockout: "$_id.knockout",
           heat: "$_id.heat",
-          league: "$_id.league"
+          leagueknockout: "$_id.league"
         }
       }, {
         $sort: {
@@ -670,6 +670,43 @@ var models = {
           }
         }, {
           path: 'knockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }]
+        }, {
+          path: 'leagueknockout',
           populate: [{
             path: 'player1',
             select: "name school",
