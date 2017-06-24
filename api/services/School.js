@@ -6,7 +6,7 @@
  */
 var mongoose = require('mongoose');
 var objectid = require("mongodb").ObjectId;
-var deepPopulate =require('mongoose-deep-populate')(mongoose);
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 // deepPopulate.initialize(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
@@ -105,12 +105,12 @@ var schema = new Schema({
 // });
 module.exports = sails.mongoose.model('School', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var school = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -120,13 +120,13 @@ var models = {
     } else {
       school.timestamp = new Date();
       school.deleteStatus = false;
-      School.getLastId({}, function(err, data3) {
+      School.getLastId({}, function (err, data3) {
         if (err) {
           console.log(err);
           callback(err, null);
         } else {
           school.sfaid = data3;
-          school.save(function(err, data2) {
+          school.save(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -138,13 +138,13 @@ var models = {
       });
     }
   },
-  getLastId: function(data, callback) {
+  getLastId: function (data, callback) {
     School.findOne({}, {
       _id: 0,
       sfaid: 1
     }).sort({
       sfaid: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -155,10 +155,10 @@ var models = {
       }
     });
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     School.find({}, {}, {}).sort({
       sfaid: -1
-    }).populate('sportlistHere').exec(function(err, deleted) {
+    }).populate('sportlistHere').exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -166,12 +166,12 @@ var models = {
       }
     });
   },
-  getSchool: function(data, callback) {
+  getSchool: function (data, callback) {
     School.find({}, {
       _id: 1,
       name: 1,
       sfaid: 1
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -179,7 +179,7 @@ var models = {
       }
     });
   },
-  getLimitedSchool: function(data, callback) {
+  getLimitedSchool: function (data, callback) {
     var check = new RegExp(data.search, "i");
     var constraints = {};
     if (data.search) {
@@ -196,10 +196,10 @@ var models = {
     School.find(constraints, {}, {
       limit: 10
     }).select({
-      name:1,
-      logo:1,
-      sfaid:1
-    }).lean().exec(function(err, data) {
+      name: 1,
+      logo: 1,
+      sfaid: 1
+    }).lean().exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
@@ -218,10 +218,10 @@ var models = {
     //     }
     // });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     School.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -229,14 +229,14 @@ var models = {
       }
     });
   },
-  hide: function(data, callback) {
+  hide: function (data, callback) {
     School.findOneAndUpdate({
       _id: data._id
     }, {
       $set: {
         deleteStatus: data.status
       }
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -253,13 +253,13 @@ var models = {
   //         }
   //     });
   // },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     // var newreturns = {};
     // async.parallel([
     // function(callback) {
     School.findOne({
       _id: data._id
-    }).lean().exec(function(err, deleted) {
+    }).lean().exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -268,7 +268,7 @@ var models = {
       }
     });
   },
-  getOnePopulated: function(data, callback) {
+  getOnePopulated: function (data, callback) {
     var asyncReturns = {};
     // async.parallel([
     // function(callback) {
@@ -276,10 +276,10 @@ var models = {
     asyncReturns.contingent = {};
 
     async.parallel([
-      function(callback) {
+      function (callback) {
         School.findOne({
           _id: data._id
-        }).lean().populate('sports._id').exec(function(err, singleSchool) {
+        }).lean().populate('sports._id').exec(function (err, singleSchool) {
           if (err) {
             callback(err, null);
           } else {
@@ -288,11 +288,11 @@ var models = {
           }
         });
       },
-      function(callback) {
+      function (callback) {
         Medal.countOneSchoolMedal({
           school: data._id,
           year: '2015'
-        }, function(err, data) {
+        }, function (err, data) {
           if (data) {
             asyncReturns.medal['2015'] = data;
             callback(null, data);
@@ -302,11 +302,11 @@ var models = {
           }
         });
       },
-      function(callback) {
+      function (callback) {
         Medal.countOneSchoolMedal({
           school: data._id,
           year: '2016'
-        }, function(err, data) {
+        }, function (err, data) {
           if (data) {
             asyncReturns.medal['2016'] = data;
             callback(null, data);
@@ -316,11 +316,11 @@ var models = {
           }
         });
       },
-      function(callback) {
+      function (callback) {
         Student.countContingentStrength({
           school: data._id,
           year: '2015'
-        }, function(err, data) {
+        }, function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -329,11 +329,11 @@ var models = {
           }
         });
       },
-      function(callback) {
+      function (callback) {
         Student.countContingentStrength({
           school: data._id,
           year: '2016'
-        }, function(err, data) {
+        }, function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -341,17 +341,18 @@ var models = {
             callback(null, data);
           }
         });
-      },function (callback) {
+      },
+      function (callback) {
         var constraints = {};
         constraints._id = data._id;
         constraints.year = '2016';
-        School.getSchoolRank(constraints,function (err,data) {
+        School.getSchoolRank(constraints, function (err, data) {
           asyncReturns.rank = data;
-          callback(null,"data");
+          callback(null, "data");
         });
       }
 
-    ], function(err, data) {
+    ], function (err, data) {
       console.log(err);
       if (err) {
         callback(err, null);
@@ -360,7 +361,7 @@ var models = {
       }
     });
   },
-  filterStud: function(data, callback) {
+  filterStud: function (data, callback) {
     var matchObj = {};
     matchObj = {
       "school._id": sails.ObjectID(data._id),
@@ -416,7 +417,7 @@ var models = {
         student: 1,
         school: 1
       }
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -427,7 +428,7 @@ var models = {
       }
     });
   },
-  getSchoolSport: function(data, callback) {
+  getSchoolSport: function (data, callback) {
     School.aggregate([{
       $match: {
         _id: sails.ObjectID(data._id)
@@ -445,7 +446,7 @@ var models = {
           $addToSet: "$sports"
         }
       }
-    }]).exec(function(err, deleted) {
+    }]).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else if (deleted && deleted.length > 0 && deleted[0].sports && deleted[0].sports.length > 0) {
@@ -455,11 +456,11 @@ var models = {
       }
     });
   },
-  editSchool: function(data, callback) {
+  editSchool: function (data, callback) {
     data.status = true;
     this.findOneAndUpdate({
       _id: data._id
-    }, data, function(err, data2) {
+    }, data, function (err, data2) {
       if (err) {
         callback(err, false);
       } else {
@@ -467,7 +468,7 @@ var models = {
       }
     });
   },
-  findLimited: function(data, callback) {
+  findLimited: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -488,8 +489,8 @@ var models = {
       checkObj = {};
     }
     async.parallel([
-        function(callback) {
-          School.count(checkObj).exec(function(err, number) {
+        function (callback) {
+          School.count(checkObj).exec(function (err, number) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -503,10 +504,10 @@ var models = {
           });
         },
 
-        function(callback) {
+        function (callback) {
           School.find(checkObj).sort({
             sfaid: -1
-          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -519,7 +520,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -530,7 +531,7 @@ var models = {
         }
       });
   },
-  contingentStrengthByYear: function(data, callback) {
+  contingentStrengthByYear: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -544,23 +545,23 @@ var models = {
       checkObj.school = data.school;
     }
     async.parallel([
-        function(callback) {
+        function (callback) {
           StudentSport.aggregate([{
-            $match:{
-                'school._id':objectid(data.school),
-                year:data.year
+            $match: {
+              'school._id': objectid(data.school),
+              year: data.year
             }
-          },{
-            $group:{
-              _id:'$student'
+          }, {
+            $group: {
+              _id: '$student'
             }
-          }]).exec(function (err,data) {
-            if(err){
-              callback(err,null);
-            }else{
+          }]).exec(function (err, data) {
+            if (err) {
+              callback(err, null);
+            } else {
               newreturns.total = data.length;
               newreturns.totalpages = Math.ceil(data.length / 8);
-            callback(null,data);
+              callback(null, data);
             }
           });
           // Student.count(checkObj).exec(function(err, number) {
@@ -577,13 +578,13 @@ var models = {
           // });
         },
 
-        function(callback) {
-          StudentSport.getContingentStrength(data,function (err,data) {
-            if(err){
-              callback(err,data);
-            }else{
+        function (callback) {
+          StudentSport.getContingentStrength(data, function (err, data) {
+            if (err) {
+              callback(err, data);
+            } else {
               newreturns.data = data;
-              callback(null,data);
+              callback(null, data);
             }
           });
           // Student.find(checkObj).sort({
@@ -600,8 +601,8 @@ var models = {
           //   }
           // });
         },
-        function(callback) {
-          Student.countContingentStrength(data, function(err, data) {
+        function (callback) {
+          Student.countContingentStrength(data, function (err, data) {
             if (err) {
               callback(err, null);
             } else {
@@ -611,7 +612,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -622,7 +623,7 @@ var models = {
         }
       });
   },
-  schoolSearch: function(data, callback) {
+  schoolSearch: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -643,8 +644,8 @@ var models = {
       checkObj = {};
     }
     async.parallel([
-        function(callback) {
-          School.count(checkObj).exec(function(err, number) {
+        function (callback) {
+          School.count(checkObj).exec(function (err, number) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -657,10 +658,10 @@ var models = {
             }
           });
         },
-        function(callback) {
+        function (callback) {
           School.find(checkObj).sort({
             sfaid: -1
-          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -673,7 +674,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -684,11 +685,11 @@ var models = {
         }
       });
   },
-  getFirstList: function(data, callback) {
+  getFirstList: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     async.parallel([
-      function(callback) {
+      function (callback) {
         var constraints = {};
         // data.year = "2015";
         constraints['totalPoints' + data.year] = {
@@ -775,10 +776,14 @@ var models = {
         }, {
           "$unwind": "$school"
         }, {
+          $match: {
+            "school.deleteStatus": false
+          }
+        }, {
           $sort: sortconstraints
         }, {
-          $limit:20
-        }]).exec(function(err, data) {
+          $limit: 20
+        }]).exec(function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -788,8 +793,8 @@ var models = {
           }
         });
       },
-      function(callback) {
-        School.count().exec(function(err, deleted) {
+      function (callback) {
+        School.count().exec(function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
@@ -798,7 +803,7 @@ var models = {
           }
         });
       }
-    ], function(err, found) {
+    ], function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -807,108 +812,108 @@ var models = {
       }
     });
   },
-  getAllSchoolRank: function(data, callback) {
+  getAllSchoolRank: function (data, callback) {
 
-        var constraints = {};
-        // data.year = "2015";
-        constraints['totalPoints' + data.year] = {
-          $ne: 0
-        };
-        var sortconstraints = {};
-        sortconstraints['school.totalPoints' + data.year] = -1;
-        School.aggregate([ {
-          $lookup: {
-            from: 'medals',
-            localField: '_id',
-            foreignField: 'school',
-            as: 'medals'
-          }
-        }, {
-          $unwind: '$medals'
-        }, {
-          $match: {
-            "medals.year": data.year
-          }
-        }, {
-          $group: {
-            _id: {
-              school: "$_id",
-              "medal": "$medals.medal"
+    var constraints = {};
+    // data.year = "2015";
+    constraints['totalPoints' + data.year] = {
+      $ne: 0
+    };
+    var sortconstraints = {};
+    sortconstraints['school.totalPoints' + data.year] = -1;
+    School.aggregate([{
+      $lookup: {
+        from: 'medals',
+        localField: '_id',
+        foreignField: 'school',
+        as: 'medals'
+      }
+    }, {
+      $unwind: '$medals'
+    }, {
+      $match: {
+        "medals.year": data.year
+      }
+    }, {
+      $group: {
+        _id: {
+          school: "$_id",
+          "medal": "$medals.medal"
+        },
+        "count": {
+          $sum: 1
+        }
+      }
+    }, {
+      $project: {
+        "_id": "$_id.school",
+        "gold": {
+          $cond: {
+            if: {
+              $eq: ["$_id.medal", 1]
             },
-            "count": {
-              $sum: 1
-            }
+            then: "$count",
+            else: 0
           }
-        }, {
-          $project: {
-            "_id": "$_id.school",
-            "gold": {
-              $cond: {
-                if: {
-                  $eq: ["$_id.medal", 1]
-                },
-                then: "$count",
-                else: 0
-              }
+        },
+        "silver": {
+          $cond: {
+            if: {
+              $eq: ["$_id.medal", 2]
             },
-            "silver": {
-              $cond: {
-                if: {
-                  $eq: ["$_id.medal", 2]
-                },
-                then: "$count",
-                else: 0
-              }
+            then: "$count",
+            else: 0
+          }
+        },
+        "bronze": {
+          $cond: {
+            if: {
+              $eq: ["$_id.medal", 3]
             },
-            "bronze": {
-              $cond: {
-                if: {
-                  $eq: ["$_id.medal", 3]
-                },
-                then: "$count",
-                else: 0
-              }
-            }
+            then: "$count",
+            else: 0
           }
-        }, {
-          $group: {
-            "_id": "$_id",
-            "gold": {
-              $max: "$gold"
-            },
-            "silver": {
-              $max: "$silver"
-            },
-            "bronze": {
-              $max: "$bronze"
-            }
-          }
-        }, {
-          $lookup: {
-            from: 'schools',
-            localField: '_id',
-            foreignField: '_id',
-            as: 'school'
-          }
-        }, {
-          "$unwind": "$school"
-        }, {
-          $sort: sortconstraints
-        }]).exec(function(err, data) {
-          if (err) {
-            callback(err, null);
-          } else {
-            // console.log(data.length);
-            if(data.length > 0 ){
-              callback(null, data);
-            }else {
-              callback( data,null);
-            }
-          }
-        });
+        }
+      }
+    }, {
+      $group: {
+        "_id": "$_id",
+        "gold": {
+          $max: "$gold"
+        },
+        "silver": {
+          $max: "$silver"
+        },
+        "bronze": {
+          $max: "$bronze"
+        }
+      }
+    }, {
+      $lookup: {
+        from: 'schools',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'school'
+      }
+    }, {
+      "$unwind": "$school"
+    }, {
+      $sort: sortconstraints
+    }]).exec(function (err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        // console.log(data.length);
+        if (data.length > 0) {
+          callback(null, data);
+        } else {
+          callback(data, null);
+        }
+      }
+    });
 
   },
-  getSchoolRank: function(data, callback) {
+  getSchoolRank: function (data, callback) {
     var constraints = {};
     // constraints.school = objectid(data._id);
 
@@ -921,20 +926,20 @@ var models = {
       $match: constraints
     }, {
       $sort: sortconstraints
-    }]).exec(function(err, response) {
+    }]).exec(function (err, response) {
       if (err) {
         callback(err, null);
       } else {
         console.log(response.length);
         if (response.length > 0) {
-          var index = _.findIndex(response, function(key) {
+          var index = _.findIndex(response, function (key) {
             return key._id == data._id;
           });
           console.log(index);
           if (index === -1) {
             callback(null, 'N.A.');
           } else {
-            callback(null,index + 1);
+            callback(null, index + 1);
           }
         } else {
           callback(0, null);
@@ -942,11 +947,11 @@ var models = {
       }
     });
   },
-  getSchoolByYear: function(data, callback) {
+  getSchoolByYear: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     async.parallel([
-      function(callback) {
+      function (callback) {
         var constraints = {};
         if (data.year && data.year !== '') {
           var years = [];
@@ -961,7 +966,7 @@ var models = {
           sfaid: 1
         }).sort({
           sfaid: 1
-        }).lean().exec(function(err, data) {
+        }).lean().exec(function (err, data) {
           if (err) {
             callback(err, null);
           } else {
@@ -971,8 +976,8 @@ var models = {
           }
         });
       },
-      function(callback) {
-        School.count().exec(function(err, deleted) {
+      function (callback) {
+        School.count().exec(function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
@@ -981,7 +986,7 @@ var models = {
           }
         });
       }
-    ], function(err, found) {
+    ], function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -990,7 +995,7 @@ var models = {
       }
     });
   },
-  searchSchool: function(data, callback) {
+  searchSchool: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     var check = new RegExp(data.search, "i");
