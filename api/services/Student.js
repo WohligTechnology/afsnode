@@ -11,7 +11,8 @@ var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var websiteURL = "http://www.sfanow.in/#/";
 var Schema = sails.mongoose.Schema;
 // var adminUrl = "http://127.0.0.1:1337/";
-var adminUrl = "https://api.sfanow.in/";
+var adminUrl = "http://sfa3.wohlig.co.in/";
+// var adminUrl = "https://api.sfanow.in/";
 
 var schema = new Schema({
   year: String,
@@ -1021,7 +1022,7 @@ var models = {
         });
       } else {
         console.log("in ELse", j);
-      /*  _.each(data2.sports, function (k) {
+        /*  _.each(data2.sports, function (k) {
           // console.log("kk",k);
           if (j.sport == k) {
             console.log("Parti ELSE", k);

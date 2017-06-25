@@ -303,10 +303,10 @@ module.exports = {
       } else {
         var options = {
 
-          "height": "11in",         
-  "width": "8.5in",
+          "height": "11in",
+          "width": "8.5in",
 
-   };
+        };
         // console.log("OBJECT",obj);
         // console.log(options.base);  
         var id = mongoose.Types.ObjectId();
@@ -319,7 +319,7 @@ module.exports = {
           var data = {
             name: newFilename
           };
-          
+
           callback(data);
 
         });
@@ -331,7 +331,7 @@ module.exports = {
             console.log("In Config To generate PDF");
             stream.pipe(writestream);
 
-          //  console.log("WRITESTREAM", writestream);
+            //  console.log("WRITESTREAM", writestream);
 
           }
 
