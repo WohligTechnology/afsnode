@@ -163,6 +163,9 @@ var models = {
       });
     }
     var medal = this(data);
+
+    console.log(data);
+
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -222,6 +225,9 @@ var models = {
       });
     }
   },
+
+
+
   countOneSchoolMedal: function (data, callback) {
     // console.log(data);
     Medal.aggregate([{
@@ -279,7 +285,7 @@ var models = {
     });
   },
   countOneStudentMedal: function (data, callback) {
-    var yearOFdata =data.year;
+    var yearOFdata = data.year;
     Medal.aggregate([{
       $match: {
         player: objectid(data.student),
@@ -300,10 +306,10 @@ var models = {
       if (err) {
         callback(err, null);
       } else {
-        console.log("DATA IIN MEDAL",data);
+        console.log("DATA IIN MEDAL", data);
         if (data.length > 0) {
           var medalRepresentation = {};
-          medalRepresentation.year =yearOFdata;
+          medalRepresentation.year = yearOFdata;
           if (_.find(data, function (key) {
               return key._id == 1;
             })) {
@@ -327,7 +333,7 @@ var models = {
               return key._id == 3;
             }).count;
           }
-          console.log("call",medalRepresentation);
+          console.log("call", medalRepresentation);
           callback(null, medalRepresentation);
         } else {
           callback({}, null);
@@ -519,6 +525,7 @@ var models = {
       }
     }).populate('player').populate('team').populate('sport').populate('school');
   },
+
   deleteData: function (data, callback) {
     var teamstudents = {};
 
@@ -565,12 +572,11 @@ var models = {
       var constraints = {};
       constraints.year = teamstudents.year;
       constraints.participantType = 'player';
-      constraints.school = teamstudents.school;
+      // constraints.school = teamstudents.school;
       constraints.sport = teamstudents.sport;
       constraints.medal = teamstudents.medal;
       constraints.player = teamstudents.team.players[singl];
       // constraints.team = teamstudents.team._id;
-      // console.log("constraints", constraints);
       // medal = new Medal(constraints);
       Medal.findOneAndRemove(constraints, function (err, deleted) {
         if (err) {
