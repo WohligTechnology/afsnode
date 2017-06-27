@@ -533,6 +533,23 @@ var models = {
               select: 'name'
             }]
           }]
+        }, {
+          path: 'heat',
+          populate: [{
+            path: 'heats.player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'heats.team',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
+            }
+          }]
         }], function (err, response) {
           if (err) {
             callback(err, null);
