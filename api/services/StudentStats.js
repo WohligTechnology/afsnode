@@ -317,8 +317,15 @@ var models = {
         }, {
           path: 'qualifyinground',
           populate: [{
-            path: 'player',
+            path: 'heats.player',
             select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'heats.team',
+            select: "name school",
             populate: {
               path: 'school',
               select: 'name logo'
