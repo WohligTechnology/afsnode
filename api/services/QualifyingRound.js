@@ -10,16 +10,6 @@ var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
   matchid: Number,
-  roundno: Number,
-  qualifyinground: {
-    type: String
-  },
-  round: {
-    type: String,
-    default: "Round"
-  },
-  order: Number,
-  qualifyingorder: Number,
   sport: {
     type: Schema.Types.ObjectId,
     ref: "Sport",
@@ -29,90 +19,41 @@ var schema = new Schema({
     type: String,
     default: "Qualifying Round"
   },
+  order: Number,
   participantType: {
-    type: String
-  },
-  player1: {
-    type: Schema.Types.ObjectId,
-    ref: 'Student'
-  },
-  player2: {
-    type: Schema.Types.ObjectId,
-    ref: 'Student'
-  },
-  team1: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team'
-  },
-  team2: {
-    type: Schema.Types.ObjectId,
-    ref: 'Team'
-  },
-  result1: {
-    type: String
-  },
-  result2: {
-    type: String
-  },
-  name: {
     type: String,
-    default: "Heat 1"
+    default: "player"
+  },
+  player: {
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  },
+  score: {
+    type: String
+  },
+  result: {
+    type: String
   },
   video: {
-    type: String
+    type: String,
+    default: ""
+  },
+  position: {
+    type: Number,
+    default: 0
   },
   date: {
     type: Date
   },
-  startTime: {
-    type: Date
-  },
-  totalTime: {
-    type: String,
-    default: ""
-  },
-  endTime: {
-    type: Date
-  },
-  score: {
-    type: String,
-    default: ""
-  },
-  heats: [{
-    player: {
-      type: Schema.Types.ObjectId,
-      ref: 'Student'
-    },
-    team: {
-      type: Schema.Types.ObjectId,
-      ref: 'Team'
-    },
-    score: {
-      type: Number
-    },
-    result: {
-      type: String
-    },
-    position: {
-      type: String
-    }
-  }]
+  round: {
+    type: String
+  }
 });
 schema.plugin(deepPopulate, {
   populate: {
-    'heats.player.school': {
+    'player': {
       select: 'name _id sfaid school'
-    },
-    'player1.school': {
-      select: 'name _id '
-    },
-    'player2': {
-      select: 'name _id sfaid school'
-    },
-    'player2.school': {
-      select: 'name _id '
     }
-
   }
 });
 
@@ -121,73 +62,22 @@ var models = {
   saveData: function (data, callback) {
     var quals = {};
 
-    function saveTeamPlayya(iterator, playya) {
-      // fuck Playya
+    function updatePlayersAndCallback() {
       var constraints = {};
+      constraints.student = quals.player;
       constraints.year = quals.year;
       constraints.sport = quals.sport;
       constraints.drawFormat = "Qualifying Round";
       constraints.qualifyinground = quals._id;
-      if (quals.heats[iterator].team.players) {
-        constraints.student = quals.heats[iterator].team.players[playya];
-        constraints.team = quals.heats[iterator].team._id;
-      }
-      // console.log(quals.heats.length,iterator);
       StudentStats.saveData(constraints, function (err, response) {
+        console.log(err, response);
         if (err) {
           callback(err, null);
         } else {
-          // console.log(response);
-          saveTeam(iterator, ++playya);
+          callback(null, response);
         }
       });
     }
-
-    function saveTeam(iterator, playya) {
-      if (quals.heats[iterator].team.players.length <= playya) {
-        runThroughHeats(++iterator);
-      } else {
-        saveTeamPlayya(iterator, playya);
-      }
-    }
-
-    function savePlayers(iterator) {
-      var constraints = {};
-      constraints.year = quals.year;
-      constraints.sport = quals.sport;
-      constraints.drawFormat = "Qualifying Round";
-      constraints.qualifyinground = quals._id;
-      if (quals.heats[iterator].player) {
-        constraints.student = quals.heats[iterator].player;
-      }
-      // console.log(quals.heats.length, iterator);
-      StudentStats.saveData(constraints, function (err, response) {
-        if (err) {
-          callback(err, null);
-        } else {
-          runThroughHeats(++iterator);
-        }
-      });
-    }
-
-
-    function runThroughHeats(iterator) {
-      if (quals.participantType == 'player') {
-        console.log("in run through heats", quals, iterator, quals.heats.length);
-        if (quals.heats.length <= iterator) {
-          callback(null, "done");
-        } else {
-          savePlayers(iterator, 0);
-        }
-      } else {
-        if (quals.heats.length <= iterator) {
-          callback(null, "done");
-        } else {
-          saveTeam(iterator, 0);
-        }
-      }
-    }
-
     var qualifyinground = this(data);
     if (data._id) {
       this.findOneAndUpdate({
@@ -196,27 +86,8 @@ var models = {
         if (err) {
           callback(err, null);
         } else {
-          if (data2.participantType) {
-            if (data2.participantType == 'player') {
-              quals = data2;
-              runThroughHeats(0);
-            } else {
-              QualifyingRound.populate(data2, {
-                path: 'heats.team'
-              }, function (err, response) {
-                if (err) {
-                  callback(err, null);
-                } else {
-                  quals = response;
-                  runThroughHeats(0);
-                }
-              });
-            }
-
-          } else {
-            callback(null, data2);
-
-          }
+          quals = data2;
+          updatePlayersAndCallback();
         }
       });
     } else {
@@ -225,30 +96,12 @@ var models = {
           callback(null, err);
         } else {
           qualifyinground.matchid = parseInt(response) + 1;
-          qualifyinground.save(function (err, data2) {
+          qualifyinground.save(function (err, data3) {
             if (err) {
               callback(err, null);
             } else {
-              if (data2.participantType) {
-                if (data2.participantType == 'player') {
-                  quals = data2;
-                  runThroughHeats(0);
-
-                } else {
-                  qualifyinground.populate(data2, {
-                    path: 'heats.team'
-                  }, function (err, response) {
-                    if (err) {
-                      callback(err, null);
-                    } else {
-                      quals = response;
-                      runThroughHeats(0);
-                    }
-                  });
-                }
-              } else {
-                callback(null, data2);
-              }
+              quals = data3;
+              updatePlayersAndCallback();
             }
           });
         }
@@ -325,7 +178,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('sport').populate('heats.player').populate('heats.team');
+    }).populate('player').populate('sport');
   },
   findForDrop: function (data, callback) {
     var returns = [];
