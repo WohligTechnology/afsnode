@@ -49,6 +49,10 @@ var schema = new Schema({
   qualifyinground: {
     type: Schema.Types.ObjectId,
     ref: 'QualifyingRound'
+  },
+  qualifyingknockout: {
+    type: Schema.Types.ObjectId,
+    ref: 'QualifyingKnockout'
   }
 });
 module.exports = sails.mongoose.model('StudentStats', schema);
@@ -94,6 +98,8 @@ var models = {
               isexistent.leagueknockout = data.leagueknockout;
             } else if (data.drawFormat == 'Qualifying Round') {
               isexistent.qualifyinground = data.qualifyinground;
+            } else if (data.drawFormat == 'Qualifying Knockout') {
+              isexistent.qualifyingknockout = data.qualifyingknockout;
             }
             StudentStats.findOneAndUpdate(isexistent, {
               $setOnInsert: data
@@ -319,6 +325,23 @@ var models = {
           populate: [{
             path: 'player',
             select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
+            }
+          }]
+        }, {
+          path: 'qualifyingknockout',
+          populate: [{
+            path: 'heats.player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'heats.team',
+            select: "name school",
             populate: {
               path: 'school',
               select: 'name logo'
