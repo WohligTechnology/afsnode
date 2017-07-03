@@ -266,7 +266,7 @@ var models = {
       }
     }
 
-    var qualifyinground = this(data);
+    var qualifyingknockout = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
@@ -379,22 +379,15 @@ var models = {
   getAll: function (data, callback) {
     QualifyingKnockout.find({
       sport: data.sport
-    }).exec(function (err, deleted) {
+    }).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
-        QualifyingKnockout.populate(deleted, {
-          path: 'player',
-          populate: {
-            path: 'school'
-          }
-        }, function (err, response) {
-          if (err) {
-            callback(err, null);
-          } else {
-            callback(null, response);
-          }
-        });
+        if (err) {
+          callback(err, null);
+        } else {
+          callback(null, deleted);
+        }
       }
     });
   },
