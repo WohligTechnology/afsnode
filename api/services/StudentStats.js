@@ -53,6 +53,9 @@ var schema = new Schema({
   qualifyingknockout: {
     type: Schema.Types.ObjectId,
     ref: 'QualifyingKnockout'
+  },
+  video: {
+    type: String
   }
 });
 module.exports = sails.mongoose.model('StudentStats', schema);

@@ -6,7 +6,7 @@
  */
 
 var mongoose = require('mongoose');
- var deepPopulate =require('mongoose-deep-populate')(mongoose);
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -58,31 +58,35 @@ var schema = new Schema({
     },
     standing: {
       type: Number
+    },
+    video: {
+      type: String
     }
   }]
 });
 
-  schema.plugin(deepPopulate, {
-   populate: {
-     'heats.player.school':{
-       select:'name _id sfaid school'
-     },
-     'player1.school':{
-       select: 'name _id '
-     },
-     'player2':{
-       select:'name _id sfaid school'
-     },
-     'player2.school':{
-       select: 'name _id '
-     }    
-     
-   }
- });
+schema.plugin(deepPopulate, {
+  populate: {
+    'heats.player.school': {
+      select: 'name _id sfaid school'
+    },
+    'player1.school': {
+      select: 'name _id '
+    },
+    'player2': {
+      select: 'name _id sfaid school'
+    },
+    'player2.school': {
+      select: 'name _id '
+    }
+
+  }
+});
 module.exports = sails.mongoose.model('Heat', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var heats = {};
+
     function saveTeamPlayya(iterator, playya) {
       // fuck Playya
       var constraints = {};
@@ -92,10 +96,10 @@ var models = {
       constraints.heat = heats._id;
       if (heats.heats[iterator].team.players) {
         constraints.student = heats.heats[iterator].team.players[playya];
-        constraints.team =heats.heats[iterator].team._id;
+        constraints.team = heats.heats[iterator].team._id;
       }
       // console.log(heats.heats.length,iterator);
-      StudentStats.saveData(constraints, function(err, response) {
+      StudentStats.saveData(constraints, function (err, response) {
         if (err) {
           callback(err, null);
         } else {
@@ -106,11 +110,11 @@ var models = {
     }
 
     function saveTeam(iterator, playya) {
-          if (heats.heats[iterator].team.players.length <= playya) {
-            runThroughHeats(++iterator);
-          } else {
-            saveTeamPlayya(iterator, playya);
-          }
+      if (heats.heats[iterator].team.players.length <= playya) {
+        runThroughHeats(++iterator);
+      } else {
+        saveTeamPlayya(iterator, playya);
+      }
     }
 
     function savePlayers(iterator) {
@@ -123,7 +127,7 @@ var models = {
         constraints.student = heats.heats[iterator].player;
       }
       // console.log(heats.heats.length, iterator);
-      StudentStats.saveData(constraints, function(err, response) {
+      StudentStats.saveData(constraints, function (err, response) {
         if (err) {
           callback(err, null);
         } else {
@@ -155,7 +159,7 @@ var models = {
         $set: data
       }, {
         new: true
-      }, function(err, data2) {
+      }, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -166,7 +170,7 @@ var models = {
             } else {
               Heat.populate(data2, {
                 path: 'heats.team'
-              }, function(err, response) {
+              }, function (err, response) {
                 if (err) {
                   callback(err, null);
                 } else {
@@ -183,12 +187,12 @@ var models = {
         }
       });
     } else {
-      Heat.getLastHeat({}, function(err, response) {
+      Heat.getLastHeat({}, function (err, response) {
         if (err) {
           callback(null, err);
         } else {
           heat.matchid = parseInt(response) + 1;
-          heat.save(function(err, data2) {
+          heat.save(function (err, data2) {
             if (err) {
               callback(err, null);
             } else {
@@ -200,7 +204,7 @@ var models = {
                 } else {
                   Heat.populate(data2, {
                     path: 'heats.team'
-                  }, function(err, response) {
+                  }, function (err, response) {
                     if (err) {
                       callback(err, null);
                     } else {
@@ -219,10 +223,10 @@ var models = {
 
     }
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     Heat.find({
       sport: data.sport
-    }, {}, {}, function(err, found) {
+    }, {}, {}, function (err, found) {
       if (err) {
         callback(err, null);
       } else {
@@ -230,13 +234,13 @@ var models = {
       }
     });
   },
-  getLastHeat: function(data, callback) {
+  getLastHeat: function (data, callback) {
     Heat.find({}, {
       _id: 0,
       matchid: 1
     }).sort({
       matchid: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -248,31 +252,31 @@ var models = {
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     Heat.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
         StudentStats.remove({
-          drawFormat:"Heats",
-          heat:data._id
-        }, function(err, deleted) {
+          drawFormat: "Heats",
+          heat: data._id
+        }, function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
-            callback(null,deleted);
+            callback(null, deleted);
 
           }
         });
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     Heat.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -294,7 +298,7 @@ var models = {
       }
     }).populate('sport').populate('heats.player').populate('heats.team');
   },
-  findForDrop: function(data, callback) {
+  findForDrop: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -309,7 +313,7 @@ var models = {
       name: {
         '$regex': check
       }
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -318,9 +322,9 @@ var models = {
         exit++;
         if (data.heat.length !== 0) {
           var nedata;
-          nedata = _.remove(found, function(n) {
+          nedata = _.remove(found, function (n) {
             var flag = false;
-            _.each(data.heat, function(n1) {
+            _.each(data.heat, function (n1) {
               if (n1.name == n.name) {
                 flag = true;
               }
@@ -335,90 +339,91 @@ var models = {
       }
     });
   },
-  getSportRoundHeat: function (data,callback) {
+  getSportRoundHeat: function (data, callback) {
     var asyncReturns = {};
     async.parallel([
       function (callback) {
         Sport.getOne({
-          _id:data.sport
-        },function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
+          _id: data.sport
+        }, function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
             asyncReturns.sport = data;
-            callback(null,data);
+            callback(null, data);
           }
         });
       },
       function (callback) {
         Medal.find({
-          sport:data.sport
+          sport: data.sport
         }).sort({
-          medal:1
-        }).lean().exec(function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
-            Medal.populate(data,[{
-              path:"player",
-              select:"name profilePic"
-            },{
-              path:"team",
-              select:"name"
-            },{
-              path:"school",
-              select:"name logo"
-            }],function (err,response) {
-              if(err){
-                callback(err,null);
-              }else{
+          medal: 1
+        }).lean().exec(function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
+            Medal.populate(data, [{
+              path: "player",
+              select: "name profilePic"
+            }, {
+              path: "team",
+              select: "name"
+            }, {
+              path: "school",
+              select: "name logo"
+            }], function (err, response) {
+              if (err) {
+                callback(err, null);
+              } else {
                 asyncReturns.medals = response;
-                callback(null,response);
+                callback(null, response);
               }
             });
 
           }
         });
-      },function (callback) {
+      },
+      function (callback) {
         Heat.find({
-          sport:data.sport
+          sport: data.sport
         }).sort({
-          order:1
-        }).lean().exec(function (err,data) {
-          if(err){
-            callback(err,null);
-          }else{
-            Heat.populate(data,[{
-              path:'heats.player',
-              select:"name profilePic school",
-              populate:{
-                path:'school',
-                select:'name'
+          order: 1
+        }).lean().exec(function (err, data) {
+          if (err) {
+            callback(err, null);
+          } else {
+            Heat.populate(data, [{
+              path: 'heats.player',
+              select: "name profilePic school",
+              populate: {
+                path: 'school',
+                select: 'name'
               }
-            },{
-              path:'heats.team',
-              select:"name school",
-              populate:{
-                path:'school',
-                select:'name logo'
+            }, {
+              path: 'heats.team',
+              select: "name school",
+              populate: {
+                path: 'school',
+                select: 'name logo'
               }
-            }],function (err,response) {
+            }], function (err, response) {
               if (err) {
-                callback(err,null);
+                callback(err, null);
               } else {
                 asyncReturns.heats = response;
-                callback(null,response);
+                callback(null, response);
               }
             });
 
           }
         });
       }
-    ],function (err,data) {
+    ], function (err, data) {
       if (err) {
-        callback(err,null);
+        callback(err, null);
       } else {
-        callback(null,asyncReturns);
+        callback(null, asyncReturns);
       }
     });
   }
