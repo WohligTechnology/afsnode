@@ -94,6 +94,9 @@ var schema = new Schema({
 });
 schema.plugin(deepPopulate, {
   populate: {
+    'heats.player': {
+      select: 'name _id sfaid school'
+    },
     'heats.player.school': {
       select: 'name _id sfaid school'
     },
@@ -139,6 +142,7 @@ var models = {
       constraints.drawFormat = "Qualifying Knockout";
       constraints.qualifyingknockout = details._id;
       StudentStats.saveData(constraints, function (err, response) {
+        console.log("pppppppp", response);
         if (err) {
           callback(err, null);
         } else {
@@ -379,7 +383,7 @@ var models = {
   getAll: function (data, callback) {
     QualifyingKnockout.find({
       sport: data.sport
-    }).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').exec(function (err, deleted) {
+    }).populate('player1', "name ").populate('player2', "name").populate('sport').populate('team1', 'name').populate('team2', 'name').populate('heats.player').exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {

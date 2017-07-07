@@ -214,10 +214,6 @@ module.exports = {
       order: 1
     }).deepPopulate('player1.school player2.school team1.school team2.school', "name sfaid school").populate('player1', "name sfaid ").populate('player2', "name sfaid").populate('sport').populate("agegroup", "name").populate('team1', 'name sfaid').populate('team2', 'name sfaid').exec(function (err, data2) {
 
-      console.log("DATA2", data2);
-      console.log("data", data2[0].player1);
-      console.log("data", data2[0].player2);
-
       var excelData = [];
       var row = {};
       _.each(data2, function (key) {
@@ -225,9 +221,12 @@ module.exports = {
         row = {
           "MATCH ID": key.matchid,
           "PARTICIPANT TYPE": key.participantType,
-          "ROUND NAME": key.round,
+          "ROUND NAME": key.leagueknockoutround,
           "ORDER": key.order
         };
+        if (key.leagueknockoutround.toLowerCase() == "final") {
+          row['ROUND NAME'] = key.round;
+        }
         if (key.sport) {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
@@ -248,7 +247,6 @@ module.exports = {
           row['SFAID 2'] = key[key.participantType + '2'].sfaid;
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
           row['SCHOOL 2'] = key[key.participantType + '2'].school.name;
-          console.log("DAATTAAA-->2 ", key[key.participantType + '2'].school.name);
 
           row['RESULT 2'] = key['result' + key.participantType + '2'];
         } else {

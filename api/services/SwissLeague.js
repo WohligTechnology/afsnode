@@ -4,6 +4,9 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+var mongoose = require('mongoose');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
+
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
   year: String,
@@ -25,8 +28,16 @@ var schema = new Schema({
     type: String,
     default: "player"
   },
+  roundno: {
+    type: Number,
+    default: 0
+  },
   round: {
     type: String
+  },
+  order: {
+    type: Number,
+    default: 0
   },
   date: {
     type: Date,
@@ -40,33 +51,59 @@ var schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   },
-  result: {
+  result1: {
     type: String,
   },
-  point1: {
-    type: Number,
+  result2: {
+    type: String,
   },
-  point2: {
-    type: Number,
+  startTime: {
+    type: Date
   },
-  matchorder:{
-    type: Number
+  endTime: {
+    type: Date
   },
-  no1: {
-    type: Number,
-  },
-  no2: {
-    type: Number,
-  },
-  video: {
-    type: String
+  totalTime: {
+    type: String,
+    default: ""
   }
 });
+
+schema.plugin(deepPopulate, {
+  populate: {
+    'player1': {
+      select: 'name _id sfaid school'
+    },
+    'player1.school': {
+      select: 'name _id '
+    },
+    'player2': {
+      select: 'name _id sfaid school'
+    },
+    'player2.school': {
+      select: 'name _id '
+    },
+    'team1': {
+      select: 'name _id sfaid school'
+    },
+    'team1.school': {
+      select: 'name _id '
+    },
+    'team2': {
+      select: 'name _id sfaid school'
+    },
+    'team2.school': {
+      select: 'name _id '
+    }
+  }
+});
+
 module.exports = sails.mongoose.model('SwissLeague', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var swisses = {};
     var swissleague = this(data);
+
     function updatePlayersAndCallback() {
       var constraints = {};
       constraints.student = swisses.player1;
@@ -75,14 +112,14 @@ var models = {
       constraints.drawFormat = "Swiss League";
       constraints.swissleague = swisses._id;
       console.log(constraints);
-      StudentStats.saveData(constraints, function(err, response) {
-        console.log(err,response);
+      StudentStats.saveData(constraints, function (err, response) {
+        console.log(err, response);
         if (err) {
           callback(err, null);
         } else {
           constraints.student = swisses.player2;
-          StudentStats.saveData(constraints, function(err, resp) {
-            console.log(err,resp);
+          StudentStats.saveData(constraints, function (err, resp) {
+            console.log(err, resp);
             if (err) {
               callback(err, null);
             } else {
@@ -99,7 +136,7 @@ var models = {
         $set: data
       }, {
         new: true
-      }, function(err, data2) {
+      }, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -109,12 +146,12 @@ var models = {
       });
     } else {
 
-      SwissLeague.getLastSwissLeague({}, function(err, response) {
+      SwissLeague.getLastSwissLeague({}, function (err, response) {
         if (err) {
           callback(null, err);
         } else {
           swissleague.matchid = parseInt(response) + 1;
-          swissleague.save(function(err, data3) {
+          swissleague.save(function (err, data3) {
             if (err) {
               callback(err, null);
             } else {
@@ -126,45 +163,45 @@ var models = {
       });
     }
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     SwissLeague.find({
       sport: data.sport
-    }, {}, {}, function(err, deleted) {
+    }, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
         callback(null, deleted);
       }
-    }).populate('player1','name').populate('player2','name');
+    }).populate('player1', 'name').populate('player2', 'name').populate('sport');
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     SwissLeague.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
         StudentStats.remove({
-          drawFormat:"Swiss League",
-          swissleague:data._id
-        }, function(err, deleted) {
+          drawFormat: "Swiss League",
+          swissleague: data._id
+        }, function (err, deleted) {
           if (err) {
             callback(err, null);
           } else {
-            callback(null,deleted);
+            callback(null, deleted);
 
           }
         });
       }
     });
   },
-  getLastSwissLeague: function(data, callback) {
+  getLastSwissLeague: function (data, callback) {
     SwissLeague.find({}, {
       _id: 0,
       matchid: 1
     }).sort({
       matchid: -1
-    }).limit(1).lean().exec(function(err, data2) {
+    }).limit(1).lean().exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -176,10 +213,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     SwissLeague.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -187,7 +224,7 @@ var models = {
       }
     }).populate('player1').populate('player2').populate('sport');
   },
-  findForDrop: function(data, callback) {
+  findForDrop: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -202,7 +239,7 @@ var models = {
       name: {
         '$regex': check
       }
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -211,9 +248,9 @@ var models = {
         exit++;
         if (data.swissleague.length !== 0) {
           var nedata;
-          nedata = _.remove(found, function(n) {
+          nedata = _.remove(found, function (n) {
             var flag = false;
-            _.each(data.swissleague, function(n1) {
+            _.each(data.swissleague, function (n1) {
               if (n1.name == n.name) {
                 flag = true;
               }

@@ -6,9 +6,9 @@
  */
 var objectid = require("mongodb").ObjectId;
 module.exports = {
-  saveData: function(req, res) {
+  saveData: function (req, res) {
     if (req.body) {
-      Sport.saveData(req.body, function(err, respo) {
+      Sport.saveData(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -28,9 +28,9 @@ module.exports = {
       });
     }
   },
-  getAll: function(req, res) {
+  getAll: function (req, res) {
     if (req.body) {
-      Sport.getAll(req.body, function(err, respo) {
+      Sport.getAll(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -50,9 +50,9 @@ module.exports = {
       });
     }
   },
-  updateAllSportRef: function(req, res) {
+  updateAllSportRef: function (req, res) {
     if (req.body) {
-      Sport.updateAllSportRef(req.body, function(err, respo) {
+      Sport.updateAllSportRef(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -72,10 +72,10 @@ module.exports = {
       });
     }
   },
-  deleteData: function(req, res) {
+  deleteData: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id !== "") {
-        Sport.deleteData(req.body, function(err, respo) {
+        Sport.deleteData(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -101,10 +101,10 @@ module.exports = {
       });
     }
   },
-  getOne: function(req, res) {
+  getOne: function (req, res) {
     if (req.body) {
       if (req.body._id && req.body._id != "") {
-        Sport.getOne(req.body, function(err, respo) {
+        Sport.getOne(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -130,10 +130,10 @@ module.exports = {
       });
     }
   },
-  getOneSportForResult: function(req, res) {
+  getOneSportForResult: function (req, res) {
     if (req.body) {
       if (req.body.sport && req.body.sport != "") {
-        Sport.getOneSportForResult(req.body, function(err, respo) {
+        Sport.getOneSportForResult(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -159,9 +159,9 @@ module.exports = {
       });
     }
   },
-  getSportforTeam: function(req, res) {
+  getSportforTeam: function (req, res) {
     if (req.body) {
-      Sport.getSportforTeam(req.body, function(err, respo) {
+      Sport.getSportforTeam(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -181,9 +181,9 @@ module.exports = {
       });
     }
   },
-  getSports: function(req, res) {
+  getSports: function (req, res) {
     if (req.body) {
-      Sport.getSports(req.body, function(err, respo) {
+      Sport.getSports(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -203,9 +203,9 @@ module.exports = {
       });
     }
   },
-  knockoutSports: function(req, res) {
+  knockoutSports: function (req, res) {
     if (req.body) {
-      Sport.knockoutSports(req.body, function(err, respo) {
+      Sport.knockoutSports(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -225,9 +225,9 @@ module.exports = {
       });
     }
   },
-  drawSports: function(req, res) {
+  drawSports: function (req, res) {
     if (req.body) {
-      Sport.drawSports(req.body, function(err, respo) {
+      Sport.drawSports(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -247,9 +247,9 @@ module.exports = {
       });
     }
   },
-  getSportBySportlist: function(req, res) {
+  getSportBySportlist: function (req, res) {
     if (req.body) {
-      Sport.getSportBySportlist(req.body, function(err, respo) {
+      Sport.getSportBySportlist(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -269,9 +269,9 @@ module.exports = {
       });
     }
   },
-  heatSports: function(req, res) {
+  heatSports: function (req, res) {
     if (req.body) {
-      Sport.heatSports(req.body, function(err, respo) {
+      Sport.heatSports(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -291,9 +291,9 @@ module.exports = {
       });
     }
   },
-  leagueSports: function(req, res) {
+  leagueSports: function (req, res) {
     if (req.body) {
-      Sport.leagueSports(req.body, function(err, respo) {
+      Sport.leagueSports(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -313,9 +313,9 @@ module.exports = {
       });
     }
   },
-  getSportsByYear: function(req, res) {
+  getSportsByYear: function (req, res) {
     if (req.body) {
-      Sport.getSportsByYear(req.body, function(err, respo) {
+      Sport.getSportsByYear(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -335,9 +335,9 @@ module.exports = {
       });
     }
   },
-  getSportsByYearHeat: function(req, res) {
+  getSportsByYearHeat: function (req, res) {
     if (req.body) {
-      Sport.getSportsByYearHeat(req.body, function(err, respo) {
+      Sport.getSportsByYearHeat(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -357,7 +357,7 @@ module.exports = {
       });
     }
   },
-  getLimited: function(req, res) {
+  getLimited: function (req, res) {
     if (req.body) {
       if (req.body.pagenumber) {
         Sport.findLimited(req.body, res.callback);
@@ -374,9 +374,9 @@ module.exports = {
       });
     }
   },
-  getMinMaxForTeam: function(req, res) {
+  getMinMaxForTeam: function (req, res) {
     if (req.body) {
-      Sport.getMinMaxForTeam(req.body, function(err, respo) {
+      Sport.getMinMaxForTeam(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -396,10 +396,10 @@ module.exports = {
       });
     }
   },
-  filterCategory: function(req, res) {
+  filterCategory: function (req, res) {
     if (req.body) {
       // if (req.body._id && req.body.year) {
-      Sport.filterCategory(req.body, function(err, respo) {
+      Sport.filterCategory(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -425,9 +425,9 @@ module.exports = {
       });
     }
   },
-  filterCategoryForFrontend: function(req, res) {
+  filterCategoryForFrontend: function (req, res) {
     if (req.body) {
-      Sport.filterCategoryForFrontend(req.body, function(err, respo) {
+      Sport.filterCategoryForFrontend(req.body, function (err, respo) {
         if (err) {
           res.json({
             value: false,
@@ -447,10 +447,10 @@ module.exports = {
       });
     }
   },
-  filterCategoryForFrontendGender: function(req, res) {
+  filterCategoryForFrontendGender: function (req, res) {
     if (req.body) {
       if (req.body.sportList && objectid.isValid(req.body.sportList)) {
-        Sport.filterCategoryForFrontendGender(req.body, function(err, respo) {
+        Sport.filterCategoryForFrontendGender(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -476,10 +476,10 @@ module.exports = {
       });
     }
   },
-  filterAgegroupForFrontend: function(req, res) {
+  filterAgegroupForFrontend: function (req, res) {
     if (req.body) {
       if (req.body.sportList && objectid.isValid(req.body.sportList)) {
-        Sport.filterAgegroupForFrontend(req.body, function(err, respo) {
+        Sport.filterAgegroupForFrontend(req.body, function (err, respo) {
           if (err) {
             res.json({
               value: false,
@@ -505,8 +505,8 @@ module.exports = {
       });
     }
   },
-  excelDownload: function(req, res) {
-    Sport.find({}, {}, {}, function(err, response) {
+  excelDownload: function (req, res) {
+    Sport.find({}, {}, {}, function (err, response) {
       if (err) {
         res.json({
           value: false,
@@ -515,7 +515,7 @@ module.exports = {
       } else {
         var excelData = [];
         var row = {};
-        _.each(response, function(key) {
+        _.each(response, function (key) {
           row = {};
           row = {
             "YEAR": key.year,
@@ -549,5 +549,27 @@ module.exports = {
         Config.generateExcel("Sports", excelData, res);
       }
     });
+  },
+  findSportDetail: function (req, res) {
+    if (req.body) {
+      Sport.findSportDetail(req.body, function (err, respo) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: respo
+          });
+        }
+      });
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
   }
 };

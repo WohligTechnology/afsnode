@@ -142,14 +142,16 @@ module.exports = {
 
       function saveMe(num) {
         var heat = {};
+        var vdo = results[num].RESULTS;
         heat.matchid = parseInt(results[num]["MATCH ID"]);
+        // heat.push({
+        //   "heats.0.standing": 90
+        // });
         heat.video = results[num].VIDEO;
         Heat.findOneAndUpdate({
           matchid: heat.matchid
         }, {
-          $set: {
-            video: heat.video
-          }
+          $set: heat
         }, {
           new: true
         }, function (err, data) {
@@ -183,11 +185,11 @@ module.exports = {
         console.log(err);
       } else {
         var model = null;
-        // console.log(uploadedFiles[0].fd);
         xlsxj({
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
         }, function (err, result) {
+          console.log(result);
           if (err) {
             res.json({
               value: false,

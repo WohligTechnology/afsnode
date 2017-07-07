@@ -349,6 +349,57 @@ var models = {
               path: 'school',
               select: 'name logo'
             }
+          }, {
+            path: 'player1',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }]
+        }, {
+          path: 'swissleague',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
           }]
         }], function (err, response) {
           if (err) {
@@ -654,7 +705,8 @@ var models = {
           _id: {
             knockout: "$knockout",
             heat: "$heat",
-            league: "$leagueknockout"
+            league: "$leagueknockout",
+            swiss: "$swissleague"
           },
           "stat": {
             $first: "$_id"
@@ -689,7 +741,8 @@ var models = {
           drawFormat: 1,
           knockout: "$_id.knockout",
           heat: "$_id.heat",
-          leagueknockout: "$_id.league"
+          leagueknockout: "$_id.league",
+          swissleague: "$_id.swiss"
         }
       }, {
         $sort: {
@@ -800,6 +853,23 @@ var models = {
             populate: {
               path: 'school',
               select: 'name logo'
+            }
+          }]
+        }, {
+          path: 'swissleague',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
             }
           }]
         }], function (err, response) {

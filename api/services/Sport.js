@@ -56,12 +56,12 @@ var schema = new Schema({
 });
 module.exports = sails.mongoose.model('Sport', schema);
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var sport = this(data);
     if (data._id) {
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -69,7 +69,7 @@ var models = {
         }
       });
     } else {
-      sport.save(function(err, data2) {
+      sport.save(function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -78,7 +78,7 @@ var models = {
       });
     }
   },
-  saveDataObjectId: function(data, callback) {
+  saveDataObjectId: function (data, callback) {
     var sport = this(data);
     if (data._id) {
       if (data.sportslist) {
@@ -98,7 +98,7 @@ var models = {
       }
       this.update({
         _id: data._id
-      }, sport, {}, function(err, data2) {
+      }, sport, {}, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -107,7 +107,7 @@ var models = {
         }
       });
     } else {
-      sport.save(function(err, data2) {
+      sport.save(function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -116,10 +116,10 @@ var models = {
       });
     }
   },
-  getAll: function(data, callback) {
+  getAll: function (data, callback) {
     Sport.find().sort({
       _id: -1
-    }).lean().exec(function(err, found) {
+    }).lean().exec(function (err, found) {
       if (err) {
         callback(err, null);
       } else {
@@ -127,10 +127,10 @@ var models = {
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     Sport.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -138,10 +138,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     Sport.findOne({
       _id: data._id
-    }).lean().exec(function(err, found) {
+    }).lean().exec(function (err, found) {
       if (err) {
         callback(err, null);
       } else {
@@ -149,7 +149,21 @@ var models = {
       }
     });
   },
-  findLimited: function(data, callback) {
+  findSportDetail: function (data, callback) {
+    console.log("::", data);
+    Sport.findOne({
+      "gender": data.gender,
+      "sportslist.name": data.sport,
+      "agegroup.name": data.age
+    }).lean().exec(function (err, found) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, found);
+      }
+    });
+  },
+  findLimited: function (data, callback) {
     var newreturns = {};
     newreturns.data = [];
     data.pagenumber = parseInt(data.pagenumber);
@@ -163,8 +177,8 @@ var models = {
     };
 
     async.parallel([
-        function(callback) {
-          Sport.count(checkObj).exec(function(err, number) {
+        function (callback) {
+          Sport.count(checkObj).exec(function (err, number) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -177,10 +191,10 @@ var models = {
             }
           });
         },
-        function(callback) {
+        function (callback) {
           Sport.find(checkObj).sort({
             _id: -1
-          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function(err, data2) {
+          }).skip(20 * (data.pagenumber - 1)).limit(20).exec(function (err, data2) {
             if (err) {
               console.log(err);
               callback(err, null);
@@ -193,7 +207,7 @@ var models = {
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -204,10 +218,10 @@ var models = {
         }
       });
   },
-  getSportforTeam: function(data, callback) {
+  getSportforTeam: function (data, callback) {
     Sport.findOne({
       name: data._id
-    }).lean().exec(function(err, found) {
+    }).lean().exec(function (err, found) {
       if (err) {
         callback(err, null);
       } else {
@@ -215,7 +229,7 @@ var models = {
       }
     });
   },
-  filterCategory: function(data, callback) {
+  filterCategory: function (data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
@@ -232,7 +246,7 @@ var models = {
           }
         }
       }
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       // console.log(data2);
       if (err) {
         console.log(err);
@@ -244,28 +258,28 @@ var models = {
       }
     });
   },
-  getOneSportForResult : function (data,callback) {
+  getOneSportForResult: function (data, callback) {
     var constraints = {};
     constraints['sportslist._id'] = data.sport;
     constraints['agegroup.name'] = data.agegroup;
-    if(data.category){
-    constraints['firstcategory.name'] = data.category;
+    if (data.category) {
+      constraints['firstcategory.name'] = data.category;
     }
     constraints.year = data.year;
     constraints.gender = data.gender;
     console.log(constraints);
-    Sport.findOne(constraints,function (err,data) {
+    Sport.findOne(constraints, function (err, data) {
       console.log(data);
-      if(err){
-        callback(err,null);
-      }else if(data){
-        callback(null,data);
-      }else{
-        callback({},null);
+      if (err) {
+        callback(err, null);
+      } else if (data) {
+        callback(null, data);
+      } else {
+        callback({}, null);
       }
     });
   },
-  filterCategoryForFrontend: function(data, callback) {
+  filterCategoryForFrontend: function (data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
@@ -289,14 +303,14 @@ var models = {
           "$setDifference": ["$firstcategory", [{}]]
         }
       }
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       // console.log("darta1", data2);
       // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
       } else {
-        if(data2.length > 0){
+        if (data2.length > 0) {
           if (data2[0].firstcategory.length > 0) {
             callback(null, data2[0].firstcategory);
 
@@ -304,7 +318,7 @@ var models = {
             callback([], null);
             //
           }
-        }else{
+        } else {
           callback([], null);
 
         }
@@ -312,14 +326,14 @@ var models = {
       }
     });
   },
-  filterCategoryForFrontendGender: function(data, callback) {
+  filterCategoryForFrontendGender: function (data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList),
-      "gender":data.gender
+      "gender": data.gender
     };
     // console.log(matchObj);
-    if(data.agegroup){
-      matchObj["agegroup.name"]=data.agegroup;
+    if (data.agegroup) {
+      matchObj["agegroup.name"] = data.agegroup;
     }
     Sport.aggregate([{
       $match: matchObj
@@ -340,14 +354,14 @@ var models = {
           "$setDifference": ["$firstcategory", [{}]]
         }
       }
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       // console.log("darta1", data2);
       // console.log(data2);
       if (err) {
         console.log(err);
         callback(err, null);
       } else {
-        if(data2.length > 0){
+        if (data2.length > 0) {
           if (data2[0].firstcategory.length > 0) {
             callback(null, data2[0].firstcategory);
 
@@ -355,7 +369,7 @@ var models = {
             callback([], null);
             //
           }
-        }else{
+        } else {
           callback([], null);
 
         }
@@ -363,7 +377,7 @@ var models = {
       }
     });
   },
-  filterAgegroupForFrontend: function(data, callback) {
+  filterAgegroupForFrontend: function (data, callback) {
     var matchObj = {
       "sportslist._id": objectid(data.sportList)
     };
@@ -376,15 +390,14 @@ var models = {
       }
     }, {
       $project: {
-        "_id":0,
+        "_id": 0,
         "name": "$_id"
       }
-    },{
-      $sort:{
-        name:1
+    }, {
+      $sort: {
+        name: 1
       }
-    }
-  ]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       // console.log("darta1", data2);
       // console.log(data2);
       if (err) {
@@ -402,7 +415,7 @@ var models = {
       }
     });
   },
-  getSports: function(data, callback) {
+  getSports: function (data, callback) {
     var matchobj = {
       "sportslist._id": objectid(data.sportslist),
       gender: data.gender,
@@ -430,7 +443,7 @@ var models = {
       delete matchobj["thirdcategory.name"];
     }
     // console.log(matchobj);
-    Sport.find(matchobj).exec(function(err, data2) {
+    Sport.find(matchobj).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -441,11 +454,11 @@ var models = {
       }
     });
   },
-  knockoutSports: function(data, callback) {
+  knockoutSports: function (data, callback) {
     Sport.find({
       "sportslist._id": data.sportlist,
       drawFormat: "Knockout"
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -456,11 +469,11 @@ var models = {
       }
     });
   },
-  drawSports: function(data, callback) {
+  drawSports: function (data, callback) {
     Sport.find({
       "sportslist._id": data.sportlist,
       drawFormat: data.drawFormat
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -471,13 +484,13 @@ var models = {
       }
     });
   },
-  getSportBySportlist: function(data, callback) {
+  getSportBySportlist: function (data, callback) {
     // console.log({
     //   "sportslist._id": data.sportlist
     // });
     Sport.find({
       "sportslist._id": data.sportlist
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       console.log(err);
       console.log(data2);
       if (err) {
@@ -490,11 +503,11 @@ var models = {
       }
     });
   },
-  heatSports: function(data, callback) {
+  heatSports: function (data, callback) {
     Sport.find({
       "sportslist._id": data.sportlist,
       drawFormat: "Heats"
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -505,11 +518,11 @@ var models = {
       }
     });
   },
-  leagueSports: function(data, callback) {
+  leagueSports: function (data, callback) {
     Sport.find({
       "sportslist._id": data.sportlist,
       drawFormat: "League"
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -520,11 +533,11 @@ var models = {
       }
     });
   },
-  getSportsByYear: function(data, callback) {
+  getSportsByYear: function (data, callback) {
     Sport.find({
       "year": data.year,
       drawFormat: "Knockout"
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -535,11 +548,11 @@ var models = {
       }
     });
   },
-  getSportsByYearHeat: function(data, callback) {
+  getSportsByYearHeat: function (data, callback) {
     Sport.find({
       "year": data.year,
       drawFormat: "Heats"
-    }).exec(function(err, data2) {
+    }).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -550,7 +563,7 @@ var models = {
       }
     });
   },
-  getMinMaxForTeam: function(data, callback) {
+  getMinMaxForTeam: function (data, callback) {
     var matchobj = {};
     if (data.category) {
       matchobj = {
@@ -567,7 +580,7 @@ var models = {
         "gender": data.gender
       };
     }
-    Sport.find(matchobj).exec(function(err, data2) {
+    Sport.find(matchobj).exec(function (err, data2) {
       if (err) {
         callback(err, null);
       } else if (data2) {
@@ -577,7 +590,7 @@ var models = {
       }
     });
   },
-  findForDropSingle: function(data, callback) {
+  findForDropSingle: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -596,7 +609,7 @@ var models = {
       name: 1,
       _id: 1,
       sfaid: 1
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -611,7 +624,7 @@ var models = {
       }
     });
   },
-  findForDropCaptainTeam: function(data, callback) {
+  findForDropCaptainTeam: function (data, callback) {
     var returns = [];
     var exit = 0;
     var exitup = 1;
@@ -630,7 +643,7 @@ var models = {
       name: 1,
       _id: 1,
       sfaid: 1
-    }).limit(10).exec(function(err, found) {
+    }).limit(10).exec(function (err, found) {
       if (err) {
         console.log(err);
         callback(err, null);
@@ -645,15 +658,15 @@ var models = {
       }
     });
   },
-  updateAllSportRef: function(data, callback) {
-    Sport.find({}, {}, {}, function(err, data) {
+  updateAllSportRef: function (data, callback) {
+    Sport.find({}, {}, {}, function (err, data) {
       if (err) {
 
       } else {
         // console.log(data.length);
-        async.each(data, function(j, callback1) {
+        async.each(data, function (j, callback1) {
 
-          Sport.saveDataObjectId(j, function(err, updated) {
+          Sport.saveDataObjectId(j, function (err, updated) {
             if (err) {
               console.log(err);
               callback1(err, null);
@@ -662,7 +675,7 @@ var models = {
             }
           });
 
-        }, function(err) {
+        }, function (err) {
           if (err) {
             console.log(err);
             callback(err, null);

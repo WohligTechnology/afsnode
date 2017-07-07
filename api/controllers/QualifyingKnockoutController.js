@@ -167,7 +167,7 @@ module.exports = {
     QualifyingKnockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).deepPopulate('player.school', "name sfaid school").populate('player', "name sfaid ").populate('sport').populate("agegroup", "name").exec(function (err, data2) {
+    }).deepPopulate('player.school', "name sfaid school").populate("heats.player").populate('player', "name sfaid ").populate('sport').populate("agegroup", "name").populate("player1").populate("player2").populate("team1").populate("team2").exec(function (err, data2) {
 
       console.log("DATA2", data2);
 
@@ -175,27 +175,82 @@ module.exports = {
       var row = {};
       _.each(data2, function (key) {
         row = {};
+        console.log("hhhhhhhhhhhhh", key);
         row = {
           "MATCH ID": key.matchid,
           "PARTICIPANT TYPE": key.participantType,
           "ROUND NAME": key.round,
           "ORDER": key.order
         };
+
+
+        row['PARTICIPANTS'] = "";
+
+        row['SCHOOL'] = "";
+        row['LANE NUMBER'] = "";
+        1
+        row['TIMING'] = "";
+        row['RESULTS'] = "";
+
+        if (key.heats.length > 0) {
+          _.each(key.heats, function (it) {
+            if (it[key.participantType]) {
+              row['PARTICIPANTS'] += it[key.participantType].sfaid + ". " + it[key.participantType].name + ', ';
+
+              if (it[key.participantType].school) {
+
+                row['SCHOOL'] += it[key.participantType].school.name + ". " + ', ';
+              } else {
+                row['SCHOOL'] += 'Undeclared' + ', ';
+
+              }
+
+              row['LANE NUMBER'] += it.laneno + ' , ';
+              row['TIMING'] += it.timing + ' , ';
+
+
+              row['RESULTS'] += it.result + ', ';
+
+              // console.log("IT SCHOOL", it.timing);
+            } else {
+              row['PARTICIPANTS'] += 'Undeclared' + ', ';
+              row['RESULTS'] += 'Undeclared' + ', ';
+              row['TIMING'] += 'Undeclared' + ', ';
+              row['LANE NUMBER'] += 'Undeclared' + ', ';
+            }
+
+          });
+        }
+
+
         if (key.sport) {
           row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
-        if (key[key.participantType] && key[key.participantType].school) {
-          row['SFAID'] = key[key.participantType].sfaid;
-          row['PARTICIPANT'] = key[key.participantType].name;
-          row['SCHOOL'] = key[key.participantType].school.name;
+        if (key[key.participantType + '1'] && key[key.participantType + '1'].school) {
+          row['SFAID 1'] = key[key.participantType + '1'].sfaid;
+          row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
+          row['SCHOOL 1'] = key[key.participantType + '1'].school.name;
 
-          row['RESULT'] = key['result' + key.participantType];
+          row['RESULT 1'] = key['result1'];
         } else {
-          row['SFAID'] = '';
-          row['PARTICIPANT'] = '';
-          row['SCHOOL'] = '';
+          row['SFAID 1'] = '';
+          row['PARTICIPANT 1'] = '';
+          row['SCHOOL 1'] = '';
 
-          row['RESULT'] = '';
+          row['RESULT 1'] = '';
+        }
+        if (key[key.participantType + '2'] && key[key.participantType + '2'].school) {
+          row['SFAID 2'] = key[key.participantType + '2'].sfaid;
+          row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
+          row['SCHOOL 2'] = key[key.participantType + '2'].school.name;
+
+          row['RESULT 2'] = key['result2'];
+        } else {
+          row['SFAID 2'] = '';
+          row['PARTICIPANT 2'] = '';
+          row['SCHOOL 2'] = '';
+          row['RESULT 2'] = '';
+
         }
 
         row.SCORE = key.score;

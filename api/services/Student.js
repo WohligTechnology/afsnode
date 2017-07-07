@@ -745,7 +745,21 @@ var models = {
       }
     });
   },
-
+  findStudentBySfaId: function (data, callback) {
+    console.log(data);
+    Student.findOne({
+      sfaid: data.sfaid
+    }).exec(function (err, data2) {
+      if (err) {
+        console.log(err);
+        callback(err, null);
+      } else if (_.isEmpty(data2)) {
+        callback(null, 1);
+      } else {
+        callback(null, data2);
+      }
+    });
+  },
   getCertificate: function (body, callback, res) {
 
     console.log("DATA IN BODY ", body);
