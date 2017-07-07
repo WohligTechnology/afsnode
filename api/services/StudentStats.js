@@ -479,7 +479,8 @@ var models = {
         _id: {
           knockout: "$knockout",
           heat: "$heat",
-          league: "$leagueknockout"
+          league: "$leagueknockout",
+          qualifying: "$qualifyingknockout"
         },
         "stat": {
           $first: "$_id"
@@ -514,7 +515,8 @@ var models = {
         drawFormat: 1,
         knockout: "$_id.knockout",
         heat: "$_id.heat",
-        leagueknockout: "$_id.league"
+        leagueknockout: "$_id.league",
+        qualifyingknockout: "$_id.qualifying"
       }
     }, {
       $match: sportsconstraints
@@ -627,6 +629,57 @@ var models = {
               select: 'name logo'
             }
           }]
+        }, {
+          path: 'qualifyingknockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'heats.player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'heats.team',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
+            }
+          }]
         }], function (err, response) {
           if (err) {
             callback(err, null);
@@ -706,7 +759,8 @@ var models = {
             knockout: "$knockout",
             heat: "$heat",
             league: "$leagueknockout",
-            swiss: "$swissleague"
+            swiss: "$swissleague",
+            qualifying: "$qualifyingknockout"
           },
           "stat": {
             $first: "$_id"
@@ -742,7 +796,8 @@ var models = {
           knockout: "$_id.knockout",
           heat: "$_id.heat",
           leagueknockout: "$_id.league",
-          swissleague: "$_id.swiss"
+          swissleague: "$_id.swiss",
+          qualifyingknockout: "$_id.qualifying"
         }
       }, {
         $sort: {
@@ -870,6 +925,57 @@ var models = {
             populate: {
               path: 'school',
               select: 'name'
+            }
+          }]
+        }, {
+          path: 'qualifyingknockout',
+          populate: [{
+            path: 'player1',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'player2',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'team1',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'team2',
+            select: "name school players",
+            populate: [{
+              path: 'school',
+              select: 'name'
+            }, {
+              path: 'players',
+              select: 'name'
+            }]
+          }, {
+            path: 'heats.player',
+            select: "name profilePic school",
+            populate: {
+              path: 'school',
+              select: 'name'
+            }
+          }, {
+            path: 'heats.team',
+            select: "name school",
+            populate: {
+              path: 'school',
+              select: 'name logo'
             }
           }]
         }], function (err, response) {
