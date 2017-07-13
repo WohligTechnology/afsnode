@@ -31,7 +31,7 @@
     "moment": "^2.18.1",
     "mongo-xlsx": "^1.0.12",
     "mongodb": "2.1.7",
-    "mongoose": "^4.10.7",
+    "mongoose": "^4.11.1",
     "mongoose-deep-populate": "^3.0.0",
     "mongoose-populate-virtuals": "^1.0.3",
     "rc": "1.0.1",
