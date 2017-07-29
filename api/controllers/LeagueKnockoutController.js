@@ -217,6 +217,7 @@ module.exports = {
       var excelData = [];
       var row = {};
       _.each(data2, function (key) {
+        console.log(key);
         row = {};
         row = {
           "MATCH ID": key.matchid,
@@ -235,7 +236,7 @@ module.exports = {
           row['PARTICIPANT 1'] = key[key.participantType + '1'].name;
           row['SCHOOL 1'] = key[key.participantType + '1'].school.name;
 
-          row['RESULT 1'] = key['result' + key.participantType + '1'];
+          row['RESULT 1'] = key['result1'];
         } else {
           row['SFAID 1'] = '';
           row['PARTICIPANT 1'] = '';
@@ -248,7 +249,7 @@ module.exports = {
           row['PARTICIPANT 2'] = key[key.participantType + '2'].name;
           row['SCHOOL 2'] = key[key.participantType + '2'].school.name;
 
-          row['RESULT 2'] = key['result' + key.participantType + '2'];
+          row['RESULT 2'] = key['result2'];
         } else {
           row['SFAID 2'] = '';
           row['PARTICIPANT 2'] = '';

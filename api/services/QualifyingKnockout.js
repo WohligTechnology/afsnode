@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var objectid = require("mongodb").ObjectId;
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var Schema = sails.mongoose.Schema;
 var schema = new Schema({
@@ -98,7 +99,7 @@ schema.plugin(deepPopulate, {
       select: 'name _id sfaid school'
     },
     'heats.player.school': {
-      select: 'name _id sfaid school'
+      select: 'name _id sfaid'
     },
     'player1': {
       select: 'name _id sfaid school'
@@ -443,7 +444,7 @@ var models = {
       } else {
         callback(null, deleted);
       }
-    }).populate('sport').populate('heats.player').populate('heats.team').populate('team1').populate('team2').populate('player1').populate('player2');
+    }).populate('sport').populate('heats.player').populate('heats.player.school').populate('heats.team').populate('team1').populate('team2').populate('player1').populate('player2');
   },
   findForDrop: function (data, callback) {
     var returns = [];

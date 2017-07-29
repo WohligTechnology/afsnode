@@ -167,15 +167,15 @@ module.exports = {
     QualifyingKnockout.find(checkObj).sort({
       roundno: -1,
       order: 1
-    }).deepPopulate('player.school', "name sfaid school").populate("heats.player").populate('player', "name sfaid ").populate('sport').populate("agegroup", "name").populate("player1").populate("player2").populate("team1").populate("team2").exec(function (err, data2) {
+    }).deepPopulate("heats.player.school player1.school player2.school team1.school team2.school").populate("heats.player").populate('sport').populate("agegroup", "name").populate("player1").populate("player2").populate("team1").populate("team2").exec(function (err, data2) {
 
-      console.log("DATA2", data2);
+      // console.log("DATA2", data2);
 
       var excelData = [];
       var row = {};
       _.each(data2, function (key) {
         row = {};
-        console.log("hhhhhhhhhhhhh", key);
+        // console.log("hhhhhhhhhhhhh", key);
         row = {
           "MATCH ID": key.matchid,
           "PARTICIPANT TYPE": key.participantType,
@@ -188,7 +188,6 @@ module.exports = {
 
         row['SCHOOL'] = "";
         row['LANE NUMBER'] = "";
-        1
         row['TIMING'] = "";
         row['RESULTS'] = "";
 
@@ -198,15 +197,15 @@ module.exports = {
               row['PARTICIPANTS'] += it[key.participantType].sfaid + ". " + it[key.participantType].name + ', ';
 
               if (it[key.participantType].school) {
-
+                console.log("0000000000000000", it);
                 row['SCHOOL'] += it[key.participantType].school.name + ". " + ', ';
               } else {
                 row['SCHOOL'] += 'Undeclared' + ', ';
 
               }
 
-              row['LANE NUMBER'] += it.laneno + ' , ';
-              row['TIMING'] += it.timing + ' , ';
+              row['LANE NUMBER'] += it.position + ' , ';
+              row['TIMING'] += it.score + ' , ';
 
 
               row['RESULTS'] += it.result + ', ';

@@ -189,7 +189,7 @@ module.exports = {
           row['PARTICIPANT'] = key[key.participantType].name;
           row['SCHOOL'] = key[key.participantType].school.name;
 
-          row['RESULT'] = key['result' + key.participantType];
+          row['RESULT'] = key['result'];
         } else {
           row['SFAID'] = '';
           row['PARTICIPANT'] = '';

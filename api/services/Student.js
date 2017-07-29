@@ -65,6 +65,13 @@ var schema = new Schema({
   via: String,
   payment: String
 });
+schema.plugin(deepPopulate, {
+  populate: {
+    'school': {
+      select: 'name _id sfaid'
+    }
+  }
+});
 module.exports = sails.mongoose.model('Student', schema);
 var models = {
   saveData: function (data, callback) {
