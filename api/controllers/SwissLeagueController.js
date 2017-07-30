@@ -249,7 +249,7 @@ module.exports = {
         });
         _.each(sprt, function (n, key) {
           if (key < sprt.length - 2) {
-            if (key == 0) {
+            if (key === 0) {
               stng = stng + n;
             } else {
               stng = stng + " " + n;
@@ -261,33 +261,25 @@ module.exports = {
           }
         });
 
+        var arrFunction = [
+          getSport, getFirstStudent, getSecondStudent
+        ];
         if (matchid) {
-          async.waterfall([
-            getSport, getFirstStudent, getSecondStudent, findAndUpdate
-          ], function (err, data) {
-            if (err) {
-              res.json({
-                value: false,
-                data: err
-              });
-            } else {
-              saveAll(++num);
-            }
-          });
+          arrFunction.push(findAndUpdate);
         } else {
-          async.waterfall([
-            getSport, getFirstStudent, getSecondStudent, createNewEntry
-          ], function (err, data) {
-            if (err) {
-              res.json({
-                value: false,
-                data: err
-              });
-            } else {
-              saveAll(++num);
-            }
-          });
+          arrFunction.push(createNewEntry);
         }
+        async.waterfall(arrFunction, function (err, data) {
+          if (err) {
+            res.json({
+              value: false,
+              data: err
+            });
+          } else {
+            saveAll(++num);
+          }
+        });
+
       }
 
       function getSport(callback) {
