@@ -1,6 +1,6 @@
 apps:
   - script: "app.js"
-    name: "SFA Production Old"
-    # name: "SFA Production"
+  # name: "SFA Production Old"
+    name: "SFA Production"
     watch: false
     args: "--prod"
