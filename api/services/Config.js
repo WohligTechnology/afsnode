@@ -8,7 +8,7 @@ var pdf = require('html-pdf');
 var Grid = require('gridfs-stream');
 var fs = require("fs");
 var request = require("request");
-// var lwip = require("lwip");
+var lwip = require("lwip");
 var MaxImageSize = 50000;
 var googl = require('goo.gl');
 var gfs = Grid(sails.mongoose.connections[0].db, sails.mongoose);
@@ -72,45 +72,45 @@ module.exports = {
     }
 
     if (extension == "png" || extension == "jpg" || extension == "gif") {
-      // lwip.open(filename, extension, function (err, image) {
-      //   var upImage = {
-      //     width: image.width(),
-      //     height: image.height(),
-      //     ratio: image.width() / image.height()
-      //   };
+      lwip.open(filename, extension, function (err, image) {
+        var upImage = {
+          width: image.width(),
+          height: image.height(),
+          ratio: image.width() / image.height()
+        };
 
-      //   if (upImage.width > upImage.height) {
-      //     if (upImage.width > MaxImageSize) {
-      //       image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function (err, image2) {
-      //         upImage = {
-      //           width: image2.width(),
-      //           height: image2.height(),
-      //           ratio: image2.width() / image2.height()
-      //         };
-      //         image2.writeFile(filename, function (err) {
-      //           writer2(upImage);
-      //         });
-      //       });
-      //     } else {
-      //       writer2(upImage);
-      //     }
-      //   } else {
-      //     if (upImage.height > MaxImageSize) {
-      //       image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function (err, image2) {
-      //         upImage = {
-      //           width: image2.width(),
-      //           height: image2.height(),
-      //           ratio: image2.width() / image2.height()
-      //         };
-      //         image2.writeFile(filename, function (err) {
-      //           writer2(upImage);
-      //         });
-      //       });
-      //     } else {
-      //       writer2(upImage);
-      //     }
-      //   }
-      // });
+        if (upImage.width > upImage.height) {
+          if (upImage.width > MaxImageSize) {
+            image.resize(MaxImageSize, MaxImageSize / (upImage.width / upImage.height), function (err, image2) {
+              upImage = {
+                width: image2.width(),
+                height: image2.height(),
+                ratio: image2.width() / image2.height()
+              };
+              image2.writeFile(filename, function (err) {
+                writer2(upImage);
+              });
+            });
+          } else {
+            writer2(upImage);
+          }
+        } else {
+          if (upImage.height > MaxImageSize) {
+            image.resize((upImage.width / upImage.height) * MaxImageSize, MaxImageSize, function (err, image2) {
+              upImage = {
+                width: image2.width(),
+                height: image2.height(),
+                ratio: image2.width() / image2.height()
+              };
+              image2.writeFile(filename, function (err) {
+                writer2(upImage);
+              });
+            });
+          } else {
+            writer2(upImage);
+          }
+        }
+      });
     } else {
       imageStream.pipe(writestream);
     }
@@ -213,52 +213,52 @@ module.exports = {
           var imageStream = fs.createWriteStream('./.tmp/uploads/' + filename);
           readstream.pipe(imageStream);
           imageStream.on("finish", function () {
-            // lwip.open('./.tmp/uploads/' + filename, function (err, image) {
-            //   ImageWidth = image.width();
-            //   ImageHeight = image.height();
-            //   var newWidth = 0;
-            //   var newHeight = 0;
-            //   var pRatio = width / height;
-            //   var iRatio = ImageWidth / ImageHeight;
-            //   if (width && height) {
-            //     newWidth = width;
-            //     newHeight = height;
-            //     switch (style) {
-            //       case "fill":
-            //         if (pRatio > iRatio) {
-            //           newHeight = height;
-            //           newWidth = height * (ImageWidth / ImageHeight);
-            //         } else {
-            //           newWidth = width;
-            //           newHeight = width / (ImageWidth / ImageHeight);
-            //         }
-            //         break;
-            //       case "cover":
-            //         if (pRatio < iRatio) {
-            //           newHeight = height;
-            //           newWidth = height * (ImageWidth / ImageHeight);
-            //         } else {
-            //           newWidth = width;
-            //           newHeight = width / (ImageWidth / ImageHeight);
-            //         }
-            //         break;
-            //     }
-            //   } else if (width) {
-            //     newWidth = width;
-            //     newHeight = width / (ImageWidth / ImageHeight);
-            //   } else if (height) {
-            //     newWidth = height * (ImageWidth / ImageHeight);
-            //     newHeight = height;
-            //   }
-            //   image.resize(parseInt(newWidth), parseInt(newHeight), function (err, image2) {
-            //     image2.writeFile('./.tmp/uploads/' + filename, function (err) {
-            //       writer2('./.tmp/uploads/' + filename, newNameExtire, {
-            //         width: newWidth,
-            //         height: newHeight
-            //       });
-            //     });
-            //   });
-            // });
+            lwip.open('./.tmp/uploads/' + filename, function (err, image) {
+              ImageWidth = image.width();
+              ImageHeight = image.height();
+              var newWidth = 0;
+              var newHeight = 0;
+              var pRatio = width / height;
+              var iRatio = ImageWidth / ImageHeight;
+              if (width && height) {
+                newWidth = width;
+                newHeight = height;
+                switch (style) {
+                  case "fill":
+                    if (pRatio > iRatio) {
+                      newHeight = height;
+                      newWidth = height * (ImageWidth / ImageHeight);
+                    } else {
+                      newWidth = width;
+                      newHeight = width / (ImageWidth / ImageHeight);
+                    }
+                    break;
+                  case "cover":
+                    if (pRatio < iRatio) {
+                      newHeight = height;
+                      newWidth = height * (ImageWidth / ImageHeight);
+                    } else {
+                      newWidth = width;
+                      newHeight = width / (ImageWidth / ImageHeight);
+                    }
+                    break;
+                }
+              } else if (width) {
+                newWidth = width;
+                newHeight = width / (ImageWidth / ImageHeight);
+              } else if (height) {
+                newWidth = height * (ImageWidth / ImageHeight);
+                newHeight = height;
+              }
+              image.resize(parseInt(newWidth), parseInt(newHeight), function (err, image2) {
+                image2.writeFile('./.tmp/uploads/' + filename, function (err) {
+                  writer2('./.tmp/uploads/' + filename, newNameExtire, {
+                    width: newWidth,
+                    height: newHeight
+                  });
+                });
+              });
+            });
           });
         }
       });
