@@ -14,7 +14,7 @@ var schema = new Schema({
     type: String
   },
   albumImages: [{
-    type: String
+    image: String
   }]
 
 
