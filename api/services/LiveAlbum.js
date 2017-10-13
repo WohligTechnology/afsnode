@@ -49,8 +49,19 @@ var models = {
   },
 
 
+  // getAllAlbums: function (data, callback) {
+  //   LiveAlbum.find({}, {}, {}, function (err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
   getAllAlbums: function (data, callback) {
-    LiveAlbum.find({}, {}, {}, function (err, deleted) {
+    LiveAlbum.find({}).sort({
+      date: -1
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {

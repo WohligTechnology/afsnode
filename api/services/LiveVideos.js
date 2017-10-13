@@ -51,8 +51,19 @@ var models = {
   },
 
 
+  // getAll: function (data, callback) {
+  //   LiveVideos.find({}, {}, {}, function (err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
   getAll: function (data, callback) {
-    LiveVideos.find({}, {}, {}, function (err, deleted) {
+    LiveVideos.find({}).sort({
+      date: -1
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -60,7 +71,6 @@ var models = {
       }
     });
   },
-
   deleteData: function (data, callback) {
     LiveVideos.findOneAndRemove({
       _id: data._id

@@ -56,8 +56,19 @@ var models = {
   },
 
 
+  // getAllSpecialEvents: function (data, callback) {
+  //   SpecialEvents.find({}, {}, {}, function (err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
   getAllSpecialEvents: function (data, callback) {
-    SpecialEvents.find({}, {}, {}, function (err, deleted) {
+    SpecialEvents.find({}).sort({
+      date: -1
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -65,7 +76,6 @@ var models = {
       }
     });
   },
-
   deleteData: function (data, callback) {
     SpecialEvents.findOneAndRemove({
       _id: data._id

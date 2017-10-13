@@ -47,8 +47,20 @@ var models = {
   },
 
 
+  // getAllRankingTables: function (data, callback) {
+  //   LiveUpdate.find({}, {}, {}, function (err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
+
   getAllRankingTables: function (data, callback) {
-    LiveUpdate.find({}, {}, {}, function (err, deleted) {
+    LiveUpdate.find({}).sort({
+      date: -1
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -56,7 +68,6 @@ var models = {
       }
     });
   },
-
   deleteData: function (data, callback) {
     LiveUpdate.findOneAndRemove({
       _id: data._id

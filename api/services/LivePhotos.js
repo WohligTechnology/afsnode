@@ -47,8 +47,19 @@ var models = {
   },
 
 
+  // getAll: function (data, callback) {
+  //   LivePhotos.find({}, {}, {}, function (err, deleted) {
+  //     if (err) {
+  //       callback(err, null);
+  //     } else {
+  //       callback(null, deleted);
+  //     }
+  //   });
+  // },
   getAll: function (data, callback) {
-    LivePhotos.find({}, {}, {}, function (err, deleted) {
+    LivePhotos.find({}).sort({
+      date: -1
+    }).exec(function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
