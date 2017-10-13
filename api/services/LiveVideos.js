@@ -18,7 +18,8 @@ var schema = new Schema({
   },
   thumbnail: {
     type: String
-  }
+  },
+  date: Date
 
 
 });

@@ -12,7 +12,8 @@ var schema = new Schema({
   },
   image: {
     type: String
-  }
+  },
+  date: Date
 
 
 

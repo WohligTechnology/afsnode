@@ -15,7 +15,8 @@ var schema = new Schema({
   },
   albumImages: [{
     image: String
-  }]
+  }],
+  date: Date
 
 
 });

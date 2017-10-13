@@ -21,7 +21,8 @@ var schema = new Schema({
   },
   eventDetails: {
     type: String
-  }
+  },
+  date: Date
 
 
 
