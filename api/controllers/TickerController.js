@@ -24,6 +24,29 @@ module.exports = {
   },
   getAll: function (req, res) {
     if (req.body) {
+      Ticker.getAll(req.body, function (err, result) {
+        if (err) {
+          res.json({
+            value: false,
+            data: err
+          });
+        } else {
+          res.json({
+            value: true,
+            data: result
+          });
+        }
+      });
+
+    } else {
+      res.json({
+        value: false,
+        data: "Invalid call"
+      });
+    }
+  },
+  getAllTickers: function (req, res) {
+    if (req.body) {
       Ticker.getAllTickers(req.body, function (err, respo) {
         if (err) {
           res.json({
