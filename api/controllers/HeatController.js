@@ -138,22 +138,16 @@ module.exports = {
   },
   updateVideoURL: function (req, res) {
     req.file("file").upload(function (err, uploadedFiles) {
+      // res.callback(null,uploadedFiles);
       var results = [];
 
       function saveMe(num) {
         var heat = {};
         var vdo = results[num].RESULTS;
         heat.matchid = parseInt(results[num]["MATCH ID"]);
-        // heat.push({
-        //   "heats.0.standing": 90
-        // });
-        heat.video = results[num].VIDEO;
-        Heat.findOneAndUpdate({
+
+        Heat.findOne({
           matchid: heat.matchid
-        }, {
-          $set: heat
-        }, {
-          new: true
         }, function (err, data) {
           console.log(err);
           if (err) {
@@ -163,7 +157,66 @@ module.exports = {
             });
           } else {
             // console.log("new"data);
-            saveAll(++num);
+            if (results[num].VIDEO) {
+              console.log("Inside if");
+              var videoArr = _.split(results[num].VIDEO, ',');
+              console.log("videoArr", videoArr);
+              if (videoArr.length == 1) {
+                console.log("Inside 2nd if");
+                data.video = videoArr[0];
+                async.concatSeries(data.heats, function (heat, callback) {
+                  heat.video = results[num].VIDEO;
+                  callback(null, heat);
+                }, function (err, finalArr) {
+                  data.heats = finalArr;
+                  Heat.saveData(data, function (data) {
+                    saveAll(++num);
+                  });
+
+                });
+              } else {
+                console.log("Inside 2nd else");
+                data.video = "";
+                var participantsArr = _.split(results[num].PARTICIPANTS, ',');
+                console.log("participantsArr", participantsArr);
+                async.concatSeries(participantsArr, function (singleParticipant, callback) {
+                  var singleParticipantKey = _.indexOf(participantsArr, singleParticipant);
+                  console.log("singleParticipantKey", singleParticipantKey);
+                  // console.log("results[num].PARTICIPANTS", results[num].PARTICIPANTS);
+                  var sfaId = _.trim(_.split(singleParticipant, '.')[0]);
+                  var matchObj = {
+                    'sfaid': sfaId
+                  }
+                  Student.findOne(matchObj).lean().exec(function (err, student) {
+                    // console.log("student", student);
+                    if (err || !student) {
+                      callback();
+                    } else {
+                      var studentId = student._id;
+                      console.log("matchObj", matchObj);
+                      var index = _.findIndex(data.heats, ['player', studentId]);
+                      console.log("index", index);
+                      console.log("videoArr[singleParticipantKey]", videoArr[singleParticipantKey]);
+                      data.heats[index].video = videoArr[singleParticipantKey];
+                      console.log("data.heats[index].video", data.heats[index].video);
+                      callback(null, data.heats[index]);
+                    }
+
+                  })
+                }, function (err, finalArr) {
+                  data.heats = finalArr;
+                  Heat.saveData(data, function (data) {
+                    saveAll(++num);
+                  });
+
+                });
+              }
+
+            } else {
+              console.log("Inside else");
+              data.video = "";
+              saveAll(++num);
+            }
           }
 
         });
@@ -189,7 +242,8 @@ module.exports = {
           input: uploadedFiles[0].fd,
           output: ".tmp/public/output.json"
         }, function (err, result) {
-          console.log(result);
+
+          // res.callback(null,result);
           if (err) {
             res.json({
               value: false,
@@ -197,13 +251,14 @@ module.exports = {
             });
           } else {
             results = _.cloneDeep(result);
-
+            // console.log("results", results);
             saveAll(0);
           }
         });
       }
     });
   },
+
   exportHeat: function (req, res) {
     var checkObj = {};
     checkObj = {
@@ -274,7 +329,22 @@ module.exports = {
           });
         }
 
-        row['VIDEO'] = key.video;
+        row['VIDEO'] = _.map(key.heats, function (n) {
+          return n.video;
+        });
+        // row['VIDEO']=row['VIDEO'].join();
+        var hist = {};
+        _.map(row['VIDEO'], function (a) {
+          if (a in hist) hist[a]++;
+          else hist[a] = 1;
+        });
+        console.log("hist", hist);
+        if (Object.keys(hist).length == 1) {
+          row['VIDEO'] = row['VIDEO'][0];
+        } else {
+          row['VIDEO'] = row['VIDEO'].join();
+        }
+
         // _.each()
         excelData.push(row);
       });

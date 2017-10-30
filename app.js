@@ -38,6 +38,8 @@ process.chdir(__dirname);
   }
   sails.mongoose = require('mongoose');
   global["database"] = "sfaOld";
+  // global["database"] = "oldSfaDb";
+  
   // global["database"] = "sfa";
   global["mongoose"] = require('mongoose');
   global["fs"] = require('fs');

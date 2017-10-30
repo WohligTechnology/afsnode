@@ -18,7 +18,7 @@ module.exports.globals = {
   *                                                                           *
   ****************************************************************************/
 
-	// _: true,
+	_: false,
 
   /****************************************************************************
   *                                                                           *
@@ -64,3 +64,4 @@ module.exports.globals = {
 };
 
 //global["deepPopulate"] = require('mongoose-deep-populate')(mongoose);
+global["_"] = require('lodash');
