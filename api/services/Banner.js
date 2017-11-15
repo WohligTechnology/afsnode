@@ -18,6 +18,14 @@ var schema = new Schema({
     type: String,
     default: ""
   },
+  mobileImg: {
+    type: String,
+    default: ""
+  },
+  mobileImgLink: {
+    type: String,
+    default: ""
+  },
   city: {
     type: String,
     default: ""
