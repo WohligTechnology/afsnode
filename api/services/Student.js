@@ -246,7 +246,13 @@ var models = {
   // },
   getOne: function (data, callback) {
     Student.findOne({
-      _id: data._id
+      $or: [{
+          _id: data._id
+        },
+        {
+          sfaid: data.sfaid
+        }
+      ]
     }).populate("school", "_id name").lean().exec(function (err, deleted) {
       if (err) {
         callback(err, null);
@@ -255,6 +261,7 @@ var models = {
       }
     });
   },
+
   sendMessageToAll: function (data, callback) {
     var students = [];
     var contacts = [];

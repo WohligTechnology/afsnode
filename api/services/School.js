@@ -258,7 +258,13 @@ var models = {
     // async.parallel([
     // function(callback) {
     School.findOne({
-      _id: data._id
+      $or: [{
+          _id: data._id
+        },
+        {
+          sfaid: data.sfaid
+        }
+      ]
     }).lean().exec(function (err, deleted) {
       if (err) {
         callback(err, null);
