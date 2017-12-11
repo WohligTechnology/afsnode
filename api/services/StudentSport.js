@@ -4,6 +4,8 @@
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
+var mongoose = require('mongoose');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 var Schema = sails.mongoose.Schema;
 var objectid = require("mongodb").ObjectId;
 var schema = new Schema({
@@ -54,7 +56,6 @@ var schema = new Schema({
   },
   medals: Schema.Types.Mixed,
   school: {
-
     _id: {
       type: Schema.Types.ObjectId,
       ref: 'School'
@@ -68,14 +69,22 @@ var schema = new Schema({
   }
 });
 module.exports = sails.mongoose.model('StudentSport', schema);
+
+schema.plugin(deepPopulate, {
+  populate: {
+    'student': {
+      select: 'name _id sfaid school gender dob'
+    }
+  }
+});
 var models = {
-  saveData: function(data, callback) {
+  saveData: function (data, callback) {
     var studentsport = this(data);
     if (data._id) {
       // console.log(data);
       this.findOneAndUpdate({
         _id: data._id
-      }, data, function(err, data2) {
+      }, data, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -83,7 +92,7 @@ var models = {
         }
       });
     } else {
-      studentsport.save(function(err, data2) {
+      studentsport.save(function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -92,7 +101,7 @@ var models = {
       });
     }
   },
-  saveDataObjectId: function(data, callback) {
+  saveDataObjectId: function (data, callback) {
     var sport = this(data);
     if (data._id) {
       if (data.sportslist) {
@@ -118,7 +127,7 @@ var models = {
       }
       this.update({
         _id: data._id
-      }, sport, {}, function(err, data2) {
+      }, sport, {}, function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -127,7 +136,7 @@ var models = {
         }
       });
     } else {
-      sport.save(function(err, data2) {
+      sport.save(function (err, data2) {
         if (err) {
           callback(err, null);
         } else {
@@ -136,72 +145,71 @@ var models = {
       });
     }
   },
-  getSchoolSportByGender: function(data, callback) {
+  getSchoolSportByGender: function (data, callback) {
     var newreturns = {};
     async.parallel([
-        function(callback) {
+        function (callback) {
           StudentSport.aggregate([{
-              $match: {
-                "school._id": objectid(data._id),
-                "year": data.year
+            $match: {
+              "school._id": objectid(data._id),
+              "year": data.year
+            }
+          }, {
+            $lookup: {
+              from: 'students',
+              localField: 'student',
+              foreignField: '_id',
+              as: 'student'
+            }
+          }, {
+            $unwind: "$student"
+          }, {
+            $group: {
+              _id: {
+                student: "$student._id",
+                gender: "$student.gender",
+              },
+              "sportslist": {
+                $addToSet: "$sportslist._id"
               }
-            }, {
-              $lookup: {
-                from: 'students',
-                localField: 'student',
-                foreignField: '_id',
-                as: 'student'
+            }
+          }, {
+            $unwind: "$sportslist"
+          }, {
+            $group: {
+              _id: {
+                sport: "$sportslist",
+                gender: "$_id.gender"
+              },
+              "count": {
+                $sum: 1
               }
-            }, {
-              $unwind: "$student"
-            },{
-              $group:{
-                _id:{
-                  student:"$student._id",
-                  gender:"$student.gender",
-                },
-                "sportslist":{
-                  $addToSet:"$sportslist._id"
-                }
-              }
-            },{
-              $unwind:"$sportslist"
-            },{
-              $group: {
-                _id: {
-                  sport: "$sportslist",
-                  gender: "$_id.gender"
-                },
-                "count": {
-                  $sum: 1
-                }
-              }
-            }, {
-              $group: {
-                "_id": "$_id.sport",
-                "gender": {
-                  $addToSet: {
-                    name: "$_id.gender",
-                    "count": "$count"
-                  }
+            }
+          }, {
+            $group: {
+              "_id": "$_id.sport",
+              "gender": {
+                $addToSet: {
+                  name: "$_id.gender",
+                  "count": "$count"
                 }
               }
             }
-          ]).exec(function(err, response) {
+          }]).exec(function (err, response) {
             if (err) {
               callback(err, null);
             } else {
               SportsList.populate(response, {
                 path: "_id"
-              }, function(err, data) {
+              }, function (err, data) {
                 if (err) {
                   callback(err, null);
-                } else if(data.length > 0){
+                } else if (data.length > 0) {
                   newreturns.sports = data;
                   callback(null, data);
-                }else{
+                } else {
                   newreturns.sports = data;
-                  callback(data,null);
+                  callback(data, null);
                 }
               });
             }
@@ -214,26 +222,27 @@ var models = {
               year: data.year
             };
           }
-          if(data._id){
+          if (data._id) {
             checkObj.school = data._id;
           }
-          Student.countContingentStrength(checkObj,function (err,data) {
-            if(err){
-              callback(err,null);
-            }else{
-              newreturns.gender=data[0];
-              callback(null,data);
+          Student.countContingentStrength(checkObj, function (err, data) {
+            if (err) {
+              callback(err, null);
+            } else {
+              newreturns.gender = data[0];
+              callback(null, data);
             }
           });
-        },function (callback) {
+        },
+        function (callback) {
 
-          School.getSchoolRank(data,function (err,data) {
+          School.getSchoolRank(data, function (err, data) {
             newreturns.rank = data;
-            callback(null,"data");
+            callback(null, "data");
           });
         }
       ],
-      function(err, data4) {
+      function (err, data4) {
         if (err) {
           console.log(err);
           callback(err, null);
@@ -244,56 +253,56 @@ var models = {
         }
       });
   },
-  getContingentStrength : function (data,callback) {
+  getContingentStrength: function (data, callback) {
     StudentSport.aggregate([{
-      $match:{
-          'school._id':objectid(data.school),
-          year:data.year
+      $match: {
+        'school._id': objectid(data.school),
+        year: data.year
       }
-    },{
-      $group:{
-        _id:null,
-        student:{
-          $addToSet:'$student'
+    }, {
+      $group: {
+        _id: null,
+        student: {
+          $addToSet: '$student'
         }
       }
-    },{
-      $unwind:'$student'
-    },{
-      $lookup:{
+    }, {
+      $unwind: '$student'
+    }, {
+      $lookup: {
         from: 'students',
         localField: 'student',
         foreignField: '_id',
         as: 'student'
       }
-    },{
-      $unwind:"$student"
-    },{
-      $project:{
-        _id:"$student._id",
-        name:"$student.name",
-        profilePic:"$student.profilePic",
-        sfaid:"$student.sfaid",
-        gender:"$student.gender",
+    }, {
+      $unwind: "$student"
+    }, {
+      $project: {
+        _id: "$student._id",
+        name: "$student.name",
+        profilePic: "$student.profilePic",
+        sfaid: "$student.sfaid",
+        gender: "$student.gender",
       }
-    },{
-      $sort:{
-        sfaid:1
+    }, {
+      $sort: {
+        sfaid: 1
       }
-    },{
-      $skip:8*(data.pagenumber - 1)
-    },{
-      $limit:8
-    }]).exec(function (err,data) {
-      if(err){
-        callback(err,null);
-      }else{
-        callback(null,data);
+    }, {
+      $skip: 8 * (data.pagenumber - 1)
+    }, {
+      $limit: 8
+    }]).exec(function (err, data) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, data);
       }
     });
   },
-  getAll: function(data, callback) {
-    StudentSport.find({}, {}, {}, function(err, deleted) {
+  getAll: function (data, callback) {
+    StudentSport.find({}, {}, {}, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -301,10 +310,10 @@ var models = {
       }
     });
   },
-  deleteData: function(data, callback) {
+  deleteData: function (data, callback) {
     StudentSport.findOneAndRemove({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -312,10 +321,10 @@ var models = {
       }
     });
   },
-  getOne: function(data, callback) {
+  getOne: function (data, callback) {
     StudentSport.findOne({
       _id: data._id
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -323,7 +332,7 @@ var models = {
       }
     });
   },
-  getFirstCategoryFromSport: function(data, callback) {
+  getFirstCategoryFromSport: function (data, callback) {
     Sport.aggregate([{
       $match: {
         'sportslist._id': objectid(data.sport)
@@ -339,7 +348,7 @@ var models = {
       $project: {
         category: 1
       }
-    }]).exec(function(err, response) {
+    }]).exec(function (err, response) {
       if (err) {
         callback(err, null);
       } else {
@@ -356,7 +365,7 @@ var models = {
   //
   //   });
   // },
-  getStudentsbySport: function(data, callback) {
+  getStudentsbySport: function (data, callback) {
 
     var studentconstraints = {};
     if (data.sfaid) {
@@ -406,7 +415,7 @@ var models = {
       }
     }, {
       $limit: 10
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       // console.log(data2);
       if (err) {
         console.log(err);
@@ -425,7 +434,7 @@ var models = {
         //
         //   }
         // });
-        data2 = _.map(data2, function(key) {
+        data2 = _.map(data2, function (key) {
           return key.student;
         });
         callback(null, data2);
@@ -434,7 +443,7 @@ var models = {
       }
     });
   },
-  getStudentsbySportwithExclude: function(data, callback) {
+  getStudentsbySportwithExclude: function (data, callback) {
     var studentconstraints = {};
     if (data.sfaid) {
       studentconstraints = {
@@ -481,12 +490,12 @@ var models = {
       }
     }, {
       $limit: 10
-    }]).exec(function(err, data2) {
+    }]).exec(function (err, data2) {
       if (err) {
         console.log(err);
         callback(err, null);
       } else if (data2 && data2.length > 0) {
-        data2 = _.map(data2, function(key) {
+        data2 = _.map(data2, function (key) {
           return key.student;
         });
         callback(null, data2);
@@ -495,10 +504,10 @@ var models = {
       }
     });
   },
-  getSports: function(data, callback) {
+  getSports: function (data, callback) {
     StudentSport.find({
       student: data.student
-    }, function(err, deleted) {
+    }, function (err, deleted) {
       if (err) {
         callback(err, null);
       } else {
@@ -506,7 +515,7 @@ var models = {
       }
     });
   },
-  getSportsPopulated: function(data, callback) {
+  getSportsPopulated: function (data, callback) {
     console.log(data);
     StudentSport.aggregate([{
       $match: {
@@ -516,17 +525,17 @@ var models = {
     }, {
       $group: {
         _id: "$sportslist._id",
-        sports:{
-          $addToSet:{
-            year:"$year",
-            sportslist:"$sportslist",
-            agegroup:"$agegroup",
-          firstcategory:"$firstcategory",
-          secondcategory:"$secondcategory",
-          thirdcategory:"$thirdcategory",
-          medals:"$medals",
-          school:"$school",
-          student:"$student",
+        sports: {
+          $addToSet: {
+            year: "$year",
+            sportslist: "$sportslist",
+            agegroup: "$agegroup",
+            firstcategory: "$firstcategory",
+            secondcategory: "$secondcategory",
+            thirdcategory: "$thirdcategory",
+            medals: "$medals",
+            school: "$school",
+            student: "$student",
           }
         }
       }
@@ -534,29 +543,28 @@ var models = {
       $project: {
         "_id": 0,
         "sport": "$_id",
-        sports:1
+        sports: 1
 
       }
-    }
-  ]).exec(function(err, data) {
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
         SportsList.populate(data, {
           path: "sport"
-        }, function(err, response) {
+        }, function (err, response) {
           if (err) {
             callback(err, null);
           } else {
             if (response.length > 0) {
               var sp = [];
               var newob = {};
-               _.each(response,function (key) {
-                 newob = {};
-                 newob = _.clone(key.sport.toObject());
-                 newob.sports=_.clone(key.sports);
-                 sp.push(newob);
-             });
+              _.each(response, function (key) {
+                newob = {};
+                newob = _.clone(key.sport.toObject());
+                newob.sports = _.clone(key.sports);
+                sp.push(newob);
+              });
               callback(null, sp);
 
             } else {
@@ -568,7 +576,7 @@ var models = {
       }
     });
   },
-  getStudentBio: function(data, callback) {
+  getStudentBio: function (data, callback) {
     StudentSport.aggregate([{
       $match: {
         student: objectid(data.student),
@@ -577,17 +585,17 @@ var models = {
     }, {
       $group: {
         _id: "$sportslist._id",
-        sports:{
-          $addToSet:{
-            year:"$year",
-            sportslist:"$sportslist",
-            agegroup:"$agegroup",
-          firstcategory:"$firstcategory",
-          secondcategory:"$secondcategory",
-          thirdcategory:"$thirdcategory",
-          medals:"$medals",
-          school:"$school",
-          student:"$student",
+        sports: {
+          $addToSet: {
+            year: "$year",
+            sportslist: "$sportslist",
+            agegroup: "$agegroup",
+            firstcategory: "$firstcategory",
+            secondcategory: "$secondcategory",
+            thirdcategory: "$thirdcategory",
+            medals: "$medals",
+            school: "$school",
+            student: "$student",
           }
         }
       }
@@ -595,29 +603,28 @@ var models = {
       $project: {
         "_id": 0,
         "sport": "$_id",
-        sports:1
+        sports: 1
 
       }
-    }
-  ]).exec(function(err, data) {
+    }]).exec(function (err, data) {
       if (err) {
         callback(err, null);
       } else {
         SportsList.populate(data, {
           path: "sport"
-        }, function(err, response) {
+        }, function (err, response) {
           if (err) {
             callback(err, null);
           } else {
             if (response.length > 0) {
               var sp = [];
               var newob = {};
-               _.each(response,function (key) {
-                 newob = {};
-                 newob = _.clone(key.sport.toObject());
-                 newob.sports=_.clone(key.sports);
-                 sp.push(newob);
-             });
+              _.each(response, function (key) {
+                newob = {};
+                newob = _.clone(key.sport.toObject());
+                newob.sports = _.clone(key.sports);
+                sp.push(newob);
+              });
               callback(null, sp);
 
             } else {
@@ -629,15 +636,15 @@ var models = {
       }
     });
   },
-  updateAllStudentSportRef: function(data, callback) {
-    StudentSport.find({}, {}, {}, function(err, data) {
+  updateAllStudentSportRef: function (data, callback) {
+    StudentSport.find({}, {}, {}, function (err, data) {
       if (err) {
 
       } else {
         // console.log(data.length);
-        async.each(data, function(j, callback1) {
+        async.each(data, function (j, callback1) {
 
-          StudentSport.saveDataObjectId(j, function(err, updated) {
+          StudentSport.saveDataObjectId(j, function (err, updated) {
             if (err) {
               console.log(err);
               callback1(err, null);
@@ -646,7 +653,7 @@ var models = {
             }
           });
 
-        }, function(err) {
+        }, function (err) {
           if (err) {
             console.log(err);
             callback(err, null);

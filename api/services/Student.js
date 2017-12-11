@@ -1244,10 +1244,548 @@ var models = {
         callback(null, pdfArray);
       }
     });
+  },
 
-
+  getDrawFormats: function (data, callback) {
+    async.waterfall([
+        function (callback) {
+          Student.find({
+            school: data.school
+          }).deepPopulate('school').lean().exec(function (err, students) {
+            if (err) {
+              callback(err, null);
+            } else if (_.isEmpty(students)) {
+              callback(null, []);
+            } else {
+              callback(null, students);
+            }
+          });
+        },
+        function (students, callback) {
+          async.concatSeries(students, function (student, callback) {
+            var info = {};
+            info.name = student.name;
+            info.sfaid = student.sfaid;
+            info.school = student.school.name;
+            console.log("id", student._id);
+            Student.getAthleteSport(student, function (err, sportData) {
+              if (err || _.isEmpty(sportData)) {
+                err = "No Data Found";
+                callback(null, {
+                  error: err,
+                  success: student
+                });
+              } else {
+                info.sport = sportData;
+                callback(null, info);
+              }
+            });
+          }, function (err, sport) {
+            callback(null, sport);
+          });
+        },
+        function (sport, callback) {
+          Student.generateExcelVideo(sport, function (err, excelData) {
+            if (err || _.isEmpty(excelData)) {
+              err = "No Data Found";
+              callback(null, {
+                error: err,
+                success: sport
+              });
+            } else {
+              callback(null, excelData);
+            }
+          });
+        }
+      ],
+      function (err, data2) {
+        if (err) {
+          callback(null, []);
+        } else if (data2) {
+          if (_.isEmpty(data2)) {
+            callback(null, data2);
+          } else {
+            callback(null, data2);
+          }
+        }
+      });
 
   },
+
+  getAthleteSport: function (data, callback) {
+    async.parallel([
+        function (callback) {
+          var pipeLine = Student.getAggregatePipeline(data);
+          Knockout.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                console.log("Knockout", totals);
+                callback(null, totals);
+              }
+            }
+          });
+        },
+        function (callback) {
+          var pipeLine = Student.getAggregatePipeline(data);
+          LeagueKnockout.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                callback(null, totals);
+              }
+            }
+          });
+        },
+        function (callback) {
+          var pipeLine = Student.getHeatAggregatePipeline(data);
+          Heat.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                callback(null, totals);
+              }
+            }
+          });
+        },
+        function (callback) {
+          var pipeLine = Student.getQualifyingAggregatePipeline(data);
+          QualifyingRound.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                callback(null, totals);
+              }
+            }
+          });
+        },
+        function (callback) {
+          var pipeLine = Student.getQualifyingKnockoutAggregatePipeline(data);
+          QualifyingKnockout.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                callback(null, totals);
+              }
+            }
+          });
+        },
+        function (callback) {
+          var pipeLine = Student.getSwissAggregatePipeline(data);
+          SwissLeague.aggregate(pipeLine, function (err, totals) {
+            if (err) {
+              console.log(err);
+              callback(err, "error in mongoose");
+            } else {
+              if (_.isEmpty(totals)) {
+                callback(null, []);
+              } else {
+                callback(null, totals);
+              }
+            }
+          });
+        }
+      ],
+      function (err, data2) {
+        if (err) {
+          callback(null, []);
+        } else if (data2) {
+          if (_.isEmpty(data2)) {
+            callback(null, data2);
+          } else {
+            var sportData = _.flattenDeep(data2);
+            callback(null, sportData);
+          }
+        }
+      });
+  },
+
+  generateExcelVideo: function (match, callback) {
+    var finalData = [];
+    var i = 1;
+    _.each(match, function (n) {
+      _.each(n.sport, function (mainData) {
+        console.log("mainData", mainData.info[0].sport);
+        var obj = {};
+        obj["S.R.No."] = i;
+        i++;
+        obj["Athlete SFA ID"] = n.sfaid;
+        obj["Athlete Name"] = n.name;
+        obj["Athlete School"] = n.school;
+        if (mainData.info[0].sport.gender == "Boys") {
+          obj.Gender = "Boys";
+        } else if (mainData.info[0].sport.gender == "Girls") {
+          obj.Gender = "Girls";
+        } else {
+          obj.Gender = "-";
+        }
+        obj["Year"] = mainData.info[0].sport.year;
+        if (mainData.info[0].sport.agegroup) {
+          obj["Age Category"] = mainData.info[0].sport.agegroup.name;
+        } else {
+          obj["Age Category"] = "";
+        }
+        obj["Sport"] = mainData.info[0].sport.sportslist.name;
+        if (mainData.info[0].sport.firstcategory) {
+          obj["Event 1"] = mainData.info[0].sport.firstcategory.name;
+        } else {
+          obj["Event 1"] = "-";
+        }
+        if (mainData.info[0].sport.secondcategory) {
+          obj["Event 2"] = mainData.info[0].sport.secondcategory.name;
+        } else {
+          obj["Event 2"] = "-";
+        }
+        if (n.video) {
+          obj["Video Link"] = n.video;
+        } else {
+          obj["Video Link"] = "-";
+        }
+        finalData.push(obj);
+      });
+    });
+    callback(null, finalData);
+  },
+
+  getAggregatePipeline: function (data) {
+    var pipeline = [
+      // Stage 1
+      {
+        $lookup: {
+          "from": "teams",
+          "localField": "team1",
+          "foreignField": "_id",
+          "as": "team1"
+        }
+      },
+
+      // Stage 2
+      {
+        $unwind: {
+          path: "$team1",
+          preserveNullAndEmptyArrays: true // optional
+        }
+      },
+
+      // Stage 3
+      {
+        $lookup: {
+          "from": "teams",
+          "localField": "team2",
+          "foreignField": "_id",
+          "as": "team2"
+        }
+      },
+
+      // Stage 4
+      {
+        $unwind: {
+          path: "$team2",
+          preserveNullAndEmptyArrays: true // optional
+        }
+      },
+
+      // Stage 5
+      {
+        $match: {
+          $or: [{
+              "team1.players": objectid(data._id)
+            },
+            {
+              "team2.players": objectid(data._id)
+            },
+            {
+              "player1": objectid(data._id)
+            },
+            {
+              "player2": objectid(data._id)
+            }
+          ]
+        }
+      },
+
+      // Stage 6
+      {
+        $lookup: {
+          "from": "sports",
+          "localField": "sport",
+          "foreignField": "_id",
+          "as": "sport"
+        }
+      },
+
+      // Stage 7
+      {
+        $unwind: {
+          path: "$sport",
+          preserveNullAndEmptyArrays: true // optional
+        }
+      },
+      // Stage 8
+      {
+        $group: {
+          "_id": "$_id",
+          "info": {
+            $push: {
+              matchid: "$matchid",
+              sport: "$sport",
+              video: "$video"
+            }
+          }
+        }
+      },
+    ];
+    return pipeline;
+  },
+
+  getHeatAggregatePipeline: function (data) {
+    var pipeline = [
+      // Stage 1
+      {
+        $unwind: {
+          path: "$heats",
+          preserveNullAndEmptyArrays: false // optional
+        }
+      },
+
+      // Stage 2
+      {
+        $lookup: {
+          "from": "teams",
+          "localField": "heats.team",
+          "foreignField": "_id",
+          "as": "heats.team"
+        }
+      },
+
+      // Stage 3
+      {
+        $unwind: {
+          path: "$heats.team",
+          preserveNullAndEmptyArrays: true // optional
+        }
+      },
+
+      // Stage 4
+      {
+        $match: {
+          $or: [{
+              "heats.team.players": objectid(data._id)
+            },
+            {
+              "heats.player": objectid(data._id)
+            }
+          ],
+        }
+      },
+
+      // Stage 5
+      {
+        $lookup: {
+          "from": "sports",
+          "localField": "sport",
+          "foreignField": "_id",
+          "as": "sport"
+        }
+      },
+
+      // Stage 6
+      {
+        $unwind: {
+          path: "$sport",
+        }
+      },
+
+      // Stage 7
+      {
+        $group: {
+          "_id": "$_id",
+          "info": {
+            $push: {
+              matchid: "$matchid",
+              sport: "$sport",
+              video: "$video"
+            }
+          }
+        }
+      },
+    ];
+    return pipeline;
+  },
+
+  getQualifyingAggregatePipeline: function (data) {
+    var pipeline = [
+      // Stage 1
+      {
+        $match: {
+          "player": objectid(data._id)
+        }
+      },
+
+      // Stage 2
+      {
+        $lookup: {
+          "from": "sports",
+          "localField": "sport",
+          "foreignField": "_id",
+          "as": "sport"
+        }
+      },
+
+      // Stage 3
+      {
+        $unwind: {
+          path: "$sport",
+        }
+      },
+
+      // Stage 4
+      {
+        $group: {
+          "_id": "$_id",
+          "info": {
+            $push: {
+              matchid: "$matchid",
+              sport: "$sport",
+              video: "$video"
+            }
+          }
+        }
+      },
+    ];
+    return pipeline;
+  },
+
+  getQualifyingKnockoutAggregatePipeline: function (data) {
+    var pipeline = [
+      // Stage 1
+      {
+        $unwind: {
+          path: "$heats",
+          preserveNullAndEmptyArrays: true // optional
+        }
+      },
+
+      // Stage 2
+      {
+        $lookup: {
+          "from": "sports",
+          "localField": "sport",
+          "foreignField": "_id",
+          "as": "sport"
+        }
+      },
+
+      // Stage 3
+      {
+        $unwind: {
+          path: "$sport"
+        }
+      },
+
+      // Stage 4
+      {
+        $match: {
+          $or: [{
+              "heats.player": objectid(data._id)
+            }, {
+              "player1": objectid(data._id)
+            },
+            {
+              "player2": objectid(data._id)
+            }
+          ]
+        }
+      },
+
+      // Stage 5
+      {
+        $group: {
+          "_id": "$_id",
+          "info": {
+            $push: {
+              matchid: "$matchid",
+              sport: "$sport",
+              video: "$video"
+            }
+          }
+
+        }
+      },
+    ];
+    return pipeline;
+  },
+
+  getSwissAggregatePipeline: function (data) {
+    var pipeline = [
+      // Stage 1
+      {
+        $match: {
+          $or: [{
+              "player1": objectid(data._id)
+            },
+            {
+              "player2": objectid(data._id)
+            }
+          ],
+        }
+      },
+
+      // Stage 2
+      {
+        $lookup: {
+          "from": "sports",
+          "localField": "sport",
+          "foreignField": "_id",
+          "as": "sport"
+        }
+      },
+
+      // Stage 3
+      {
+        $unwind: {
+          path: "$sport",
+        }
+      },
+
+      // Stage 4
+      {
+        $group: {
+          "_id": "$_id",
+          "info": {
+            $push: {
+              matchid: "$matchid",
+              sport: "$sport",
+              video: "$video"
+            }
+          }
+        }
+      },
+    ];
+    return pipeline;
+  },
+
+
 
 
 };
