@@ -1433,7 +1433,7 @@ var models = {
         console.log('i before',i);
         var temp = i.toString();
         console.log('temp',temp);
-        obj["S.R.No."] = i;
+        obj["S.R.No."] = temp;
         ++i;
         console.log('i after',i);
         obj["Athlete SFA ID"] = n.sfaid;
