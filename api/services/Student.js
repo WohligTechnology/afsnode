@@ -1425,15 +1425,11 @@ var models = {
     var finalData = [];
     var i = 1;
     _.each(match, function (n) {
-      // console.log("N", n);
       _.each(n.sport, function (mainData) {
-        // console.log("mainData info", mainData.info[0]);
-        // console.log("mainData", mainData.info[0].sport);
         var obj = {};
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
         obj["Athlete School"] = n.school;
-        obj["S.R.No."] = i;
         if (mainData.info[0].sport.gender == "Boys") {
           obj.Gender = "Boys";
         } else if (mainData.info[0].sport.gender == "Girls") {
@@ -1463,9 +1459,7 @@ var models = {
         } else {
           obj["Video Link"] = "-";
         }
-        console.log('obj',obj);
         finalData.push(obj);
-        ++i;
       });
     });
     callback(null, finalData);
