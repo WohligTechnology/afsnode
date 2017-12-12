@@ -1264,12 +1264,11 @@ var models = {
         },
         function (students, callback) {
           async.concatSeries(students, function (student, callback) {
-            console.log("Before id", student);
             var info = {};
             info.name = student.name;
             info.sfaid = student.sfaid;
             info.school = student.school.name;
-            console.log("id", student._id);
+            // console.log("id", student._id);
             Student.getAthleteSport(student, function (err, sportData) {
               if (err || _.isEmpty(sportData)) {
                 err = "No Data Found";
@@ -1327,7 +1326,7 @@ var models = {
               if (_.isEmpty(totals)) {
                 callback(null, []);
               } else {
-                console.log("Knockout", totals);
+                // console.log("Knockout", totals);
                 callback(null, totals);
               }
             }
