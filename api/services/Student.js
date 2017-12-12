@@ -1264,6 +1264,7 @@ var models = {
         },
         function (students, callback) {
           async.concatSeries(students, function (student, callback) {
+            console.log("Before id", student);
             var info = {};
             info.name = student.name;
             info.sfaid = student.sfaid;
