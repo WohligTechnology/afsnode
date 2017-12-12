@@ -1425,7 +1425,9 @@ var models = {
     var finalData = [];
     var i = 1;
     _.each(match, function (n) {
+      console.log("N", n);
       _.each(n.sport, function (mainData) {
+        console.log("mainData info", mainData.info[0]);
         console.log("mainData", mainData.info[0].sport);
         var obj = {};
         obj["S.R.No."] = i;
