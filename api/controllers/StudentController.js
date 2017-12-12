@@ -603,19 +603,7 @@ module.exports = {
     res.connection.setTimeout(20000000000);
     req.connection.setTimeout(20000000000);
     if (req.body) {
-      Student.getDrawFormats(req.body, function (err, respo) {
-        if (err) {
-          res.json({
-            value: false,
-            data: err
-          });
-        } else {
-          res.json({
-            value: true,
-            data: respo
-          });
-        }
-      });
+      Student.getDrawFormats(req.body,res);
     } else {
       res.json({
         value: false,

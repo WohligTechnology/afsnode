@@ -1246,7 +1246,7 @@ var models = {
     });
   },
 
-  getDrawFormats: function (data, callback) {
+  getDrawFormats: function (data, res) {
     async.waterfall([
         function (callback) {
           Student.find({
@@ -1305,7 +1305,8 @@ var models = {
           if (_.isEmpty(data2)) {
             callback(null, data2);
           } else {
-            callback(null, data2);
+            // callback(null, data2);
+            Config.generateExcel("Video", data2, res);
           }
         }
       });
