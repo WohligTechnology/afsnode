@@ -1431,7 +1431,8 @@ var models = {
         // console.log("mainData", mainData.info[0].sport);
         var obj = {};
         console.log('i before',i);
-        obj["S.R.No."] = i + 1;
+        obj["S.R.No."] = i;
+        ++i;
         console.log('i after',i);
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
