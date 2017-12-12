@@ -1432,7 +1432,8 @@ var models = {
         var obj = {};
         console.log('i before',i);
         var temp = i.toString();
-        obj["S.R.No."] = temp;
+        console.log('temp',temp);
+        obj["S.R.No."] = i;
         ++i;
         console.log('i after',i);
         obj["Athlete SFA ID"] = n.sfaid;
