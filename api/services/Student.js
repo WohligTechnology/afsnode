@@ -1423,15 +1423,14 @@ var models = {
 
   generateExcelVideo: function (match, callback) {
     var finalData = [];
-    var i = 1;
+    var i = 0;
     _.each(match, function (n) {
-      console.log("N", n);
+      // console.log("N", n);
       _.each(n.sport, function (mainData) {
-        console.log("mainData info", mainData.info[0]);
-        console.log("mainData", mainData.info[0].sport);
+        // console.log("mainData info", mainData.info[0]);
+        // console.log("mainData", mainData.info[0].sport);
         var obj = {};
-        obj["S.R.No."] = i;
-        i++;
+        obj["S.R.No."] = i + 1;
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
         obj["Athlete School"] = n.school;
@@ -1460,7 +1459,7 @@ var models = {
           obj["Event 2"] = "-";
         }
         if (n.video) {
-          obj["Video Link"] = n.video;
+          obj["Video Link"] = mainData.info[0].video;
         } else {
           obj["Video Link"] = "-";
         }
