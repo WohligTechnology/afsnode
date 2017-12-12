@@ -1430,10 +1430,10 @@ var models = {
         // console.log("mainData info", mainData.info[0]);
         // console.log("mainData", mainData.info[0].sport);
         var obj = {};
-        obj["S.R.No."] = i;
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
         obj["Athlete School"] = n.school;
+        obj["S.R.No."] = i;
         if (mainData.info[0].sport.gender == "Boys") {
           obj.Gender = "Boys";
         } else if (mainData.info[0].sport.gender == "Girls") {
