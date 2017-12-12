@@ -1430,12 +1430,7 @@ var models = {
         // console.log("mainData info", mainData.info[0]);
         // console.log("mainData", mainData.info[0].sport);
         var obj = {};
-        console.log('i before',i);
-        var temp = i.toString();
-        console.log('temp',temp);
-        obj["S.R.No."] = temp;
-        ++i;
-        console.log('i after',i);
+        obj["S.R.No."] = i;
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
         obj["Athlete School"] = n.school;
@@ -1468,7 +1463,9 @@ var models = {
         } else {
           obj["Video Link"] = "-";
         }
+        console.log('obj',obj);
         finalData.push(obj);
+        ++i;
       });
     });
     callback(null, finalData);
