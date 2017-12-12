@@ -1430,7 +1430,9 @@ var models = {
         // console.log("mainData info", mainData.info[0]);
         // console.log("mainData", mainData.info[0].sport);
         var obj = {};
+        console.log('i before',i);
         obj["S.R.No."] = i + 1;
+        console.log('i after',i);
         obj["Athlete SFA ID"] = n.sfaid;
         obj["Athlete Name"] = n.name;
         obj["Athlete School"] = n.school;
@@ -1458,7 +1460,7 @@ var models = {
         } else {
           obj["Event 2"] = "-";
         }
-        if (n.video) {
+        if (mainData.info[0].video) {
           obj["Video Link"] = mainData.info[0].video;
         } else {
           obj["Video Link"] = "-";
