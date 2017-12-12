@@ -1249,9 +1249,10 @@ var models = {
   getDrawFormats: function (data, res) {
     async.waterfall([
         function (callback) {
-          Student.find({
-            school: data.school
-          }).deepPopulate('school').lean().exec(function (err, students) {
+          // {
+          //   school: data.school
+          // }
+          Student.find().deepPopulate('school').lean().exec(function (err, students) {
             if (err) {
               callback(err, null);
             } else if (_.isEmpty(students)) {
