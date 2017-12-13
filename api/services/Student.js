@@ -1246,7 +1246,7 @@ var models = {
     });
   },
 
-  getDrawFormats: function (data, res) {
+  getDrawFormats: function (res) {
     async.waterfall([
         function (callback) {
           // {

@@ -603,7 +603,7 @@ module.exports = {
     res.connection.setTimeout(20000000000);
     req.connection.setTimeout(20000000000);
     if (req.body) {
-      Student.getDrawFormats(req.body,res);
+      Student.getDrawFormats(res);
     } else {
       res.json({
         value: false,
