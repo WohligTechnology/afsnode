@@ -1307,7 +1307,7 @@ var models = {
             callback(null, data2);
           } else {
             // callback(null, data2);
-            Config.generateExcel("Video", data2, res);
+            Config.generateVideoExcel("Video", data2, res);
           }
         }
       });

@@ -290,9 +290,30 @@ module.exports = {
         });
       }
     });
-
   },
-
+  generateVideoExcel: function (nameParam, excelData, res) {
+    var name = _.kebabCase(nameParam + "-" + new Date());
+    var xls = sails.json2xls(excelData);
+    var folder = "./.tmp/";
+    var path = name + ".xlsx";
+    var finalPath = folder + path;
+    sails.fs.writeFile(finalPath, xls, 'binary', function (err) {
+      if (err) {
+        res.callback(err, null);
+      } else {
+        fs.readFile(finalPath, function (err, excel) {
+          if (err) {
+            res.callback(err, null);
+          } else {
+            res.set('Content-Type', "application/octet-stream");
+            res.set('Content-Disposition', "attachment;filename=" + path);
+            res.send(finalPath);
+            // sails.fs.unlink(finalPath);
+          }
+        });
+      }
+    });
+  },
 
   generatePdf: function (page, obj, callback) {
     console.log("IN CONFIG GENERATE PDF");
