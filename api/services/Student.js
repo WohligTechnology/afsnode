@@ -1268,7 +1268,7 @@ var models = {
             info.name = student.name;
             info.sfaid = student.sfaid;
             info.school = student.school.name;
-            // console.log("id", student._id);
+            console.log("id");
             Student.getAthleteSport(student, function (err, sportData) {
               if (err || _.isEmpty(sportData)) {
                 err = "No Data Found";
