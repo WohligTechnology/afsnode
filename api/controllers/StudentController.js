@@ -602,6 +602,6 @@ module.exports = {
   getDrawFormats: function (req, res) {
     res.connection.setTimeout(20000000000);
     req.connection.setTimeout(20000000000);
-      Student.getDrawFormats(res);
+    Student.getDrawFormats(req, res.callback);
   }
 };

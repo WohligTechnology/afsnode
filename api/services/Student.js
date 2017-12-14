@@ -1246,24 +1246,101 @@ var models = {
     });
   },
 
-  getDrawFormats: function (res) {
-    var data = {};
-    data.school = "57ac443c8ac8bd0c117db2e1";
+  getDrawFormats: function (data, callback) {
+    var flag = true;
+    var count;
     async.waterfall([
         function (callback) {
-          Student.find({
-            school: data.school
-          }).deepPopulate('school').lean().exec(function (err, students) {
+          Student.find().lean().exec(function (err, students) {
             if (err) {
               callback(err, null);
             } else if (_.isEmpty(students)) {
               callback(null, []);
             } else {
+              count = students;
+              console.log("count", count);
+              callback(null, count);
+            }
+          });
+        },
+        function (count, callback) {
+          AthleteCheck.findOne({
+            name: "check"
+          }).lean().exec(function (err, checkData) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, checkData);
+            }
+          });
+        },
+        function (checkData, callback) {
+          if (checkData.athlete.length != count) {
+            Student.getDrawFormats1(data, function (err, excelData) {
+              callback(null, "Success");
+            });
+          } else {
+            flag = false;
+            callback();
+          }
+        },
+      ],
+      function (err, data2) {
+        if (err) {
+          callback(null, []);
+        } else if (data2) {
+          if (_.isEmpty(data2)) {
+            callback(null, data2);
+          } else {
+            if (flag == true) {
+              Student.getDrawFormats(data, function (err, excelData) {
+                callback(null, "Success");
+              });
+            } else {
+              callback(null, data2);
+            }
+          }
+        }
+      });
+  },
+
+  getDrawFormats1: function (data, callback) {
+    var data = {};
+    async.waterfall([
+        function (callback) {
+          AthleteCheck.findOne({
+            name: "check"
+          }).lean().exec(function (err, checkData) {
+            if (err) {
+              callback(err, null);
+            } else {
+              callback(null, checkData);
+            }
+          });
+        },
+        function (checkData, callback) {
+          console.log("checkData", checkData);
+          var start;
+          if (_.isEmpty(checkData.athlete)) {
+            start = 0;
+          } else {
+            start = checkData.athlete.length;
+          }
+          console.log("start", start);
+          Student.find().deepPopulate('school').skip(start).limit(1).lean().exec(function (err, students) {
+            if (err) {
+              callback(err, null);
+            } else if (_.isEmpty(students)) {
+              callback(null, []);
+            } else {
+              console.log("student", students);
+              data.studentId = students[0]._id;
               callback(null, students);
             }
           });
         },
         function (students, callback) {
+          console.log("student", students);
           async.concatSeries(students, function (student, callback) {
             var info = {};
             info.name = student.name;
@@ -1287,7 +1364,7 @@ var models = {
           });
         },
         function (sport, callback) {
-          Student.generateExcelVideo(sport, function (err, excelData) {
+          Student.saveExcelData(sport, function (err, excelData) {
             if (err || _.isEmpty(excelData)) {
               err = "No Data Found";
               callback(null, {
@@ -1298,6 +1375,27 @@ var models = {
               callback(null, excelData);
             }
           });
+        },
+        function (excelData, callback) {
+          if (excelData.err) {
+            callback(null, excelData);
+          } else {
+            var check = {};
+            check.name = "check";
+            check.athlete = data.studentId;
+            AthleteCheck.updateCheck(check, function (err, checkData) {
+              if (err) {
+                err = "No Data Found";
+                callback(null, {
+                  error: err,
+                  success: athlete
+                });
+              } else {
+                console.log("check", checkData);
+                callback(null, checkData);
+              }
+            });
+          }
         }
       ],
       function (err, data2) {
@@ -1307,8 +1405,7 @@ var models = {
           if (_.isEmpty(data2)) {
             callback(null, data2);
           } else {
-            // callback(null, data2);
-            Config.generateVideoExcel("Video", data2, res);
+            callback(null, data2);
           }
         }
       });
@@ -1421,6 +1518,52 @@ var models = {
           }
         }
       });
+  },
+
+  saveExcelData: function (match, callback) {
+    var finalData = [];
+    _.each(match, function (n) {
+      _.each(n.sport, function (mainData) {
+        var obj = {};
+        obj.athleteSFAID = n.sfaid;
+        obj.athleteName = n.name;
+        obj.athleteSchool = n.school;
+        if (mainData.info[0].sport.gender == "Boys") {
+          obj.gender = "Boys";
+        } else if (mainData.info[0].sport.gender == "Girls") {
+          obj.gender = "Girls";
+        } else {
+          obj.gender = "-";
+        }
+        obj.year = mainData.info[0].sport.year;
+        if (mainData.info[0].sport.agegroup) {
+          obj.ageCategory = mainData.info[0].sport.agegroup.name;
+        } else {
+          obj.ageCategory = "";
+        }
+        obj.sport = mainData.info[0].sport.sportslist.name;
+        if (mainData.info[0].sport.firstcategory) {
+          obj.event1 = mainData.info[0].sport.firstcategory.name;
+        } else {
+          obj.event1 = "-";
+        }
+        if (mainData.info[0].sport.secondcategory) {
+          obj.event2 = mainData.info[0].sport.secondcategory.name;
+        } else {
+          obj.event2 = "-";
+        }
+        if (mainData.info[0].video) {
+          obj.videoLink = mainData.info[0].video;
+        } else {
+          obj.videoLink = "-";
+        }
+        AthleteVideo.saveData(obj, function (err, excelData) {
+          console.log("excelData", excelData);
+          finalData = excelData;
+        });
+      });
+    });
+    callback(null, finalData);
   },
 
   generateExcelVideo: function (match, callback) {
