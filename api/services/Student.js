@@ -1247,12 +1247,12 @@ var models = {
   },
 
   getDrawFormats: function (res) {
+    data.school = "57ac443c8ac8bd0c117db2e1";
     async.waterfall([
         function (callback) {
-          // {
-          //   school: data.school
-          // }
-          Student.find().deepPopulate('school').lean().exec(function (err, students) {
+          Student.find({
+            school: data.school
+          }).deepPopulate('school').lean().exec(function (err, students) {
             if (err) {
               callback(err, null);
             } else if (_.isEmpty(students)) {
