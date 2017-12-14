@@ -1247,6 +1247,7 @@ var models = {
   },
 
   getDrawFormats: function (res) {
+    var data = {};
     data.school = "57ac443c8ac8bd0c117db2e1";
     async.waterfall([
         function (callback) {
