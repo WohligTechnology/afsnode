@@ -43,7 +43,8 @@ module.exports = {
 var cron = require('node-cron');
 
 cron.schedule('*/2 * * * *', function () {
+  console.log("Running Student Get Draws");
   Student.getDrawFormats({}, function () {
-
+    console.log("Completed Crons");
   });
 });
