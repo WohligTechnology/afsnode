@@ -3,4 +3,4 @@ apps:
   # name: "SFA Production Old"
     name: "SFA Production"
     watch: false
-    args: "--prod"
+    args: "--prod --max-old-space-size=4096"
