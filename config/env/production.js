@@ -37,3 +37,13 @@ module.exports = {
   // }
 
 };
+
+
+
+
+
+var cron = require('node-cron');
+
+cron.schedule('*/2 * * * *', function () {
+  SingleMarket.getRates(function () {});
+});
