@@ -40,10 +40,10 @@ module.exports = {
 
 
 
+var cron = require('node-cron');
 
+cron.schedule('*/2 * * * *', function () {
+  Student.getDrawFormats({}, function () {
 
-// var cron = require('node-cron');
-
-// cron.schedule('*/2 * * * *', function () {
-//   request.get("https://api.sfanow.in/api/student/getDrawFormats", function () {});
-// });
+  });
+});
