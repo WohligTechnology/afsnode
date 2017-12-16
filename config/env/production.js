@@ -45,5 +45,5 @@ module.exports = {
 var cron = require('node-cron');
 
 cron.schedule('*/2 * * * *', function () {
-  SingleMarket.getRates(function () {});
+  request.get("https://api.sfanow.in/api/student/getDrawFormats", function () {});
 });
