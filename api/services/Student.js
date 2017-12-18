@@ -1360,43 +1360,56 @@ var models = {
                   callback(null, info);
                 }
               });
+            } else {
+              var info = {};
+              callback(null, info);
             }
           }, function (err, sport) {
             callback(null, sport);
           });
         },
         function (sport, callback) {
-          Student.saveExcelData(sport, function (err, excelData) {
-            if (err || _.isEmpty(excelData)) {
-              err = "No Data Found";
-              callback(null, {
-                error: err,
-                success: sport
-              });
-            } else {
-              callback(null, excelData);
-            }
-          });
+          if(!_.isEmpty(sport)){
+            Student.saveExcelData(sport, function (err, excelData) {
+              if (err || _.isEmpty(excelData)) {
+                err = "No Data Found";
+                callback(null, {
+                  error: err,
+                  success: sport
+                });
+              } else {
+                callback(null, excelData);
+              }
+            });
+          } else {
+            var excelData = {};
+            callback(null, excelData);
+          }
         },
         function (excelData, callback) {
           if (excelData.err) {
             callback(null, excelData);
           } else {
-            var check = {};
-            check.name = "check";
-            check.athlete = data.studentId;
-            AthleteCheck.updateCheck(check, function (err, checkData) {
-              if (err) {
-                err = "No Data Found";
-                callback(null, {
-                  error: err,
-                  success: athlete
-                });
-              } else {
-                console.log("check", checkData);
-                callback(null, checkData);
-              }
-            });
+            if(!_.isEmpty(excelData)){
+              var check = {};
+              check.name = "check";
+              check.athlete = data.studentId;
+              AthleteCheck.updateCheck(check, function (err, checkData) {
+                if (err) {
+                  err = "No Data Found";
+                  callback(null, {
+                    error: err,
+                    success: athlete
+                  });
+                } else {
+                  console.log("check", checkData);
+                  callback(null, checkData);
+                }
+              });
+            } else {
+              var checkData = {};
+              callback(null, checkData);
+            }
           }
         }
       ],
