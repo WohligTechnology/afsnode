@@ -1342,23 +1342,25 @@ var models = {
         function (students, callback) {
           console.log("student", students);
           async.concatSeries(students, function (student, callback) {
-            var info = {};
-            info.name = student.name;
-            info.sfaid = student.sfaid;
-            info.school = student.school.name;
-            console.log("id");
-            Student.getAthleteSport(student, function (err, sportData) {
-              if (err || _.isEmpty(sportData)) {
-                err = "No Data Found";
-                callback(null, {
-                  error: err,
-                  success: student
-                });
-              } else {
-                info.sport = sportData;
-                callback(null, info);
-              }
-            });
+            if(student.name !== 'No Match '){
+              var info = {};
+              info.name = student.name;
+              info.sfaid = student.sfaid;
+              info.school = student.school.name;
+              console.log("id");
+              Student.getAthleteSport(student, function (err, sportData) {
+                if (err || _.isEmpty(sportData)) {
+                  err = "No Data Found";
+                  callback(null, {
+                    error: err,
+                    success: student
+                  });
+                } else {
+                  info.sport = sportData;
+                  callback(null, info);
+                }
+              });
+            }
           }, function (err, sport) {
             callback(null, sport);
           });
