@@ -324,7 +324,7 @@ module.exports = {
           "ORDER": key.order
         };
         if (key.sport) {
-          row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
+          row.SPORT = key.sport.sportslist.name + ' ' + ((key.sport.firstcategory.name) ? (key.sport.firstcategory.name) : '') + ' ' + ((key.sport.secondcategory.name) ? (key.sport.secondcategory.name) : '') + ' ' + key.sport.agegroup.name + ' ' + key.sport.gender + ' ';
         }
         if (key[key.participantType + '1']&& key[key.participantType + '1'].school) {
           row['SFAID 1'] = key[key.participantType + '1'].sfaid;
